@@ -71,15 +71,14 @@ const io = socket(server);
 io.on("connection", function(socket){
     console.log("co nguoi ket noi " + socket.id);
     
-    socket.on("client-onCategoryFoodSubmit",(data)=>{
+    socket.on("client-loadCategoryFoods",(data)=>{
         console.log(data);
-        io.sockets.emit("server-getAllCategoryFoods", 'Cap nhat danh muc');
+        io.sockets.emit("server-loadCategoryFoods", 'Cap nhat danh muc');
     });
-    socket.on("client-onFoodSubmit",(data)=>{
+    socket.on("client-loadFoods",(data)=>{
         console.log(data);
-        io.sockets.emit("server-getAllFoods", 'Cap nhat mon');
+        io.sockets.emit("server-loadFoods", 'Cap nhat mon');
     });
-
 });
 
 

@@ -11,7 +11,8 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./menu-management.component.css']
 })
 export class MenuManagementComponent implements OnInit {
-
+  messageClass0;
+  message0;
   messageClass;
   message;
   messageClass2;
@@ -19,6 +20,7 @@ export class MenuManagementComponent implements OnInit {
   message3;
   form: FormGroup;
   form2: FormGroup;
+  form3: FormGroup;
   selectedImage = false;
   categoryFoods;
   foods;
@@ -30,6 +32,9 @@ export class MenuManagementComponent implements OnInit {
   idCategoryMessage;
   nameCategoryValid;
   nameCategoryMessage;
+  idCategoryFood;
+  nameCategoryFood;
+
   filesToUpload: Array<File> = [];
 
   constructor(
@@ -39,6 +44,7 @@ export class MenuManagementComponent implements OnInit {
     private foodService: FoodService
   ) {
     this.createCategoryFoodForm();
+    this.createCategoryFoodForm3();
     this.createFoodForm();
   }
 
@@ -50,7 +56,18 @@ export class MenuManagementComponent implements OnInit {
       return { 'validateNumber': true }
     }
   }
-
+  createCategoryFoodForm3() {
+    this.form3 = this.formBuilder.group({
+      // trường id 
+      id: ['',Validators.required],
+      // trường name 
+      name: ['', Validators.compose([
+        Validators.required,
+        Validators.maxLength(30),
+        Validators.minLength(3)
+      ])]
+    })
+  }
   // tạo danh mục
   createCategoryFoodForm() {
     this.form2 = this.formBuilder.group({
@@ -122,7 +139,18 @@ export class MenuManagementComponent implements OnInit {
     });
   }
   checkNameCategory(){
-    this.categoryFoodService.checkIdCategory(this.form2.get('name').value).subscribe(data=>{
+    this.categoryFoodService.checkNameCategory(this.form2.get('name').value).subscribe(data=>{
+      if(!data.success){
+       this.nameCategoryValid = false;
+       this.nameCategoryMessage = data.message;
+      }else{
+       this.nameCategoryValid = true;
+       this.nameCategoryMessage = data.message;
+      }
+    });
+  }
+  checkNameCategory2(){
+    this.categoryFoodService.checkNameCategory(this.form3.get('name').value).subscribe(data=>{
       if(!data.success){
        this.nameCategoryValid = false;
        this.nameCategoryMessage = data.message;
@@ -177,12 +205,14 @@ export class MenuManagementComponent implements OnInit {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
       } else {
-        this.authService.socket.emit("client-onCategoryFoodSubmit","tao danh muc");
+        this.authService.socket.emit("client-loadCategoryFoods","tao danh muc");
         this.messageClass = 'alert alert-success';
         this.message = data.message;
         // Clear form data after two seconds
         setTimeout(() => {
           this.form2.reset(); // Reset all form fields
+          this.messageClass= false;
+          this.message='';
         }, 2000);
       }
     })
@@ -196,7 +226,6 @@ export class MenuManagementComponent implements OnInit {
   }
 
   onFoodSubmit() {
-    
     const files: Array<File> = this.filesToUpload;
     const filenames: Array<String> = [];
     const formData:any = new FormData();
@@ -204,39 +233,83 @@ export class MenuManagementComponent implements OnInit {
      const filename=Date.now() +'-'+ files[i]['name'];
      filenames.push(filename);
         formData.append("imgfood", files[i], filename);
-
     }
     this.foodService.uploadImageFood(formData).subscribe(data => {
       if (!data.success) {
-        //this.messageClass = 'alert alert-danger';
-        this.message3 = data.message;
-      } else {
-        //this.messageClass = 'alert alert-success';
-        this.message3 = data.message;
-      }
-    })
-
-    const food = {
-      id: this.form.get('id').value,
-      name: this.form.get('name').value,
-      category_id:this.form.get('category_id').value,
-      description: this.form.get('description').value,
-      discount: '0',
-      price_unit: this.form.get('price_unit').value,
-      unit: this.form.get('unit').value,
-      url_image: filenames
-    }
-    this.foodService.createFood(food).subscribe(data => {
-      if (!data.success) {
         this.messageClass2 = 'alert alert-danger';
-        this.message2 = data.message;
+        this.message3 = data.message;
       } else {
-        this.authService.socket.emit("client-onFoodSubmit","tao mon");
         this.messageClass2 = 'alert alert-success';
-        this.message2 = data.message;
+        this.message3 = data.message;
+        const food = {
+          id: this.form.get('id').value,
+          name: this.form.get('name').value,
+          category_id:this.form.get('category_id').value,
+          description: this.form.get('description').value,
+          discount: '0',
+          price_unit: this.form.get('price_unit').value,
+          unit: this.form.get('unit').value,
+          url_image: filenames
+        }
+        this.foodService.createFood(food).subscribe(data => {
+          if (!data.success) {
+            this.message2 = data.message;
+          } else {
+            this.authService.socket.emit("client-loadFoods","tao mon");
+            this.message2 = data.message;
+            // Clear form data after two seconds
+            setTimeout(() => {
+              this.form.reset(); // Reset all form fields
+              this.messageClass2 = false; // Erase error/success message
+              this.message3='';
+              this.message2='';
+            }, 2000);
+          }
+        })
+      }
+    }) 
+  }
+
+  deleteCategoryFood(id) {
+    this.categoryFoodService.deleteCategoryFood(id).subscribe(data => {
+      // Check if delete request worked
+      if (!data.success) {
+        this.messageClass0 = 'alert alert-danger'; // Return error bootstrap class
+        this.message0 = data.message; // Return error message
+      } else {
+        this.authService.socket.emit("client-loadCategoryFoods","cập nhật danh mục");
+        this.messageClass0 = 'alert alert-success'; // Return bootstrap success class
+        this.message0 = data.message; // Return success message
+        // After two second timeout, route to blog page
+      }
+      setTimeout(() => {
+        this.messageClass0 = false; // Erase error/success message
+        this.message0='';
+      }, 2000);
+    });
+  }
+  getCategoryFood(id,name){
+    this.idCategoryFood =id;
+    this.nameCategoryFood =name;
+  }
+  editCategoryFood(){
+
+    const categoryFood = {
+      id:  this.idCategoryFood,
+      name: this.form3.get('name').value
+    }
+    this.categoryFoodService.editCategoryFood(categoryFood).subscribe(data => {
+      if (!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+      } else {
+       this.authService.socket.emit("client-loadCategoryFoods","xóa danh mục.");
+        this.messageClass = 'alert alert-success';
+        this.message = data.message;
         // Clear form data after two seconds
         setTimeout(() => {
-          this.form.reset(); // Reset all form fields
+          this.messageClass= false;
+          this.message='';
         }, 2000);
       }
     })
@@ -244,14 +317,14 @@ export class MenuManagementComponent implements OnInit {
   ngOnInit() {
     this.getAllCategoryFoods();
     this.getAllFoods();
-    this.authService.socket.on("server-getAllCategoryFoods",(data)=>{
+    this.authService.socket.on("server-loadCategoryFoods",(data)=>{
       this.getAllCategoryFoods();
       console.log(data);
     });
-    this.authService.socket.on("server-getAllFoods",(data)=>{
+    this.authService.socket.on("server-loadFoods",(data)=>{
       this.getAllFoods();
       console.log(data);
-    })
+    });
   }
 
 }

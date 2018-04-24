@@ -39,4 +39,16 @@ export class CategoryFoodService {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.get(this.domain + 'categoryFood/checkIdCategory/' + id ,this.options).map(res=>res.json());
   }
+  // Function to edit/update blog post
+  editCategoryFood(categoryFood) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.put(this.domain + 'categoryFood/updateCategoryFood/', categoryFood, this.options).map(res => res.json());
+  }
+
+  // Function to delete a blog
+  deleteCategoryFood(id) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.delete(this.domain + 'categoryFood/deleteCategoryFood/' + id, this.options).map(res => res.json());
+  }
+
 }

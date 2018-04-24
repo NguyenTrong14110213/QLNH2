@@ -2,7 +2,7 @@ const User = require('../models/user');// Import User Model Schema
 const jwt =require('jsonwebtoken'); // Các phương tiện đại diện cho các yêu cầu được chuyển giao giữa hai bên hợp lý, an toàn với URL.
 const CategoryFood =require('../models/categoryFood');// Import Blog Model Schema
 const config =require('../config/database');// Import cấu hình database 
-
+const Food =require('../models/foods');
 module.exports =(router)=>{
 
     // tạo một Category_food  mới 
@@ -101,6 +101,70 @@ module.exports =(router)=>{
           }
         }).sort({ '_id': -1 }); // Sort blogs from newest to oldest
       });
-    
+
+      router.delete('/deleteCategoryFood/:id', (req, res) => {
+        if (!req.params.id) {
+          res.json({ success: false, message: 'Chưa cung cấp mã danh mục' }); 
+        } else {
+          CategoryFood.findOne({ id: req.params.id }, (err, categoryFood) => {
+            if (err) {
+              res.json({ success: false, message:err }); 
+            } else {
+              if (!categoryFood) {
+                res.json({ success: false, messasge: 'Không tìm thấy danh mục' }); // Return error message
+              } else {
+                Food.findOne({category_id: req.params.id},(err, food)=>{
+                    if(err){
+                        res.json({success: false, message:err})
+                    }else{
+                        if(food){
+                            res.json({success: false, message:'Không thể xóa! Danh mục có chứa món ăn.'});
+                        }else{
+                            categoryFood.remove((err) => {
+                                if (err) {
+                                res.json({ success: false, message: err }); // Return error message
+                                } else {
+                                    res.json({ success: true, message: 'Danh mục đã được xóa.' }); // Return success message
+                                }
+                            });
+                        }
+                    }
+                })
+              }
+            }
+                    
+            })
+        }
+      });
+
+      router.put('/updateCategoryFood', (req, res) => {
+        if (!req.body.id) {
+          res.json({ success: false, message: 'Chưa cung cấp mã danh mục' }); 
+        } else {
+          CategoryFood.findOne({ id: req.body.id }, (err, ctegoryFood) => {
+            if (err) {
+              res.json({ success: false, message: 'Không đúng mã danh mục' }); // Return error message
+            } else {
+              if (!ctegoryFood) {
+                res.json({ success: false, message: 'Không tìm thấy danh mục.' }); // Return error message
+              } else {
+                ctegoryFood.name = req.body.name; // Save latest blog title
+                ctegoryFood.save((err) => {
+                          if (err) {
+                            if (err.errors) {
+                              res.json({ success: false, message: 'Thông tin cần chính xác.' });
+                            } else {
+                              res.json({ success: false, message: err }); // Return error message
+                            }
+                          } else {
+                            res.json({ success: true, message: 'Danh mục dã được cập nhật!' }); // Return success message
+                          }
+                    });
+                }
+              }
+          });
+        }
+      });
+
     return router;
 };
