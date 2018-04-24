@@ -1,0 +1,25 @@
+
+div {
+    border-radius: 10px;
+    background-color: #f2f2f2;
+    padding: 15px;
+}
+div.register{
+    width: 35%;
+    margin: 0 auto;
+    margin-bottom: 50px;
+}
+
+div.form-group{
+
+    margin: 1px 0 ;
+}
+#submission {
+    text-align: center;}
+select{
+        border-radius: 3px;  
+        
+}
+p{
+    color: #A4A4A4
+}

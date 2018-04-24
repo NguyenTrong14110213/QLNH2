@@ -1,0 +1,171 @@
+
+
+<div class="row">
+  <div class="col-sm-3 ">
+ <div class="list-group">
+    <a class="list-group-item active waves-effect">Danh mục</a>
+    <div *ngFor="let categoryfoods of categoryFoods">
+        <a  class="list-group-item">{{ categoryfoods.name }}</a>
+    </div>
+  </div>
+  
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
+      <span class="glyphicon glyphicon-plus"></span> Thêm danh mục
+    </button>
+     <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <form [formGroup] ="form2" (submit)="onCategoryFoodSubmit()">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Thêm danh mục</h4>
+        </div>
+        <div class="modal-body">
+          <!-- Custom Success/Error Message -->
+          <div class="row show-hide-message">
+              <div [ngClass]="messageClass">
+                {{ message }}
+              </div>
+            </div>
+            <div class="form-group">
+                <div [ngClass]="{'has-error': (form2.controls.id.errors && form2.controls.id.dirty) || (!idCategoryValid && form2.controls.id.dirty), 'has-success': !form2.controls.id.errors && idCategoryValid}">
+                    <input class="form-control" type="text" name="id" formControlName="id" placeholder="*Mã danh mục"  (blur)="checkIdCategory()"/>
+                    <ul class="help-block">
+                        <li *ngIf="form2.controls.id.errors?.required && form2.controls.id.dirty">Nội dung bắt buộc!</li>
+                        <li *ngIf="(form2.controls.id.errors?.minlength || form2.controls.id.errors?.maxlength) && form2.controls.id.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                        <li *ngIf="idCategoryMessage">{{ idCategoryMessage }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <div [ngClass]="{'has-error': (form2.controls.name.errors && form2.controls.name.dirty) || (!nameCategoryValid && form2.controls.name.dirty)  , 'has-success': !form2.controls.name.errors && nameCategoryValid}">
+                    <input class="form-control" type="text" name="name"  formControlName="name"  placeholder="*Tên danh mục" (blur)="checkNameCategory()"/>
+                    <ul class="help-block">
+                        <li *ngIf="form2.controls.name.errors?.required && form2.controls.name.dirty">Nội dung bắt buộc!</li>
+                        <li *ngIf="(form2.controls.name.errors?.minlength || form2.controls.name.errors?.maxlength) && form2.controls.name.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                        <li *ngIf="nameCategoryMessage">{{ nameCategoryMessage }}</li>
+                    </ul>
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button [disabled]="!form2.valid || !idCategoryValid || !nameCategoryValid " type="submit" name="button" class="btn btn-success" >Đồng ý</button>
+        </div>
+      </form>
+      </div>
+      
+    </div>
+  </div>
+  <!-- Modal end-->
+  </div>
+  <div class="col-sm-9 ">
+      <div class="col-sm-3 col-md-3">
+          <div type="button" class="thumbnail btn btn-info btn-lg" data-toggle="modal" data-target="#foodsModal" > 
+            <img src="http://localhost:8080/icon/plus.png" alt="Generic placeholder image" width="140" height="140">
+            <div class=caption>
+              <h3> <font color="white">Thêm món</font></h3>
+            </div>
+          </div>
+   <!-- Modal -->
+   <div class="modal fade" id="foodsModal" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+        <form [formGroup] ="form" (submit)="onFoodSubmit()">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Thêm món</h4>
+          </div>
+          <div class="modal-body">
+          <!-- Custom Success/Error Message -->
+          <div class="row show-hide-message">
+              <div [ngClass]="messageClass2">
+                {{ message2 }}
+                {{ message3 }}
+              </div>
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="url_image" type="file" accept='image/*' (change)="fileChangeEvent($event)" placeholder="Upload a file..." multiple/>
+            </div>
+          
+            <div class="form-group">
+                <div [ngClass]="{'has-error': (form.controls.id.errors && form.controls.id.dirty) ||  (!idFoodValid && form.controls.id.dirty)  , 'has-success': !form.controls.id.errors && idFoodValid }">
+                    <input class="form-control" type="text" name="id" formControlName="id" placeholder="*Mã món"  (blur)="checkIdFood()"/>
+                    <ul class="help-block">
+                        <li *ngIf="form.controls.id.errors?.required && form.controls.id.dirty">Nội dung bắt buộc!</li>
+                        <li *ngIf="(form.controls.id.errors?.minlength || form.controls.id.errors?.maxlength) && form.controls.id.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                        <li *ngIf="idFoodMessage">{{ idFoodMessage }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <div [ngClass]="{'has-error': (form.controls.name.errors && form.controls.name.dirty) || (!nameFoodValid && form.controls.name.dirty)  , 'has-success': !form.controls.name.errors && nameFoodValid}">
+                    <input class="form-control" type="text" name="name" formControlName="name" placeholder="*Tên món" (blur)="checkNameFood()"/>
+                    <ul class="help-block">
+                        <li *ngIf="form.controls.name.errors?.required && form.controls.name.dirty">Nội dung bắt buộc!</li>
+                        <li *ngIf="(form.controls.name.errors?.minlength || form.controls.name.errors?.maxlength) && form.controls.name.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                        <li *ngIf="nameFoodMessage">{{ nameFoodMessage }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                    <label for="category_id"> Chọn danh mục</label>
+                    <div >
+                      <select  class="form-control" name="category_id"  formControlName="category_id" autocomplete="off">
+                          <option  *ngFor="let categoryfoods of categoryFoods" value="{{ categoryfoods.id }}"> {{ categoryfoods.name }}</option>
+                        </select>
+                    </div>
+            </div>
+            <div class="form-group">
+                <div [ngClass]="{'has-error': (form.controls.description.errors && form.controls.description.dirty) , 'has-success': !form.controls.description.errors}">
+                    <input class="form-control" type="text" name="description" formControlName="description" placeholder="*Mô tả món"/>
+                    <ul class="help-block">
+                        <li *ngIf="form.controls.description.errors?.required && form.controls.description.dirty">Nội dung bắt buộc!</li>
+                        <li *ngIf="(form.controls.description.errors?.minlength || form.controls.description.errors?.maxlength) && form.controls.description.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <div [ngClass]="{'has-error': (form.controls.price_unit.errors && form.controls.price_unit.dirty) , 'has-success': !form.controls.price_unit.errors}">
+                    <input class="form-control" type="text" name="price_unit" formControlName="price_unit" placeholder="*Đơn giá"/>
+                    <ul class="help-block">
+                        <li *ngIf="form.controls.price_unit.errors?.required && form.controls.price_unit.dirty">Nội dung bắt buộc!</li>
+                        <li *ngIf="(form.controls.price_unit.errors?.minlength || form.controls.price_unit.errors?.maxlength) && form.controls.price_unit.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                        <li *ngIf="form.controls.price_unit.errors?.validateNumber  && form.controls.price_unit.dirty">Chỉ nhập số.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <div [ngClass]="{'has-error': (form.controls.unit.errors && form.controls.unit.dirty) , 'has-success': !form.controls.unit.errors}">
+                    <input class="form-control" type="text" name="unit" formControlName="unit" placeholder="*Đơn vị"/>
+                    <ul class="help-block">
+                        <li *ngIf="form.controls.unit.errors?.required && form.controls.unit.dirty">Nội dung bắt buộc!</li>
+                        <li *ngIf="(form.controls.unit.errors?.minlength || form.controls.unit.errors?.maxlength) && form.controls.unit.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                    </ul>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+                <button [disabled]="!form.valid || !selectedImage || !idFoodValid ||!nameFoodValid" type="submit" name="button" class="btn btn-success" >Đồng ý</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+      </div>
+    <!-- End -->
+    <div *ngFor="let food of foods">
+      <div class="col-sm-3 col-md-3">
+          <div class=thumbnail style="height:250px"> <img class="foods"src="http://localhost:8080/{{ food.url_image[0] }}" width="200px">
+            <div class=caption>
+              <h4>{{ food.name }}</h4>
+              <p>{{ food.price_unit }} đ</p>
+            </div>
+          </div>
+      </div>
+     </div>
+  </div>
+</div>
