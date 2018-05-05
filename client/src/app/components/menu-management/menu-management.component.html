@@ -192,6 +192,20 @@
                 </div>
             </div>
             <div class="form-group">
+                    <div [ngClass]="{'has-error': (form.controls.discount.errors && form.controls.discount.dirty) , 'has-success': !form.controls.discount.errors}">
+                        <input class="form-control" type="text" name="discount" formControlName="discount"  placeholder="*Giảm giá" />
+                        <ul class="help-block">
+                            <li *ngIf="form.controls.discount.errors?.required && form.controls.discount.dirty">Nội dung bắt buộc!</li>
+                            <li *ngIf="(form.controls.discount.errors?.minlength || form.controls.discount.errors?.maxlength) && form.controls.discount.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                            <li *ngIf="form.controls.discount.errors?.validateNumber  && form.controls.discount.dirty">Chỉ nhập số.</li>
+                        </ul>
+                        <select >
+                            <option value = "1">Phần trăm</option>
+                            <option value = "0">VN đồng</option>
+                        </select>
+                    </div>
+                </div>
+            <div class="form-group">
                 <div [ngClass]="{'has-error': (form.controls.unit.errors && form.controls.unit.dirty) , 'has-success': !form.controls.unit.errors}">
                     <input class="form-control" type="text" name="unit" formControlName="unit" placeholder="*Đơn vị"/>
                     <ul class="help-block">
@@ -212,7 +226,10 @@
     <!-- End -->
     <div *ngFor="let food of foods">
       <div class="col-sm-3 col-md-3">
-          <div class=thumbnail style="height:250px"> <img class="foods"src="http://localhost:8080/{{ food.url_image[0] }}" width="200px">
+          <div  [routerLink]="['/food/', food.id]" class=thumbnail style="height:250px">
+            <div class="custom-image ">
+                    <img class="foods"src="http://localhost:8080/foods/{{ food.url_image[0] }}" width="170" height="165">
+            </div> 
             <div class=caption>
               <h4>{{ food.name }}</h4>
               <p>{{ food.price_unit }} đ</p>

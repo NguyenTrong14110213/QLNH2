@@ -10,6 +10,7 @@ const foods = require('./routes/foods')(router);
 const bodyParser =require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
+const fs = require('fs');
 
 // const upload = require('express-fileupload');
 
@@ -42,7 +43,7 @@ app.get('*',(req, res)=>{
 const storage = multer.diskStorage({
     // destination
     destination: function (req, file, cb) {
-      cb(null, './public')
+      cb(null, './public/foods')
     },
     filename: function (req, file, cb) {
        cb(null, file.originalname);
@@ -60,6 +61,7 @@ app.post("/uploadImageFood",(req, res) => {
         }
     });
 });
+
 
 const server = app.listen(8080,()=>{
     console.log('Listening on port 8080');

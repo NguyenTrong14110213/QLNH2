@@ -11,11 +11,11 @@ import { MenuManagementComponent } from './components/menu-management/menu-manag
 
 const appRoutes:Routes=[
     { path:'', component: HomeComponent },
-    { path:'foods', component:FoodsComponent, canActivate:[AuthGuard]},
+    { path:'food/:id', component:FoodsComponent, canActivate:[AuthGuard]},
     { path:'register', component: RegisterComponent, canActivate:[NotAuthGuard]},
     { path:'login', component:LoginComponent, canActivate:[NotAuthGuard]},
     { path:'profile', component:ProfileComponent, canActivate:[AuthGuard]},
-    { path:'menu_management', component:MenuManagementComponent},
+    { path:'menu_management', component:MenuManagementComponent, canActivate:[AuthGuard]},
     { path:'**', component:HomeComponent}
 ];
 

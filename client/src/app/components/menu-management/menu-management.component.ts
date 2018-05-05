@@ -112,6 +112,12 @@ export class MenuManagementComponent implements OnInit {
         Validators.maxLength(30),
         Validators.minLength(3)
       ])],
+      discount: ['', Validators.compose([
+        Validators.required,
+        Validators.maxLength(30),
+        Validators.minLength(1),
+        this.validateNumber
+      ])],
       // trường đơn giá
       price_unit: ['', Validators.compose([
         Validators.required,
@@ -182,7 +188,7 @@ export class MenuManagementComponent implements OnInit {
       }
     });
   }
-  // Function to get all blogs from the database
+
    getAllCategoryFoods() {
     // Function to GET all blogs from database
     this.categoryFoodService.getAllCategoryFoods().subscribe(data => {
@@ -246,7 +252,7 @@ export class MenuManagementComponent implements OnInit {
           name: this.form.get('name').value,
           category_id:this.form.get('category_id').value,
           description: this.form.get('description').value,
-          discount: '0',
+          discount: this.form.get('discount').value,
           price_unit: this.form.get('price_unit').value,
           unit: this.form.get('unit').value,
           url_image: filenames

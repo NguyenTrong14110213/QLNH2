@@ -16,6 +16,7 @@ const foodsSchema = new Schema({
   category_id: { type: String, required: true},
   description: {type: String },
   discount: { type: Number },
+  inventory: { type :Number , default: 0},
   price_unit: { type: Number , required: true},
   unit: {type:String, required: true},
   url_image:{type: Array}

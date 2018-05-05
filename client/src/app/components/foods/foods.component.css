@@ -1,0 +1,25 @@
+div.overflow {
+    background-color: rgb(255, 255, 255);
+    height: 400px;
+    width: 100%;
+    overflow-y: auto;
+    margin: 0 auto;
+}
+
+
+.container{
+    width: 80%;
+    margin: 0 auto;
+}
+.custom-image {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    }
+    
+.custom-image .btn {
+    position: absolute;
+    top: -5px;
+    left: 70%;
+    color: white;
+}

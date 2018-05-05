@@ -36,6 +36,10 @@ export class FoodService {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.get(this.domain + 'foods/allFoods', this.options).map(res => res.json());
   }
+  getFood(id) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'foods/food/' + id, this.options).map(res => res.json());
+  }
   checkIdFood(id){
     this.createAuthenticationHeaders(); // Create headers
     return this.http.get(this.domain + 'foods/checkIdFood/' + id ,this.options).map(res=>res.json());
@@ -44,5 +48,18 @@ export class FoodService {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.get(this.domain + 'foods/checkNameFood/' + name ,this.options).map(res=>res.json());
   }
-
+  editFood(food) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.put(this.domain + 'foods/updateFood/', food, this.options).map(res => res.json());
+  }
+  // Function to dislike a blog post
+  deleteImage(id, url_image) {
+    const foodData = { id: id,
+      url_image:url_image };
+    return this.http.put(this.domain + 'foods/deleteImage/' , foodData, this.options).map(res => res.json());
+  }
+ addImage(food) {
+  console.log(food);
+    return this.http.put(this.domain + 'foods/addImage/' , food, this.options).map(res => res.json());
+  }
 }
