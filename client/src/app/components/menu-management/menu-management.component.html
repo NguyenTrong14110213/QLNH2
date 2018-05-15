@@ -10,15 +10,30 @@
     <a class="list-group-item active waves-effect">Danh mục</a>
     <div *ngFor="let categoryfoods of categoryFoods">
         <div class="dropdown ">
-        <a class="list-group-item">{{ categoryfoods.name }}</a>
+        <a (click)="getCategoryId(categoryfoods.id)" [ngClass]="{'list-group-item-info': category_id == categoryfoods.id}" class="list-group-item">{{ categoryfoods.name }}</a>
         <div class="dropdown-content dropdown-menu">
-            <a (click)="deleteCategoryFood(categoryfoods.id)">Xóa</a>
             <a (click)="getCategoryFood(categoryfoods.id,categoryfoods.name)" data-toggle="modal" data-target="#editModal">Sửa</a>
-          </div>
+            <!-- <a (click)="deleteCategoryFood(categoryfoods.id)">Xóa</a> -->
+            <a (click)="getCategoryId2(categoryfoods.id)" data-toggle="modal" data-target="#confirmModal">Xóa</a>
         </div>
     </div>
   </div>
-
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Bạn có muốn xóa danh mục này?</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-success" data-dismiss="modal" (click)="deleteCategoryFood(category_id2)">Yes</button>
+                <button type="button" class="btn-default" data-dismiss="modal">No</button>
+            </div>
+          </div>
+        </div>
+      </div>  
+</div>
 
   <!-- Modal -->
   <div class="modal fade" id="editModal" role="dialog">

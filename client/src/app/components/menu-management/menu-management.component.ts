@@ -34,7 +34,8 @@ export class MenuManagementComponent implements OnInit {
   nameCategoryMessage;
   idCategoryFood;
   nameCategoryFood;
-
+  category_id='';
+  category_id2;
   filesToUpload: Array<File> = [];
 
   constructor(
@@ -188,15 +189,23 @@ export class MenuManagementComponent implements OnInit {
       }
     });
   }
+  getCategoryId(category_id){
+    this.category_id =category_id;
+    console.log(this.category_id);
+    this.getAllFoods(this.category_id);
+  }
 
+  getCategoryId2(category_id){
+    this.category_id2=category_id;
+  }
    getAllCategoryFoods() {
     // Function to GET all blogs from database
     this.categoryFoodService.getAllCategoryFoods().subscribe(data => {
       this.categoryFoods = data.categoryfoods; // Assign array to use in HTML
     });
   }
-  getAllFoods() {
-    this.foodService.getAllFoods().subscribe(data => {
+  getAllFoods(category_id) {
+    this.foodService.getAllFoods(category_id).subscribe(data => {
       this.foods = data.foods; // Assign array to use in HTML
     });
   }    
@@ -298,6 +307,7 @@ export class MenuManagementComponent implements OnInit {
     this.idCategoryFood =id;
     this.nameCategoryFood =name;
   }
+
   editCategoryFood(){
 
     const categoryFood = {
@@ -322,13 +332,13 @@ export class MenuManagementComponent implements OnInit {
   }
   ngOnInit() {
     this.getAllCategoryFoods();
-    this.getAllFoods();
+    this.getAllFoods(0);
     this.authService.socket.on("server-loadCategoryFoods",(data)=>{
       this.getAllCategoryFoods();
       console.log(data);
     });
     this.authService.socket.on("server-loadFoods",(data)=>{
-      this.getAllFoods();
+      this.getAllFoods(this.category_id);
       console.log(data);
     });
   }

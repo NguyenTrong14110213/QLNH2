@@ -5,12 +5,10 @@ div.btn{
     border-radius: 1px;
     width: 200px;
 }
-
 .dropdown {
     position: relative;
     display: inline-block;
 }
-
 
 
 .dropdown-content a {
@@ -51,8 +49,3 @@ div.btn{
     border-left: 6px solid transparent;
     content: '';
 }
-.custom-image {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-    }

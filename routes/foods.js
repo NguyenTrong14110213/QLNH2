@@ -127,23 +127,35 @@ module.exports =(router)=>{
         }
     });
 
-    router.get('/allFoods', (req, res) => {
-        // Search database for all blog posts
-        Food.find({}, (err, foods) => {
-          // Check if error was found or not
-          if (err) {
-            res.json({ success: false, message: err }); // Return error message
-          } else {
-            // Check if blogs were found in database
-            if (!foods) {
-              res.json({ success: false, message: 'Không tìm thấy món ăn nào.' }); // Return error of no blogs found
-            } else {
-              res.json({ success: true, foods: foods }); 
-            }
-          }
-        }).sort({ '_id': -1 }); // Sort blogs from newest to oldest
-      });
 
+    router.get('/allFoods/:category_id', (req,res)=>{
+        if(req.params.category_id==0){
+          Food.find({}, (err, foods)=>{
+            if(err){
+                res.json({success:false, message:err});
+            }else{
+                if(!foods){
+                    res.json({success:false, message:'Không tìm thấy món nào.'});
+                }else{
+                    res.json({success:true, foods:foods});
+                }
+            }
+        }).sort({'_id':-1});// sấp sếp theo thứ tự mới nhất
+        }else{
+            Food.find({category_id: req.params.category_id}, (err, foods)=>{
+            if(err){
+                res.json({success:false, message:err});
+            }else{
+                if(!foods){
+                    res.json({success:false, message:'Không tìm thấy món nào.'});
+                }else{
+                    res.json({success:true, foods:foods});
+                }
+            }
+        }).sort({'_id':-1});
+        }
+    });
+    
       router.get('/food/:id', (req, res)=>{
         if(!req.params.id){
             res.json({success: false, message: 'Chưa nhập mã món!'});

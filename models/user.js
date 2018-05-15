@@ -82,7 +82,7 @@ const userSchema = new Schema({
   username: { type: String, required: true, unique: true, lowercase: true, validate: usernameValidators },
   password: { type: String, required: true },
   fullname: { type: String},
-  gender: { type: String},
+  gender: { type: Boolean},
   identity_card: { type: Number},
   phone: { type: Number },
   url_profile: { type: String },

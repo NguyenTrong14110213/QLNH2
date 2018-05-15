@@ -29,6 +29,7 @@ export class FoodsComponent implements OnInit {
   discount;
   price_unit;
   unit;
+  checkChange = false;
 
   images: Array<String> = [];
   constructor(
@@ -118,38 +119,52 @@ export class FoodsComponent implements OnInit {
 
       });
     }
+    changeName(){
+      this.name = this.form.get('name').value;
+      this.checkChange =true;
+    }
+    changeCategory(){
+      this.category_id =this.form.get('category_id').value;
+      this.checkChange =true;
+    }
+    changeDescription(){
+      this.description =this.form.get('description').value;
+      this.checkChange =true;
+    }
+    changePriceUnit(){
+      this.price_unit=this.form.get('price_unit').value;
+
+      this.checkChange =true;
+    }
+    changeDiscount(){
+      this.discount =this.form.get('discount').value;
+      this.checkChange =true;
+    }
+    changeUnit(){
+      this.unit =this.form.get('unit').value;
+      this.checkChange =true;
+    }
+
     editFood(){
       console.log("click");
     this.id =this.food.id;
-    if(this.form.get('name').value){
-      this.name = this.form.get('name').value;
-    }else{
+    if(!this.name){
       this.name =this.food.name;
     }
-    if(this.form.get('category_id').value){
-      this.category_id =this.form.get('category_id').value;
-    }else{
+    if(!this.category_id){
       this.category_id =this.food.category_id;
     }
-    if(this.form.get('description').value){
-      this.description =this.form.get('description').value;
-    }else{
+    if(!this.description){
       this.description =this.food.description;
     }
-    if(this.form.get('discount').value){
-      this.discount =this.form.get('discount').value;
-    }else{
+    if(!this.discount){
       this.discount =this.food.discount;
     }
-    if(this.form.get('price_unit').value){
-      this.price_unit=this.form.get('price_unit').value;
-    }else{
+    if(!this.price_unit){
       this.price_unit =this.food.price_unit;
     }
-    if(this.form.get('unit').value){
-      this.unit =this.form.get('unit').value;
-    }else{
-      this.unit=this.food.unit
+    if(!this.unit){
+      this.unit =this.food.unit
     }
 
       const food = {
@@ -172,6 +187,7 @@ export class FoodsComponent implements OnInit {
           this.authService.socket.emit("client-loadFoods","sửa thông tin món.");
           this.messageClass = 'alert alert-success';
           this.message = data.message;
+          this.checkChange = false;
           // Clear form data after two seconds
           setTimeout(() => {
           //  this.form.reset(); // Reset all form fields
@@ -182,6 +198,7 @@ export class FoodsComponent implements OnInit {
       });
       }
       fileChangeEvent(fileInput: any) {
+        this.checkChange = true;
         this.filesToUpload = <Array<File>>fileInput.target.files;
         if(this.filesToUpload.length >0){
           this.selectedImage =true;
@@ -212,6 +229,7 @@ export class FoodsComponent implements OnInit {
               if (!data.success) {
                 this.message = data.message;
               } else {
+                this.checkChange = false;
                 this.authService.socket.emit("client-loadFoods","thêm ảnh");
                 this.message = data.message;  
                 setTimeout(() => {

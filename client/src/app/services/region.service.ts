@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Http, Headers, RequestOptions } from '@angular/http';
-
 @Injectable()
-export class CategoryFoodService {
-  
+export class RegionService {
   options;
   domain = this.authService.domain;
 
@@ -12,7 +10,6 @@ export class CategoryFoodService {
     private authService: AuthService,
     private http: Http
   ) { }
-
   createAuthenticationHeaders() {
     this.authService.loadToken(); // Get token so it can be attached to headers
     // Headers configuration options
@@ -23,31 +20,29 @@ export class CategoryFoodService {
       })
     });
   }
-  createCategoryFood(categoryFood){
+  createRegion(region){
     this.createAuthenticationHeaders(); // Create headers
-    return this.http.post(this.domain + 'categoryFood/createCategoryFood', categoryFood, this.options).map(res =>res.json());
+    return this.http.post(this.domain + 'region/createRegion', region, this.options).map(res =>res.json());
   }
-  getAllCategoryFoods() {
+  getAllRegion() {
     this.createAuthenticationHeaders(); // Create headers
-    return this.http.get(this.domain + 'categoryFood/allCategoryFoods', this.options).map(res => res.json());
+    return this.http.get(this.domain + 'region/allRegions', this.options).map(res => res.json());
   }
-  checkNameCategory(name){
+  checkNameRegion(name){
     this.createAuthenticationHeaders(); // Create headers
-    return this.http.get(this.domain + 'categoryFood/checkNameCategory/' + name ,this.options).map(res=>res.json());
+    return this.http.get(this.domain + 'region/checkNameRegion/' + name ,this.options).map(res=>res.json());
   }
-  checkIdCategory(id){
+  checkIdRegion(id){
     this.createAuthenticationHeaders(); // Create headers
-    return this.http.get(this.domain + 'categoryFood/checkIdCategory/' + id ,this.options).map(res=>res.json());
+    return this.http.get(this.domain + 'region/checkIdRegion/' + id ,this.options).map(res=>res.json());
   }
-
-  editCategoryFood(categoryFood) {
+  editRegion(region) {
     this.createAuthenticationHeaders(); // Create headers
-    return this.http.put(this.domain + 'categoryFood/updateCategoryFood/', categoryFood, this.options).map(res => res.json());
-  }
-
-  deleteCategoryFood(id) {
-    this.createAuthenticationHeaders(); // Create headers
-    return this.http.delete(this.domain + 'categoryFood/deleteCategoryFood/' + id, this.options).map(res => res.json());
+    return this.http.put(this.domain + 'region/updateRegion/', region, this.options).map(res => res.json());
   }
 
+  deleteRegion(id) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.delete(this.domain + 'region/deleteRegion/' + id, this.options).map(res => res.json());
+  }
 }

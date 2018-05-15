@@ -17,6 +17,9 @@ import { NotAuthGuard } from './guards/notAuth.guard';
 import { MenuManagementComponent } from './components/menu-management/menu-management.component';
 import { CategoryFoodService } from './services/category-food.service';
 import { FoodService } from './services/food.service';
+import { TableManagementComponent } from './components/table-management/table-management.component';
+import { RegionService } from './services/region.service';
+import { TableService } from './services/table.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +29,8 @@ import { FoodService } from './services/food.service';
     RegisterComponent,
     LoginComponent,
     ProfileComponent,
-    MenuManagementComponent
+    MenuManagementComponent,
+    TableManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +39,7 @@ import { FoodService } from './services/food.service';
     AppRoutingModule,
     FlashMessagesModule
   ],
-  providers: [AuthService, AuthGuard, NotAuthGuard, CategoryFoodService, FoodService],
+  providers: [AuthService, AuthGuard, NotAuthGuard, CategoryFoodService, FoodService, RegionService, TableService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

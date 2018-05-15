@@ -32,9 +32,9 @@ export class FoodService {
     return this.http.post(this.domain + 'uploadImageFood', formData).map(res =>res.json());
   }
 
-  getAllFoods() {
+  getAllFoods(category_id) {
     this.createAuthenticationHeaders(); // Create headers
-    return this.http.get(this.domain + 'foods/allFoods', this.options).map(res => res.json());
+    return this.http.get(this.domain + 'foods/allFoods/' + category_id, this.options).map(res => res.json());
   }
   getFood(id) {
     this.createAuthenticationHeaders(); // Create headers

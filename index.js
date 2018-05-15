@@ -7,10 +7,11 @@ const router= express.Router();
 const authentication = require('./routes/authentication')(router);
 const categoryFood = require('./routes/categoryFood')(router);
 const foods = require('./routes/foods')(router);
+const region = require('./routes/region')(router);
+const table = require('./routes/table')(router);
 const bodyParser =require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
-const fs = require('fs');
 
 // const upload = require('express-fileupload');
 
@@ -35,7 +36,9 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname+'/client/dist'));
 app.use('/authentication', authentication);
 app.use('/foods', foods); 
-app.use('/categoryFood',categoryFood)
+app.use('/categoryFood',categoryFood);
+app.use('/region',region);
+app.use('/table',table);
 app.get('*',(req, res)=>{
     res.sendFile(path.join(__dirname+'/client/dist/index.html'));
 });
@@ -81,6 +84,14 @@ io.on("connection", function(socket){
         console.log(data);
         io.sockets.emit("server-loadFoods", 'Cap nhat mon');
     });
+    socket.on("client-loadRegions", (data)=>{
+        console.log(data);
+        io.sockets.emit("server-loadRegions", 'Cap nhan khu vuc');
+    });
+    socket.on("client-loadTables", (data)=>{
+        console.log(data);
+        io.sockets.emit("server-loadTables", 'Cap nhan ban');
+    })
 });
 
 

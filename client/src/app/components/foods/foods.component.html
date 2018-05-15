@@ -10,7 +10,7 @@
         <div class="form-group">
             <input class="form-control" name="url_image" type="file" accept='image/*' (change)="fileChangeEvent($event)" placeholder="Upload a file..."
                 multiple/>
-            <button class="btn btn-success" (click)="addImge()">Thêm ảnh</button>
+            <button [disabled]="!checkChange" class="btn btn-success" (click)="addImge()">Thêm ảnh</button>
         </div>
         <div class="overflow">
             <div *ngFor="let image of images" >
@@ -18,7 +18,22 @@
                 <div class="thumbnail"> 
                     <div class="custom-image" >
                         <img src="http://localhost:8080/foods/{{ image }}" alt="Generic placeholder image" width="165" height="165">
-                        <a class="btn" (click)="deleteImage(food.id,image)">Xóa</a>
+                        <a class="btn" data-toggle="modal" data-target="#myModal">Xóa</a>
+                          <!-- Modal -->
+                          <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog modal-sm">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                  <h4 class="modal-title">Bạn có muốn xóa ảnh này?</h4>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn-success" data-dismiss="modal" (click)="deleteImage(food.id,image)">Yes</button>
+                                    <button type="button" class="btn-default" data-dismiss="modal">No</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                     </div>
                 </div>
               
@@ -39,7 +54,7 @@
             <div class="form-group" >
                     <label for="name">Tên món ăn:</label>
                 <div [ngClass]="{'has-error': form.controls.name.errors && form.controls.name.dirty , 'has-success': !form.controls.name.errors}">
-                    <input class="form-control" type="text" name="name" formControlName="name" value="{{ food.name }}" placeholder="*Tên món"/>
+                    <input class="form-control" type="text" name="name" formControlName="name" value="{{ food.name }}" placeholder="*Tên món" (change)="changeName()"/>
                     <ul class="help-block">
                         <li *ngIf="form.controls.name.errors?.required && form.controls.name.dirty">Nội dung bắt buộc!</li>
                         <li *ngIf="(form.controls.name.errors?.minlength || form.controls.name.errors?.maxlength) && form.controls.name.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
@@ -49,7 +64,7 @@
             <div class="form-group">
                 <label for="category_id">Mã danh mục:</label>
                 <div>
-                    <select class="form-control" [(ngModel)]="selectedState"  name="category_id" formControlName="category_id"  autocomplete="off">
+                    <select class="form-control" [(ngModel)]="selectedState" (change)="changeCategory()" name="category_id" formControlName="category_id"  autocomplete="off">
                         <option *ngFor="let categoryfoods of categoryFoods" value="{{ categoryfoods.id }}">  {{ categoryfoods.name }}</option>
                     </select>
                 </div>
@@ -57,7 +72,7 @@
             <div class="form-group">
                     <label for="description">Chú thích:</label>
                 <div [ngClass]="{'has-error': (form.controls.description.errors && form.controls.description.dirty) , 'has-success': !form.controls.description.errors}">
-                    <input class="form-control" type="text" name="description"  formControlName="description" value="{{ food.description }}" placeholder="*Mô tả món" />
+                    <input class="form-control" type="text" name="description"  formControlName="description" value="{{ food.description }}" placeholder="*Mô tả món" (change)="changeDescription()" />
                     <ul class="help-block">
                         <li *ngIf="form.controls.description.errors?.required && form.controls.description.dirty">Nội dung bắt buộc!</li>
                         <li *ngIf="(form.controls.description.errors?.minlength || form.controls.description.errors?.maxlength) && form.controls.description.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
@@ -67,7 +82,7 @@
             <div class="form-group">
                     <label for="price_unit">Đơn giá:</label>
                 <div [ngClass]="{'has-error': (form.controls.price_unit.errors && form.controls.price_unit.dirty) , 'has-success': !form.controls.price_unit.errors}">
-                    <input class="form-control" type="text" name="price_unit" formControlName="price_unit" value="{{ food.price_unit }}" placeholder="*Đơn giá" />
+                    <input class="form-control" type="text" name="price_unit" formControlName="price_unit" value="{{ food.price_unit }}" placeholder="*Đơn giá" (change)="changePriceUnit()" />
                     <ul class="help-block">
                         <li *ngIf="form.controls.price_unit.errors?.required && form.controls.price_unit.dirty">Nội dung bắt buộc!</li>
                         <li *ngIf="(form.controls.price_unit.errors?.minlength || form.controls.price_unit.errors?.maxlength) && form.controls.price_unit.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
@@ -78,7 +93,7 @@
             <div class="form-group">
                     <label for="discount">Giảm giá:</label>
                 <div [ngClass]="{'has-error': (form.controls.discount.errors && form.controls.discount.dirty) , 'has-success': !form.controls.discount.errors}">
-                    <input class="form-control" type="text" name="discount" formControlName="discount" value="{{ food.discount }}" placeholder="*Giảm giá" />
+                    <input class="form-control" type="text" name="discount" formControlName="discount" value="{{ food.discount }}" placeholder="*Giảm giá"  (change)="changeDiscount()" />
                     <ul class="help-block">
                         <li *ngIf="form.controls.discount.errors?.required && form.controls.discount.dirty">Nội dung bắt buộc!</li>
                         <li *ngIf="(form.controls.discount.errors?.minlength || form.controls.discount.errors?.maxlength) && form.controls.discount.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
@@ -93,7 +108,7 @@
             <div class="form-group">
                     <label for="unit">Đơn vị:</label>
                 <div [ngClass]="{'has-error': (form.controls.unit.errors && form.controls.unit.dirty) , 'has-success': !form.controls.unit.errors}">
-                    <input class="form-control" type="text" name="unit" formControlName="unit" value="{{ food.unit }}" placeholder="*Đơn vị" />
+                    <input class="form-control" type="text" name="unit" formControlName="unit" value="{{ food.unit }}" placeholder="*Đơn vị"  (change)="changeUnit()"/>
                     <ul class="help-block">
                         <li *ngIf="form.controls.unit.errors?.required && form.controls.unit.dirty">Nội dung bắt buộc!</li>
                         <li *ngIf="(form.controls.unit.errors?.minlength || form.controls.unit.errors?.maxlength) && form.controls.unit.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
@@ -102,9 +117,11 @@
             </div>
             </div>
             <div class="row">
-                    <button  type="submit" name="button" class="btn btn-success">Lưu</button>
+                    <button [disabled]="!checkChange" type="submit" name="button" class="btn btn-success">Lưu</button>
             </div>
+           
     </form>
+
     </div>
 
 </div>

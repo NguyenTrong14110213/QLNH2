@@ -1,0 +1,199 @@
+<!-- Custom Success/Error Message -->
+<div class="row show-hide-message">
+  <div [ngClass]="messageClass0">
+      {{ message0 }}
+  </div>
+</div>
+<div class="row">
+<div class="col-sm-3 ">
+<div class="list-group">
+  <a class="list-group-item active waves-effect">Khu vực</a>
+  <div *ngFor="let region of regions">
+    <div class="dropdown">
+    <a (click)="getRegionId(region.id)" [ngClass]="{'list-group-item-info': region_id == region.id}" class="list-group-item">{{ region.name }}</a>
+    <div class="dropdown-content dropdown-menu">
+        <a (click)="getRegion(region.id,region.name)" data-toggle="modal" data-target="#editModal">Sửa</a>
+        <a (click)="getRegionId2(region.id)" data-toggle="modal" data-target="#confirmModal">Xóa</a>
+    </div>
+  </div>
+  </div>
+  <!-- Modal -->
+<div class="modal fade" id="confirmModal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Bạn có muốn xóa Khu vực này?</h4>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn-success" data-dismiss="modal" (click)="deleteRegion(region_id2)">Yes</button>
+          <button type="button" class="btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>  
+</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="editModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <form [formGroup] ="form3" (submit)="editRegion()">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Sửa danh mục</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row show-hide-message">
+                <div [ngClass]="messageClass">
+                    {{ message }}
+                </div>
+              </div>
+            <div class="form-group">
+                <div>
+                    <input class="form-control" type="text" name="id" formControlName="id" value="{{ idRegion }}" disabled/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div [ngClass]="{'has-error': (form3.controls.name.errors && form3.controls.name.dirty) || (!nameRegionValid && form3.controls.name.dirty)  , 'has-success': !form3.controls.name.errors && nameRegionValid}">
+                    <input class="form-control" type="text" name="name"  formControlName="name"  value="{{ nameRegion }}" (blur)="checkNameRegion2()"/>
+                    <ul class="help-block">
+                        <li *ngIf="form3.controls.name.errors?.required && form3.controls.name.dirty">Nội dung bắt buộc!</li>
+                        <li *ngIf="(form3.controls.name.errors?.minlength || form3.controls.name.errors?.maxlength) && form3.controls.name.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                        <li *ngIf="nameRegionMessage">{{ nameRegionMessage }}</li>
+                    </ul>
+              </div>
+          </div>
+         </div>
+        <div class="modal-footer">
+          <button [disabled]="!nameRegionValid " type="submit" name="button" class="btn btn-success" >Đồng ý</button>
+        </div>
+      </form>
+      </div>
+      
+    </div>
+  </div>
+  <!-- Modal end-->
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
+  <span class="glyphicon glyphicon-plus"></span> Thêm khu vực
+</button>
+ <!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+<div class="modal-dialog">
+  <!-- Modal content-->
+  <div class="modal-content">
+    <form [formGroup] ="form2" (submit)="createRegion()">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4 class="modal-title">Thêm khu vực</h4>
+    </div>
+    <div class="modal-body">
+      <!-- Custom Success/Error Message -->
+      <div class="row show-hide-message">
+          <div [ngClass]="messageClass">
+            {{ message }}
+          </div>
+        </div>
+        <div class="form-group">
+            <div [ngClass]="{'has-error': (form2.controls.id.errors && form2.controls.id.dirty) || (!idRegionValid && form2.controls.id.dirty), 'has-success': !form2.controls.id.errors && idRegionValid}">
+                <input class="form-control" type="text" name="id" formControlName="id" placeholder="*Mã khu vực"  (blur)="checkIdRegion()"/>
+                <ul class="help-block">
+                    <li *ngIf="form2.controls.id.errors?.required && form2.controls.id.dirty">Nội dung bắt buộc!</li>
+                    <li *ngIf="(form2.controls.id.errors?.minlength || form2.controls.id.errors?.maxlength) && form2.controls.id.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                    <li *ngIf="idRegionMessage">{{ idRegionMessage }}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <div [ngClass]="{'has-error': (form2.controls.name.errors && form2.controls.name.dirty) || (!nameRegionValid && form2.controls.name.dirty)  , 'has-success': !form2.controls.name.errors && nameRegionValid}">
+                <input class="form-control" type="text" name="name"  formControlName="name"  placeholder="*Tên khu vực" (blur)="checkNameRegion()"/>
+                <ul class="help-block">
+                    <li *ngIf="form2.controls.name.errors?.required && form2.controls.name.dirty">Nội dung bắt buộc!</li>
+                    <li *ngIf="(form2.controls.name.errors?.minlength || form2.controls.name.errors?.maxlength) && form2.controls.name.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                    <li *ngIf="nameRegionMessage">{{ nameRegionMessage }}</li>
+                </ul>
+          </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="!form2.valid || !idRegionValid || !nameRegionValid " type="submit" name="button" class="btn btn-success" >Đồng ý</button>
+    </div>
+  </form>
+  </div>
+  
+</div>
+  
+</div>
+<!-- Modal end-->
+</div>
+
+<div class="col-sm-9 ">
+    <div class="col-sm-3 col-md-3">
+        <div type="button" class="thumbnail btn btn-info btn-lg" data-toggle="modal" data-target="#tablesModal" > 
+          <img src="http://localhost:8080/icon/plus.png" alt="Generic placeholder image" width="130" height="130">
+          <div class=caption>
+            <h3> <font color="white">Thêm bàn</font></h3>
+          </div>
+        </div>
+    </div>
+    <!-- Modal -->
+   <div class="modal fade" id="tablesModal" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+        <form [formGroup] ="form" (submit)="createTable()">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Thêm bàn</h4>
+          </div>
+          <div class="modal-body">
+              <div class="row show-hide-message">
+                  <div [ngClass]="messageClass2">
+                      {{ message2 }}
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label for="region_id"> Chọn khu vực</label>
+                  <div >
+                    <select  class="form-control" name="region_id"  formControlName="region_id" autocomplete="off">
+                        <option  *ngFor="let region of regions" value="{{ region.id }}"> {{ region.name }}</option>
+                      </select>
+                  </div>
+          </div>
+          <div class="form-group">
+              <div [ngClass]="{'has-error': (form.controls.id.errors && form.controls.id.dirty) ||  (!idTableValid && form.controls.id.dirty)  , 'has-success': !form.controls.id.errors && idTableValid }">
+                  <input class="form-control" type="text" name="id" formControlName="id" placeholder="*Mã Bàn"  (blur)="checkIdTable()"/>
+                  <ul class="help-block">
+                      <li *ngIf="form.controls.id.errors?.required && form.controls.id.dirty">Nội dung bắt buộc!</li>
+                      <li *ngIf="(form.controls.id.errors?.minlength || form.controls.id.errors?.maxlength) && form.controls.id.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                      <li *ngIf="idTableMessage">{{ idTableMessage }}</li>
+                  </ul>
+              </div>
+          </div>
+          </div>
+
+          <div class="modal-footer">
+                <button [disabled]="!form.valid || !idTableValid" type="submit" name="button" class="btn btn-success" >Đồng ý</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+   
+    <!-- End -->
+    <div *ngFor="let table of tables">
+      <div class="col-sm-3 col-md-3">
+          <div class=thumbnail style="height:220px">
+            <div class="custom-image ">
+                    <img class="foods"src="http://localhost:8080/icon/table.png" width="170" height="145">
+            </div> 
+            <div class=caption>
+              <h4> Bàn {{ table.id }} </h4>
+            </div>
+          </div>
+      </div>
+     </div>
+</div>
+</div>
