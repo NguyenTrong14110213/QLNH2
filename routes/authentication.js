@@ -33,6 +33,7 @@ module.exports=(router)=>{
                                         gender: req.body.gender,
                                         identity_card:req.body.identity_card,
                                         phone:req.body.phone,
+                                        type_account:req.body.type_account,
                                         url_profile: req.body.url_profile
                                     });
                                     user.save((err)=>{
@@ -207,6 +208,21 @@ module.exports=(router)=>{
                 }
             }
         });
+    });
+
+    router.get('/allEmployees/:type_account', (req,res)=>{
+        User.find({type_account: req.params.type_account}, (err, employees)=>{
+            if(err){
+                res.json({success:false, message:err});
+            }else{
+                if(!employees){
+                    res.json({success:false, message:'Không tìm nhân viên nào.'});
+                }else{
+                    res.json({success:true, employees:employees});
+                }
+            }
+        }).sort({'_id':-1});
+        
     });
 
     return router;

@@ -20,7 +20,7 @@
     </div>
       <!-- Gender -->
       <div class="form-group">
-        <select formControlName="gender">
+        <select formControlName="gender" (change)="changeGender()">
           <option  disabled selected value = "-1">-- chọn giới tính --</option>
           <option value = "true">Nam</option>
           <option value = "false">Nữ</option>
@@ -99,7 +99,7 @@
   </div>
    <!-- Submit Input -->
   <p id="submission">  
-      <input [disabled]="!form.valid || prosessing || !emailValid || !usernameValid || !identity_cardValid || !phoneValid" type="submit" class="btn btn-primary" value="Đăng ký" />
+      <input [disabled]="!checkChangeGender || !form.valid || prosessing || !emailValid || !usernameValid || !identity_cardValid || !phoneValid" type="submit" class="btn btn-primary" value="Đăng ký" />
   </p> 
   </form>
   </div>

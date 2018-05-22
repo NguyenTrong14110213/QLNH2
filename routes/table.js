@@ -102,7 +102,7 @@ module.exports =(router)=>{
               if (!table) {
                 res.json({ success: false, messasge: 'Không tìm thấy bàn.' }); // Return error message
               } else {
-                        if(table.order_id ==''){
+                        if(table.order_id !=''){
                             res.json({success: false, message:'Không thể xóa! Bàn đang hoạt động.'});
                         }else{
                             table.remove((err) => {

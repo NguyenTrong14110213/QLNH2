@@ -4,16 +4,15 @@ import { AuthService } from '../../services/auth.service';
 import { dashCaseToCamelCase } from '@angular/compiler/src/util';
 import { Router } from '@angular/router';
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  selector: 'app-employee-manager',
+  templateUrl: './employee-manager.component.html',
+  styleUrls: ['./employee-manager.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class EmployeeManagerComponent implements OnInit {
 
   form: FormGroup;
   message;
   messageClass;
-  prosessing =false;
   emailValid;
   emailMessage;
   usernameValid;
@@ -22,7 +21,12 @@ export class RegisterComponent implements OnInit {
   identity_cardMessage;
   phoneValid;
   phoneMessage;
-  checkChangeGender =false;
+  employees1;
+  employees2;
+  employees3;
+  employees4;
+  checkChangeGender = false;
+  checkChangeTypeAccount = false;
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -60,30 +64,10 @@ export class RegisterComponent implements OnInit {
         this.validateNumber
       ])],
       url_profile:'',
-      type_account:''
+      type_account:'-1'
     }, { validator: this.matchingPasswords('password', 'confirm')})
   }
 
-disableForm(){
-  this.form.controls['email'].disable();
-  this.form.controls['username'].disable();
-  this.form.controls['password'].disable();
-  this.form.controls['confirm'].disable();
-  this.form.controls['fullname'].disable();
-  this.form.controls['gender'].disable();
-  this.form.controls['identity_card'].disable();
-  this.form.controls['phone'].disable();
-}
-enableForm(){
-  this.form.controls['email'].enable();
-  this.form.controls['username'].enable();
-  this.form.controls['password'].enable();
-  this.form.controls['confirm'].enable();
-  this.form.controls['fullname'].enable();
-  this.form.controls['gender'].enable();
-  this.form.controls['identity_card'].enable();
-  this.form.controls['phone'].enable();
-}
   validateEmail(controls){
     const regExp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
     if(regExp.test(controls.value)){
@@ -120,12 +104,14 @@ enableForm(){
       }
     }
   }
+  changeTypeAccount(){
+    this.checkChangeTypeAccount = true;
+  }
   changeGender(){
     this.checkChangeGender =true;
   }
+
  onRegisterSubmit(){
-   this.prosessing =true;
-   this.disableForm();
    const user ={
      email: this.form.get('email').value,
      username: this.form.get('username').value,
@@ -134,21 +120,22 @@ enableForm(){
      gender: this.form.get('gender').value,
      identity_card: this.form.get('identity_card').value,
      phone: this.form.get('phone').value,
-     type_account: 0,
+     type_account: this.form.get('type_account').value,
      url_profile: 'public/default.png'
    }
    this.authService.registerUser(user).subscribe(data =>{
     if(!data.success){
       this.messageClass ='alert alert-danger';
       this.message =data.message;
-      this.prosessing =false;
-      this.enableForm();
     }else{
       this.messageClass ='alert alert-success';
       this.message =data.message;
-      this.checkChangeGender = false;
+      this.checkChangeGender= false;
+      this.checkChangeTypeAccount= false;
       setTimeout(()=>{
-        this.router.navigate(['/login']);
+        this.form.reset(); // Reset all form fields
+        this.messageClass= false;
+        this.message='';
       }, 2000)
     }
    });
@@ -198,6 +185,22 @@ checkPhone(){
     }
   });
 }
+getAllEmployees(type_account) {
+  this.authService.getEmployees(type_account).subscribe(data => {
+   if(type_account==1){
+     this.employees1= data.employees;
+   }
+   if(type_account==2){
+    this.employees2= data.employees;
+  }
+  if(type_account==3){
+    this.employees3= data.employees;
+  }
+  if(type_account==4){
+    this.employees4= data.employees;
+  }
+  });
+}   
   ngOnInit() {
   }
 

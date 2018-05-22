@@ -9,6 +9,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { MenuManagementComponent } from './components/menu-management/menu-management.component';
 import { TableManagementComponent } from './components/table-management/table-management.component';
+import { EmployeeManagerComponent } from './components/employee-manager/employee-manager.component';
 
 const appRoutes:Routes=[
     { path:'', component: HomeComponent },
@@ -18,6 +19,7 @@ const appRoutes:Routes=[
     { path:'profile', component:ProfileComponent, canActivate:[AuthGuard]},
     { path:'menu_management', component:MenuManagementComponent, canActivate:[AuthGuard]},
     { path:'table_management', component:TableManagementComponent, canActivate:[AuthGuard]},
+    { path:'emloyee_management', component:EmployeeManagerComponent, canActivate:[AuthGuard]},
     { path:'**', component:HomeComponent}
 ];
 

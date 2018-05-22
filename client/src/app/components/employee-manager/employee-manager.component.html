@@ -1,0 +1,282 @@
+<div class="register">
+
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
+      <span class="glyphicon glyphicon-plus"></span> Tạo tài khoản
+    </button>
+
+    <div class="row">
+        <div class="iwt">
+            <button class="circle-btn" type="button"  data-toggle="collapse" data-target="#menu1"  aria-expanded="false"  aria-controls="menu1" (click)="getAllEmployees(4)">
+                <span class="menu__icon menu__icon--open"> <i class="glyphicon glyphicon-plus"></i></span> 
+                <span class="menu__icon menu__icon--close"> <i class="glyphicon glyphicon-minus"></i> </span>
+            </button>
+            <span class="page-header">Nhân viên quản lý</span>
+        </div>
+    
+          <nav class="menu collapse" id="menu1">
+              <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Họ và tên</th>
+                      <th>Giới tính</th>
+                      <th>Tài khoản</th>
+                      <th>Email</th>
+                      <th>Số điện thoại</th>
+                      <th>Số CMND</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let employee4 of employees4">
+                    <tr>
+                      <td>{{ employee4.fullname }}</td>
+                      <td> 
+                          <span *ngIf="employee4.gender">Nam</span>
+                          <span *ngIf="!employee4.gender">Nữ</span>
+                        </td>
+                      <td>{{ employee4.username }}</td>
+                      <td>{{ employee4.email }}</td>
+                      <td>{{ employee4.phone }}</td>
+                      <td>{{ employee4.identity_card }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+          </nav>
+    </div>
+    
+    <div class="row">
+        <div class="iwt">
+            <button class="circle-btn" type="button"  data-toggle="collapse" data-target="#menu2"  aria-expanded="false"  aria-controls="menu2" (click)="getAllEmployees(3)">
+                <span class="menu__icon menu__icon--open"> <i class="glyphicon glyphicon-plus"></i></span> 
+                <span class="menu__icon menu__icon--close"> <i class="glyphicon glyphicon-minus"></i> </span>
+            </button>
+            <span class="page-header">Nhân viên bếp</span>
+        </div>
+    
+          <nav class="menu collapse" id="menu2">
+              <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Họ và tên</th>
+                      <th>Giới tính</th>
+                      <th>Tài khoản</th>
+                      <th>Email</th>
+                      <th>Số điện thoại</th>
+                      <th>Số CMND</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let employee3 of employees3">
+                      <tr>
+                        <td>{{ employee3.fullname }}</td>
+                        <td> 
+                            <span *ngIf="employee3.gender">Nam</span>
+                            <span *ngIf="!employee3.gender">Nữ</span>
+                          </td>
+                        <td>{{ employee3.username }}</td>
+                        <td>{{ employee3.email }}</td>
+                        <td>{{ employee3.phone }}</td>
+                        <td>{{ employee3.identity_card }}</td>
+                      </tr>
+                    </tbody>
+                </table>
+          </nav>
+    </div>
+    <div class="row">
+        <div class="iwt">
+            <button class="circle-btn" type="button"  data-toggle="collapse" data-target="#menu3"  aria-expanded="false"  aria-controls="menu3" (click)="getAllEmployees(2)">
+                <span class="menu__icon menu__icon--open"> <i class="glyphicon glyphicon-plus"></i></span> 
+                <span class="menu__icon menu__icon--close"> <i class="glyphicon glyphicon-minus"></i> </span>
+            </button>
+            <span class="page-header">Nhân viên thu ngân</span>
+        </div>
+    
+          <nav class="menu collapse" id="menu3">
+              <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Họ và tên</th>
+                      <th>Giới tính</th>
+                      <th>Tài khoản</th>
+                      <th>Email</th>
+                      <th>Số điện thoại</th>
+                      <th>Số CMND</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let employee2 of employees2">
+                      <tr>
+                        <td>{{ employee2.fullname }}</td>
+                        <td> 
+                            <span *ngIf="employee2.gender">Nam</span>
+                            <span *ngIf="!employee2.gender">Nữ</span>
+                          </td>
+                        <td>{{ employee2.username }}</td>
+                        <td>{{ employee2.email }}</td>
+                        <td>{{ employee2.phone }}</td>
+                        <td>{{ employee2.identity_card }}</td>
+                      </tr>
+                    </tbody>
+                </table>
+          </nav>
+    </div>
+    <div class="row">
+        <div class="iwt">
+            <button class="circle-btn" type="button"  data-toggle="collapse" data-target="#menu4"  aria-expanded="false"  aria-controls="menu4" (click)="getAllEmployees(1)">
+                <span class="menu__icon menu__icon--open"> <i class="glyphicon glyphicon-plus"></i></span> 
+                <span class="menu__icon menu__icon--close"> <i class="glyphicon glyphicon-minus"></i> </span>
+            </button>
+            <span class="page-header">Nhân viên phụ vụ</span>
+        </div>
+    
+          <nav class="menu collapse" id="menu4">
+              <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Họ và tên</th>
+                      <th>Giới tính</th>
+                      <th>Tài khoản</th>
+                      <th>Email</th>
+                      <th>Số điện thoại</th>
+                      <th>Số CMND</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let employee1 of employees1">
+                      <tr>
+                        <td>{{ employee1.fullname }}</td>
+                        <td> 
+                          <span *ngIf="employee1.gender">Nam</span>
+                          <span *ngIf="!employee1.gender">Nữ</span>
+                        </td>
+                        <td>{{ employee1.username }}</td>
+                        <td>{{ employee1.email }}</td>
+                        <td>{{ employee1.phone }}</td>
+                        <td>{{ employee1.identity_card }}</td>
+                      </tr>
+                    </tbody>
+                </table>
+          </nav>
+    </div>
+     <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <form [formGroup] ="form" (submit)="onRegisterSubmit()">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Tạo tài khoản</h4>
+        </div>
+        <div class="modal-body">
+          <!-- Custom Success/Error Message -->
+          <div class="row show-hide-message">
+              <div [ngClass]="messageClass">
+                {{ message }}
+              </div>
+            </div>
+      <!-- Category -->
+      <div class="form-group">
+          <select formControlName="type_account" (change)="changeTypeAccount()">
+            <option disabled selected value = "-1">-- chọn quyền hạn --</option>
+            <option value = "1">Nhân viên phục vụ</option>
+            <option value = "2">Nhân viên thu ngân</option>
+            <option value = "3">Nhân viên bếp</option>
+            <option value = "4">Nhân viên quản lý</option>
+          </select>
+      </div>
+  
+      <!-- Fullname Input --> 
+      <div class="form-group">
+        <div [ngClass]="{'has-error': (form.controls.fullname.errors && form.controls.fullname.dirty) , 'has-success': !form.controls.fullname.errors}">
+            <input type="text" name="fullname" class="form-control" autocomplete="off" placeholder="*Họ và tên" formControlName="fullname"/>
+            <ul class="help-block">
+              <li *ngIf="form.controls.fullname.errors?.required && form.controls.fullname.dirty">Nội dung bắt buộc!</li>
+            </ul>
+        </div>
+      </div>
+        <!-- Gender -->
+        <div class="form-group">
+          <select formControlName="gender" (change)="changeGender()">
+            <option disabled selected value = "-1">-- chọn giới tính --</option>
+            <option value = "true">Nam</option>
+            <option value = "false">Nữ</option>
+          </select>
+      </div>
+    <!-- Identity_card Input -->
+    <div class="form-group">
+        <div [ngClass]="{'has-error': (form.controls.identity_card.errors && form.controls.identity_card.dirty) || (!identity_cardValid && form.controls.identity_card.dirty) , 'has-success': !form.controls.identity_card.errors && identity_cardValid}">
+            <input type="text" name="identity_card" class="form-control" autocomplete="off" placeholder="*Số CMND" formControlName="identity_card" (blur)="checkIdentity_card()"/>
+            <ul class="help-block">
+              <li *ngIf="form.controls.identity_card.errors?.required && form.controls.identity_card.dirty">Nội dung bắt buộc!</li>
+              <li *ngIf="(form.controls.identity_card.errors?.minlength || form.controls.identity_card.errors?.maxlength || form.controls.identity_card.errors?.validateNumber) && form.controls.identity_card.dirty">Gồm 9 số.</li>
+              <li *ngIf="identity_cardMessage">{{ identity_cardMessage }}</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Phone Input -->
+    <div class="form-group">
+        <div [ngClass]="{'has-error': (form.controls.phone.errors && form.controls.phone.dirty) || (!phoneValid && form.controls.phone.dirty) , 'has-success': !form.controls.phone.errors && phoneValid}">
+            <input type="text" name="phone" class="form-control" autocomplete="off" placeholder="*Số điện thoại" formControlName="phone" (blur)="checkPhone()"/>
+            <ul class="help-block">
+              <li *ngIf="form.controls.phone.errors?.required && form.controls.phone.dirty">Nội dung bắt buộc!</li>
+              <li *ngIf="form.controls.phone.errors?.validateNumber && form.controls.phone.dirty">Chỉ nhập số.</li>
+              <li *ngIf="phoneMessage">{{ phoneMessage }}</li>
+            </ul>
+        </div>
+    </div>
+      <!-- Username Input -->
+      <div class="form-group">
+          <div [ngClass]="{'has-error': (form.controls.username.errors && form.controls.username.dirty)|| (!usernameValid && form.controls.username.dirty), 'has-success': !form.controls.username.errors && usernameValid}">
+              <input type="text" name="username" class="form-control" autocomplete="off" placeholder="*Tên đăng nhập" formControlName="username" (blur)="checkUsername()"/>
+              <ul class="help-block">
+                <li *ngIf="form.controls.username.errors?.required && form.controls.username.dirty">Nội dung bắt buộc!</li>
+                <li *ngIf="(form.controls.username.errors?.minlength || form.controls.username.errors?.maxlength) && form.controls.username.dirty">Lớn hơn 3 ký tự và nhỏ hơn 15 ký tự.</li>
+                <li *ngIf="form.controls.username.errors?.validateUsername && form.controls.username.dirty">Viết liền không dấu, không ký tự đặt biệt</li>
+                <li *ngIf="usernameMessage">{{ usernameMessage }}</li>
+              </ul>
+          </div>
+      </div>
+  
+      <!-- Email Input -->
+      <div class="form-group">
+        <div [ngClass]="{'has-error': (form.controls.email.errors && form.controls.email.dirty) || (!emailValid && form.controls.email.dirty), 'has-success': !form.controls.email.errors && emailValid}">
+            <input type="text" name="email" class="form-control" autocomplete="off" placeholder="*Email" formControlName="email"  (blur)="checkEmail()"/>
+            <ul class="help-block">
+              <li *ngIf="form.controls.email.errors?.required && form.controls.email.dirty">Nội dung bắt buộc!</li>
+              <li *ngIf="(form.controls.email.errors?.minlength || form.controls.email.errors?.maxlength) && form.controls.email.dirty">Lớn hơn 5 ký tự và nhỏ hơn 30 ký tự.</li>
+              <li *ngIf="form.controls.email.errors?.validateEmail && form.controls.email.dirty">Phải đúng định dạng Email</li>
+              <li *ngIf="emailMessage">{{ emailMessage }}</li>
+            </ul>
+        </div>
+        </div>
+  
+    
+      <!-- Password Input -->
+      <div class="form-group">
+          <div [ngClass]="{'has-error': (form.controls.password.errors && form.controls.password.dirty) , 'has-success': !form.controls.password.errors}">
+              <input type="password" name="password" class="form-control" autocomplete="off" placeholder="*Mật khẩu" formControlName="password"/>
+              <ul class="help-block">
+                <li *ngIf="form.controls.password.errors?.required && form.controls.password.dirty">Nội dung bắt buộc!</li>
+              </ul>
+          </div>
+       
+      </div>
+    
+      <!-- Confirm Password Input -->
+      <div class="form-group">
+          <div [ngClass]="{'has-error': (form.controls.confirm.errors && form.controls.confirm.dirty) || (form.errors?.matchingPasswords && form.controls.confirm.dirty) , 'has-success': !form.controls.confirm.errors && !form.errors?.matchingPasswords}"> 
+            <input type="password" name="confirm" class="form-control" autocomplete="off" placeholder="*Xác nhận mật khẩu" formControlName="confirm" formControlName="confirm"/>
+              <ul class="help-block">
+                <li *ngIf="form.controls.confirm.errors?.required && form.controls.confirm.dirty">Nội dung bắt buộc!</li>
+                <li *ngIf="form.errors?.matchingPasswords && form.controls.confirm.dirty">Mật khẩu không phù hợp.</li>
+              </ul>
+          </div>
+      </div>
+        </div>
+        <div class="modal-footer">
+          <button [disabled]="!checkChangeGender || !checkChangeTypeAccount || !form.valid || !emailValid || !usernameValid || !identity_cardValid || !phoneValid" type="submit" name="button" class="btn btn-success" >Đồng ý</button>
+        </div>
+      </form>
+      </div>
+      
+    </div>
+  </div>
+  <!-- Modal end-->
+  </div>
+

@@ -103,6 +103,7 @@
                     <ul class="help-block">
                         <li *ngIf="form2.controls.id.errors?.required && form2.controls.id.dirty">Nội dung bắt buộc!</li>
                         <li *ngIf="(form2.controls.id.errors?.minlength || form2.controls.id.errors?.maxlength) && form2.controls.id.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                        <li *ngIf="form2.controls.id.errors?.validateId && form2.controls.id.dirty">Viết liền không dấu, không ký tự đặt biệt</li>
                         <li *ngIf="idCategoryMessage">{{ idCategoryMessage }}</li>
                     </ul>
                 </div>
@@ -165,6 +166,7 @@
                     <ul class="help-block">
                         <li *ngIf="form.controls.id.errors?.required && form.controls.id.dirty">Nội dung bắt buộc!</li>
                         <li *ngIf="(form.controls.id.errors?.minlength || form.controls.id.errors?.maxlength) && form.controls.id.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                        <li *ngIf="form.controls.id.errors?.validateId && form.controls.id.dirty">Viết liền không dấu, không ký tự đặt biệt</li>
                         <li *ngIf="idFoodMessage">{{ idFoodMessage }}</li>
                     </ul>
                 </div>
@@ -214,10 +216,6 @@
                             <li *ngIf="(form.controls.discount.errors?.minlength || form.controls.discount.errors?.maxlength) && form.controls.discount.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
                             <li *ngIf="form.controls.discount.errors?.validateNumber  && form.controls.discount.dirty">Chỉ nhập số.</li>
                         </ul>
-                        <select >
-                            <option value = "1">Phần trăm</option>
-                            <option value = "0">VN đồng</option>
-                        </select>
                     </div>
                 </div>
             <div class="form-group">

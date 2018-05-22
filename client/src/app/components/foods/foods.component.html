@@ -99,10 +99,6 @@
                         <li *ngIf="(form.controls.discount.errors?.minlength || form.controls.discount.errors?.maxlength) && form.controls.discount.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
                         <li *ngIf="form.controls.discount.errors?.validateNumber  && form.controls.discount.dirty">Chỉ nhập số.</li>
                     </ul>
-                    <select >
-                        <option value = "1">Phần trăm</option>
-                        <option value = "0">VN đồng</option>
-                    </select>
                 </div>
             </div>
             <div class="form-group">

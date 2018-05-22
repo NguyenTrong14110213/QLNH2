@@ -48,7 +48,14 @@ export class MenuManagementComponent implements OnInit {
     this.createCategoryFoodForm3();
     this.createFoodForm();
   }
-
+  validateId(controls){
+    const regExp = new RegExp(/^[a-zA-Z0-9]+$/);
+    if(regExp.test(controls.value)){
+      return null;
+    }else{
+      return { 'validateId': true }
+    }
+  }
   validateNumber(controls){
     const regExp = new RegExp(/^[0-9]+$/);
     if(regExp.test(controls.value)){
@@ -76,7 +83,8 @@ export class MenuManagementComponent implements OnInit {
       id: ['', Validators.compose([
         Validators.required,
         Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.minLength(3),
+        this.validateId
       ])],
       // trường name 
       name: ['', Validators.compose([
@@ -93,7 +101,8 @@ export class MenuManagementComponent implements OnInit {
       id: ['', Validators.compose([
         Validators.required,
         Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.minLength(3),
+        this.validateId
       ])],
       // trường name 
       name: ['', Validators.compose([

@@ -61,6 +61,11 @@ export class AuthService {
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'authentication/profile', this.options).map(res=> res.json());
   }
+  getEmployees(type_account){
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'authentication/allEmployees/' + type_account, this.options).map(res => res.json());
+  }
+
   loggedIn(){
     return tokenNotExpired();
   }

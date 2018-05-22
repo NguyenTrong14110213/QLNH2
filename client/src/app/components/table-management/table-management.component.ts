@@ -31,7 +31,7 @@ export class TableManagementComponent implements OnInit {
   region_id2;
   idRegion;
   nameRegion;
-
+  table_id;
   regions;
   tables;
 
@@ -194,6 +194,9 @@ export class TableManagementComponent implements OnInit {
     this.idRegion = id;
     this.nameRegion =name;
   }
+  getTableId(table_id){
+    this.table_id =table_id;
+  }
   editRegion(){
     const region = {
       id:  this.idRegion,
@@ -233,6 +236,24 @@ export class TableManagementComponent implements OnInit {
         this.message0='';
       }, 2000);
     });
+  }
+  deleteTable(id){
+    this.tableService.deleteTable(id).subscribe(data=>{
+            // Check if delete request worked
+      if (!data.success) {
+        this.messageClass0 = 'alert alert-danger'; // Return error bootstrap class
+        this.message0 = data.message; // Return error message
+      } else {
+       // this.authService.socket.emit("client-loadCategoryFoods","cập nhật danh mục");
+        this.messageClass0 = 'alert alert-success'; // Return bootstrap success class
+        this.message0 = data.message; // Return success message
+        this.authService.socket.emit("client-loadTables","xoa ban");
+      }
+      setTimeout(() => {
+        this.messageClass0 = false; // Erase error/success message
+        this.message0='';
+      }, 2000);
+    })
   }
   getAllRegion(){
     this.regionService.getAllRegion().subscribe(data=>{

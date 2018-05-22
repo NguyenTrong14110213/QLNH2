@@ -86,7 +86,8 @@ const userSchema = new Schema({
   identity_card: { type: Number},
   phone: { type: Number },
   url_profile: { type: String },
-  type_account: { type:Number, default:0 }
+  type_account: { type:Number },
+  actived: { type: String , default: '0'}
 });
 
 userSchema.pre('save', function(next){

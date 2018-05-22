@@ -20,6 +20,7 @@ import { FoodService } from './services/food.service';
 import { TableManagementComponent } from './components/table-management/table-management.component';
 import { RegionService } from './services/region.service';
 import { TableService } from './services/table.service';
+import { EmployeeManagerComponent } from './components/employee-manager/employee-manager.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +31,8 @@ import { TableService } from './services/table.service';
     LoginComponent,
     ProfileComponent,
     MenuManagementComponent,
-    TableManagementComponent
+    TableManagementComponent,
+    EmployeeManagerComponent
   ],
   imports: [
     BrowserModule,
