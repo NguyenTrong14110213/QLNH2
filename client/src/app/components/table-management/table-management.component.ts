@@ -52,14 +52,12 @@ export class TableManagementComponent implements OnInit {
       // trường id 
       id: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(30)
       ])],
       // trường name 
       name: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(30)
       ])]
     })
   }
@@ -68,14 +66,12 @@ export class TableManagementComponent implements OnInit {
       // trường id 
       id: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(30)
       ])],
       // trường name 
       region_id: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(30)
       ])]
     })
   }
@@ -86,8 +82,7 @@ export class TableManagementComponent implements OnInit {
       // trường name 
       name: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(30)
       ])]
     })
   }

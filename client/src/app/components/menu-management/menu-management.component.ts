@@ -71,8 +71,7 @@ export class MenuManagementComponent implements OnInit {
       // trường name 
       name: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(30)
       ])]
     })
   }
@@ -83,14 +82,12 @@ export class MenuManagementComponent implements OnInit {
       id: ['', Validators.compose([
         Validators.required,
         Validators.maxLength(30),
-        Validators.minLength(3),
         this.validateId
       ])],
       // trường name 
       name: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(30)
       ])]
     })
   }
@@ -101,45 +98,36 @@ export class MenuManagementComponent implements OnInit {
       id: ['', Validators.compose([
         Validators.required,
         Validators.maxLength(30),
-        Validators.minLength(3),
         this.validateId
       ])],
       // trường name 
       name: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(30)
       ])],
       // trường mã danh mục
       category_id: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(30)
       ])],
       // trường chú thích 
       description: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3)
+        Validators.maxLength(200)
       ])],
       discount: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(1),
         this.validateNumber
       ])],
       // trường đơn giá
       price_unit: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(3),
         this.validateNumber
       ])],
       // trường đơn vị
       unit: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30),
-        Validators.minLength(1)
+        Validators.maxLength(30)
       ])]
     })
   }
@@ -218,6 +206,7 @@ export class MenuManagementComponent implements OnInit {
       this.foods = data.foods; // Assign array to use in HTML
     });
   }    
+  
 
   onCategoryFoodSubmit() {
     const categoryFood = {

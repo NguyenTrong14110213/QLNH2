@@ -49,6 +49,7 @@ module.exports =(router)=>{
             }
         }
     });
+    
 
     router.get('/checkIdCategory/:id', (req, res)=>{
         if(!req.params.id){

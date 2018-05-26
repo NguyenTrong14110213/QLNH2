@@ -180,7 +180,137 @@ module.exports=(router)=>{
             }
         }
     });
-    
+
+    router.delete('/deleteEmployee/:username', (req, res) => {
+        if (!req.params.username) {
+          res.json({ success: false, message: 'Chưa cung cấp username' }); 
+        } else {
+          User.findOne({ username: req.params.username }, (err, user) => {
+            if (err) {
+              res.json({ success: false, message:err }); 
+            } else {
+              if (!user) {
+                res.json({ success: false, messasge: 'Không tìm thấy nhân viên' }); // Return error message
+              } else {
+                        user.remove((err) => {
+                                if (err) {
+                                res.json({ success: false, message: err }); // Return error message
+                                } else {
+                                    res.json({ success: true, message: 'Nhân viên đã được xóa.' }); // Return success message
+                                }
+                            });
+                        }
+                    }
+                })
+              }
+      });
+      router.put('/updateEmployee', (req, res) => {
+        if (!req.body.username) {
+          res.json({ success: false, message: 'Chưa cung cấp username' }); 
+        } else {
+          User.findOne({ username: req.body.username }, (err, user) => {
+            if (err) {
+              res.json({ success: false, message: err }); // Return error message
+            } else {
+              if (!user) {
+                res.json({ success: false, message: 'Không tìm thấy nhân viên.' }); // Return error message
+              } else {
+                user.email = req.body.email; // Save latest blog title
+                user.fullname =req.body.fullname;
+                user.gender=req.body.gender;
+                user.identity_card=req.body.identity_card;
+                user.phone=req.body.phone;
+                user.type_account =req.body.type_account;
+                user.save((err) => {
+                          if (err) {
+                            if (err.errors) {
+                                if(err.errors.email){
+                                    res.json({success:false, message: err.errors.email.message});
+                                    }else{
+                                        if(err.errors.identity_card){
+                                            res.json({success:false, message: err.errors.identity_card.message});
+                                        }else{
+                                            if(err.errors.phone){
+                                                res.json({success:false, message: err.errors.phone.message});
+                                            }else{
+                                                if(err.errors.fullname){
+                                                    res.json({success:false, message: err.errors.fullname.message});
+                                                }else{
+                                                    res.json({success:false, message:err});
+                                                }
+                                               
+                                            }
+                                                   
+                                    }
+                                }
+                            } else {
+                              res.json({ success: false, message: err }); // Return error message
+                            }
+                          } else {
+                            res.json({ success: true, message: 'Thông tin nhân viên đã được cập nhật!' }); // Return success message
+                          }
+                    });
+                }
+              }
+          });
+        }
+      });
+      router.put('/updatePassword', (req, res) => {
+        if (!req.body.username) {
+          res.json({ success: false, message: 'Chưa cung cấp username' }); 
+        } else {
+          User.findOne({ username: req.body.username }, (err, user) => {
+            if (err) {
+              res.json({ success: false, message: err }); // Return error message
+            } else {
+              if (!user) {
+                res.json({ success: false, message: 'Không tìm thấy nhân viên.' }); // Return error message
+              } else {
+                user.password = req.body.password; 
+                user.save((err) => {
+                          if (err) {
+                            if (err.errors) {
+                              res.json({ success: false, message: 'Thông tin cần chính xác.' });
+                            } else {
+                              res.json({ success: false, message: err }); // Return error message
+                            }
+                          } else {
+                            res.json({ success: true, message: 'Mật khẩu đã được cập nhật!' }); // Return success message
+                          }
+                    });
+                }
+              }
+          });
+        }
+      });
+      router.put('/updateActivedEmployee', (req, res) => {
+        if (!req.body.username) {
+          res.json({ success: false, message: 'Chưa cung cấp username' }); 
+        } else {
+          User.findOne({ username: req.body.username }, (err, user) => {
+            if (err) {
+              res.json({ success: false, message: err }); // Return error message
+            } else {
+              if (!user) {
+                res.json({ success: false, message: 'Không tìm thấy nhân viên.' }); // Return error message
+              } else {
+                user.actived = req.body.actived; 
+                user.save((err) => {
+                          if (err) {
+                            if (err.errors) {
+                                res.json({ success: false, message: err });
+                            } else {
+                              res.json({ success: false, message: err }); // Return error message
+                            }
+                          } else {
+                            res.json({ success: true, message: 'Trạng thái đã được cập nhật!' }); // Return success message
+                          }
+                    });
+                }
+              }
+          });
+        }
+      });
     router.use((req, res, next)=>{
        const token= req.headers['authorization'];
         if(!token){
@@ -209,7 +339,23 @@ module.exports=(router)=>{
             }
         });
     });
-
+    router.get('/employee/:username', (req, res)=>{
+        if(!req.params.username){
+            res.json({success: false, message: 'Chưa nhập username!'});
+        }else{
+            User.findOne({username: req.params.username}, (err, employee)=>{
+                if(err){
+                    res.json({success:false, message:err});
+                }else{
+                    if(!employee){
+                        res.json({success:false, message: 'Không tìm thấy nhân viên.'});
+                    }else{
+                        res.json({ success: true, employee: employee }); 
+                    }
+                }
+            });
+        }
+    });
     router.get('/allEmployees/:type_account', (req,res)=>{
         User.find({type_account: req.params.type_account}, (err, employees)=>{
             if(err){

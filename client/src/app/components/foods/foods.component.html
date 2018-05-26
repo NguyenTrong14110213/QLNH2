@@ -10,7 +10,7 @@
         <div class="form-group">
             <input class="form-control" name="url_image" type="file" accept='image/*' (change)="fileChangeEvent($event)" placeholder="Upload a file..."
                 multiple/>
-            <button [disabled]="!checkChange" class="btn btn-success" (click)="addImge()">Thêm ảnh</button>
+            <button [disabled]="!selectedImage" class="btn btn-success" (click)="addImge()">Thêm ảnh</button>
         </div>
         <div class="overflow">
             <div *ngFor="let image of images" >
@@ -43,80 +43,106 @@
     </div>
     <div class="col-sm-6 ">
         <h4>Thông tin món ăn:</h4>
-        <form [formGroup]="form" (submit)="editFood()">
-                <div class="row">
-            <div class="form-group">
-                    <label for="id">Mã món ăn:</label>
-                <div >
-                    <input class="form-control" type="text" name="id" formControlName="id" disabled value="{{ food.id }}" />
+        <div class="iwt">
+                <form [formGroup] ="form1" >
+                        <label>Trạng thái hoạt động</label>
+                        <div class="material-switch pull-right form-group">
+                                <input id="someSwitchOptionSuccess" type="checkbox" formControlName="actived" [checked]="food.actived" (change)="changeActived()">
+                                <label for="someSwitchOptionSuccess" class="label-success"></label>
+                        </div>
+                </form>
+            </div>
+        <div class="col-sm-5">
+                <div class="lbl">
+                        <label for="id">Mã món ăn:</label>
+                </div>
+                <div class="lbl">
+                        <label for="name">Tên món ăn:</label>
+                </div>
+                <div class="lbl">
+                        <label for="category_id">Mã danh mục:</label>
+                </div>
+                <div class="lbl">
+                        <label for="description">Chú thích:</label>
+                </div>
+                <div class="lbl">
+                        <label for="price_unit">Đơn giá:</label>
+                </div>
+                <div class="lbl">
+                        <label for="discount">Giảm giá:</label>
+                </div>
+                <div class="lbl">
+                        <label for="unit">Đơn vị:</label>
                 </div>
             </div>
-            <div class="form-group" >
-                    <label for="name">Tên món ăn:</label>
-                <div [ngClass]="{'has-error': form.controls.name.errors && form.controls.name.dirty , 'has-success': !form.controls.name.errors}">
-                    <input class="form-control" type="text" name="name" formControlName="name" value="{{ food.name }}" placeholder="*Tên món" (change)="changeName()"/>
-                    <ul class="help-block">
-                        <li *ngIf="form.controls.name.errors?.required && form.controls.name.dirty">Nội dung bắt buộc!</li>
-                        <li *ngIf="(form.controls.name.errors?.minlength || form.controls.name.errors?.maxlength) && form.controls.name.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="category_id">Mã danh mục:</label>
-                <div>
-                    <select class="form-control" [(ngModel)]="selectedState" (change)="changeCategory()" name="category_id" formControlName="category_id"  autocomplete="off">
-                        <option *ngFor="let categoryfoods of categoryFoods" value="{{ categoryfoods.id }}">  {{ categoryfoods.name }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                    <label for="description">Chú thích:</label>
-                <div [ngClass]="{'has-error': (form.controls.description.errors && form.controls.description.dirty) , 'has-success': !form.controls.description.errors}">
-                    <input class="form-control" type="text" name="description"  formControlName="description" value="{{ food.description }}" placeholder="*Mô tả món" (change)="changeDescription()" />
-                    <ul class="help-block">
-                        <li *ngIf="form.controls.description.errors?.required && form.controls.description.dirty">Nội dung bắt buộc!</li>
-                        <li *ngIf="(form.controls.description.errors?.minlength || form.controls.description.errors?.maxlength) && form.controls.description.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="form-group">
-                    <label for="price_unit">Đơn giá:</label>
-                <div [ngClass]="{'has-error': (form.controls.price_unit.errors && form.controls.price_unit.dirty) , 'has-success': !form.controls.price_unit.errors}">
-                    <input class="form-control" type="text" name="price_unit" formControlName="price_unit" value="{{ food.price_unit }}" placeholder="*Đơn giá" (change)="changePriceUnit()" />
-                    <ul class="help-block">
-                        <li *ngIf="form.controls.price_unit.errors?.required && form.controls.price_unit.dirty">Nội dung bắt buộc!</li>
-                        <li *ngIf="(form.controls.price_unit.errors?.minlength || form.controls.price_unit.errors?.maxlength) && form.controls.price_unit.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
-                        <li *ngIf="form.controls.price_unit.errors?.validateNumber  && form.controls.price_unit.dirty">Chỉ nhập số.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="form-group">
-                    <label for="discount">Giảm giá:</label>
-                <div [ngClass]="{'has-error': (form.controls.discount.errors && form.controls.discount.dirty) , 'has-success': !form.controls.discount.errors}">
-                    <input class="form-control" type="text" name="discount" formControlName="discount" value="{{ food.discount }}" placeholder="*Giảm giá"  (change)="changeDiscount()" />
-                    <ul class="help-block">
-                        <li *ngIf="form.controls.discount.errors?.required && form.controls.discount.dirty">Nội dung bắt buộc!</li>
-                        <li *ngIf="(form.controls.discount.errors?.minlength || form.controls.discount.errors?.maxlength) && form.controls.discount.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
-                        <li *ngIf="form.controls.discount.errors?.validateNumber  && form.controls.discount.dirty">Chỉ nhập số.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="form-group">
-                    <label for="unit">Đơn vị:</label>
-                <div [ngClass]="{'has-error': (form.controls.unit.errors && form.controls.unit.dirty) , 'has-success': !form.controls.unit.errors}">
-                    <input class="form-control" type="text" name="unit" formControlName="unit" value="{{ food.unit }}" placeholder="*Đơn vị"  (change)="changeUnit()"/>
-                    <ul class="help-block">
-                        <li *ngIf="form.controls.unit.errors?.required && form.controls.unit.dirty">Nội dung bắt buộc!</li>
-                        <li *ngIf="(form.controls.unit.errors?.minlength || form.controls.unit.errors?.maxlength) && form.controls.unit.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
-                    </ul>
-                </div>
-            </div>
-            </div>
-            <div class="row">
-                    <button [disabled]="!checkChange" type="submit" name="button" class="btn btn-success">Lưu</button>
-            </div>
-           
-    </form>
+        <div class="col-sm-7">
+                <form [formGroup]="form" (submit)="editFood()">
+                        <div class="row">
+                    <div class="form-group">
+                        <div >
+                            <input class="form-control" type="text" name="id" formControlName="id" disabled value="{{ food.id }}" />
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <div [ngClass]="{'has-error': form.controls.name.errors && form.controls.name.dirty , 'has-success': !form.controls.name.errors}">
+                            <input class="form-control" type="text" name="name" formControlName="name" value="{{ food.name }}" placeholder="*Tên món" (change)="changeName()"/>
+                            <ul class="help-block">
+                                <li *ngIf="form.controls.name.errors?.required && form.controls.name.dirty">Nội dung bắt buộc!</li>
+                                <li *ngIf="form.controls.name.errors?.maxlength && form.controls.name.dirty">Tối da 30 ký tự!</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <select class="form-control" [(ngModel)]="selectedState" (change)="changeCategory()" name="category_id" formControlName="category_id"  autocomplete="off">
+                                <option *ngFor="let categoryfoods of categoryFoods" value="{{ categoryfoods.id }}">  {{ categoryfoods.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div [ngClass]="{'has-error': (form.controls.description.errors && form.controls.description.dirty) , 'has-success': !form.controls.description.errors}">
+                            <input class="form-control" type="text" name="description"  formControlName="description" value="{{ food.description }}" placeholder="*Mô tả món" (change)="changeDescription()" />
+                            <ul class="help-block">
+                                <li *ngIf="form.controls.description.errors?.required && form.controls.description.dirty">Nội dung bắt buộc!</li>
+                                <li *ngIf="form.controls.description.errors?.maxlength && form.controls.description.dirty">Tối đa 30 ký tự!</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div [ngClass]="{'has-error': (form.controls.price_unit.errors && form.controls.price_unit.dirty) , 'has-success': !form.controls.price_unit.errors}">
+                            <input class="form-control" type="text" name="price_unit" formControlName="price_unit" value="{{ food.price_unit }}" placeholder="*Đơn giá" (change)="changePriceUnit()" />
+                            <ul class="help-block">
+                                <li *ngIf="form.controls.price_unit.errors?.required && form.controls.price_unit.dirty">Nội dung bắt buộc!</li>
+                                <li *ngIf="form.controls.price_unit.errors?.validateNumber  && form.controls.price_unit.dirty">Chỉ nhập số.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div [ngClass]="{'has-error': (form.controls.discount.errors && form.controls.discount.dirty) , 'has-success': !form.controls.discount.errors}">
+                            <input class="form-control" type="text" name="discount" formControlName="discount" value="{{ food.discount }}" placeholder="*Giảm giá"  (change)="changeDiscount()" />
+                            <ul class="help-block">
+                                    <li *ngIf="form.controls.price_unit.errors?.required && form.controls.price_unit.dirty">Nội dung bắt buộc!</li>
+                                <li *ngIf="form.controls.discount.errors?.validateNumber  && form.controls.discount.dirty">Chỉ nhập số.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div [ngClass]="{'has-error': (form.controls.unit.errors && form.controls.unit.dirty) , 'has-success': !form.controls.unit.errors}">
+                            <input class="form-control" type="text" name="unit" formControlName="unit" value="{{ food.unit }}" placeholder="*Đơn vị"  (change)="changeUnit()"/>
+                            <ul class="help-block">
+                                <li *ngIf="form.controls.unit.errors?.required && form.controls.unit.dirty">Nội dung bắt buộc!</li>
+                                <li *ngIf="form.controls.unit.errors?.maxlength && form.controls.unit.dirty">Tối đa 30 ký tự!</li>
+                            </ul>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="row">
+                            <button [disabled]="!checkChange" type="submit" name="button" class="btn btn-success">Lưu</button>
+                    </div>
+                   
+            </form>
+        </div>
+        
 
     </div>
 

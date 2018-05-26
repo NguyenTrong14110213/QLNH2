@@ -271,6 +271,34 @@ module.exports =(router)=>{
             })
         }
     });
+    router.put('/updateActivedFood', (req, res) => {
+        if (!req.body.id) {
+          res.json({ success: false, message: 'Chưa cung cấp mã món' }); 
+        } else {
+          Food.findOne({ id: req.body.id }, (err, food) => {
+            if (err) {
+              res.json({ success: false, message: err }); // Return error message
+            } else {
+              if (!food) {
+                res.json({ success: false, message: 'Không tìm thấy món.' }); // Return error message
+              } else {
+                food.actived = req.body.actived; 
+                food.save((err) => {
+                          if (err) {
+                            if (err.errors) {
+                                res.json({ success: false, message: err });
+                            } else {
+                              res.json({ success: false, message: err }); // Return error message
+                            }
+                          } else {
+                            res.json({ success: true, message: 'Trạng thái đã được cập nhật!' }); // Return success message
+                          }
+                    });
+                }
+              }
+          });
+        }
+      });
 
     return router;
 };

@@ -62,4 +62,8 @@ export class FoodService {
   console.log(food);
     return this.http.put(this.domain + 'foods/addImage/' , food, this.options).map(res => res.json());
   }
+  editActivedFood(food) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.put(this.domain + 'authentication/updateActivedFood/', food, this.options).map(res => res.json());
+  }
 }

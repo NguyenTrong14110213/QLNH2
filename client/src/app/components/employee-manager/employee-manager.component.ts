@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 export class EmployeeManagerComponent implements OnInit {
 
   form: FormGroup;
+  message0;
+  messageClass0;
   message;
   messageClass;
   emailValid;
@@ -25,6 +27,8 @@ export class EmployeeManagerComponent implements OnInit {
   employees2;
   employees3;
   employees4;
+  username;
+  type_account;
   checkChangeGender = false;
   checkChangeTypeAccount = false;
   constructor(
@@ -39,19 +43,20 @@ export class EmployeeManagerComponent implements OnInit {
     this.form=this.formBuilder.group({
       email:['', Validators.compose([
         Validators.required,
-        Validators.minLength(5),
-        Validators.maxLength(30),
+        Validators.maxLength(254),
         this.validateEmail
       ])],
       username:['', Validators.compose([
         Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(15),
+        Validators.maxLength(30),
         this.validateUsername
       ])],
       password:['', Validators.required],
       confirm:['', Validators.required],
-      fullname:['', Validators.required],
+      fullname:['', Validators.compose([
+        Validators.required,
+        Validators.maxLength(30)
+      ])],
       gender:['-1', Validators.required],
       identity_card:['', Validators.compose([
         Validators.required,
@@ -61,12 +66,13 @@ export class EmployeeManagerComponent implements OnInit {
       ])],
       phone:['', Validators.compose([
         Validators.required,
+        Validators.maxLength(13),
         this.validateNumber
       ])],
       url_profile:'',
       type_account:'-1'
     }, { validator: this.matchingPasswords('password', 'confirm')})
-  }
+    }
 
   validateEmail(controls){
     const regExp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
@@ -121,7 +127,7 @@ export class EmployeeManagerComponent implements OnInit {
      identity_card: this.form.get('identity_card').value,
      phone: this.form.get('phone').value,
      type_account: this.form.get('type_account').value,
-     url_profile: 'public/default.png'
+     url_profile: 'default.png'
    }
    this.authService.registerUser(user).subscribe(data =>{
     if(!data.success){
@@ -132,6 +138,8 @@ export class EmployeeManagerComponent implements OnInit {
       this.message =data.message;
       this.checkChangeGender= false;
       this.checkChangeTypeAccount= false;
+      this.type_account=this.form.get('type_account').value;
+      this.authService.socket.emit("client-loadEmployee","them nhan vien");
       setTimeout(()=>{
         this.form.reset(); // Reset all form fields
         this.messageClass= false;
@@ -186,7 +194,7 @@ checkPhone(){
   });
 }
 getAllEmployees(type_account) {
-  this.authService.getEmployees(type_account).subscribe(data => {
+  this.authService.getAllEmployees(type_account).subscribe(data => {
    if(type_account==1){
      this.employees1= data.employees;
    }
@@ -201,7 +209,33 @@ getAllEmployees(type_account) {
   }
   });
 }   
+getUsername(username, type_account){
+  this.username = username;
+  this.type_account =type_account;
+}
+deleteEmployee(){
+  this.authService.deleteEmployee(this.username).subscribe(data => {
+    // Check if delete request worked
+    if (!data.success) {
+      this.messageClass = 'alert alert-danger'; // Return error bootstrap class
+      this.message = data.message; // Return error message
+    } else {
+      this.authService.socket.emit("client-loadEmployee","xoa nhan vien");
+      this.messageClass = 'alert alert-success'; // Return bootstrap success class
+      this.message = data.message; // Return success message
+      // After two second timeout, route to blog page
+    }
+    setTimeout(() => {
+      this.messageClass = false; // Erase error/success message
+      this.message='';
+    }, 2000);
+  });
+}
   ngOnInit() {
+    this.authService.socket.on("server-loadEmployee",(data)=>{
+      this.getAllEmployees(this.type_account);
+      console.log(data);
+    }); 
   }
 
 }

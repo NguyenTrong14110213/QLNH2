@@ -35,19 +35,20 @@ export class RegisterComponent implements OnInit {
     this.form=this.formBuilder.group({
       email:['', Validators.compose([
         Validators.required,
-        Validators.minLength(5),
-        Validators.maxLength(30),
+        Validators.maxLength(254),
         this.validateEmail
       ])],
       username:['', Validators.compose([
         Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(15),
+        Validators.maxLength(30),
         this.validateUsername
       ])],
       password:['', Validators.required],
       confirm:['', Validators.required],
-      fullname:['', Validators.required],
+      fullname:['', Validators.compose([
+        Validators.required,
+        Validators.maxLength(30)
+      ])],
       gender:['-1', Validators.required],
       identity_card:['', Validators.compose([
         Validators.required,
@@ -57,6 +58,7 @@ export class RegisterComponent implements OnInit {
       ])],
       phone:['', Validators.compose([
         Validators.required,
+        Validators.maxLength(13),
         this.validateNumber
       ])],
       url_profile:'',
@@ -135,7 +137,7 @@ enableForm(){
      identity_card: this.form.get('identity_card').value,
      phone: this.form.get('phone').value,
      type_account: 0,
-     url_profile: 'public/default.png'
+     url_profile: 'default.png'
    }
    this.authService.registerUser(user).subscribe(data =>{
     if(!data.success){

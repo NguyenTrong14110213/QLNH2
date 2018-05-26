@@ -60,7 +60,7 @@
                     <input class="form-control" type="text" name="name"  formControlName="name"  value="{{ nameRegion }}" (blur)="checkNameRegion2()"/>
                     <ul class="help-block">
                         <li *ngIf="form3.controls.name.errors?.required && form3.controls.name.dirty">Nội dung bắt buộc!</li>
-                        <li *ngIf="(form3.controls.name.errors?.minlength || form3.controls.name.errors?.maxlength) && form3.controls.name.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                        <li *ngIf="form3.controls.name.errors?.maxlength && form3.controls.name.dirty">Tối đa 30 ký tự!</li>
                         <li *ngIf="nameRegionMessage">{{ nameRegionMessage }}</li>
                     </ul>
               </div>
@@ -100,7 +100,7 @@
                 <input class="form-control" type="text" name="id" formControlName="id" placeholder="*Mã khu vực"  (blur)="checkIdRegion()"/>
                 <ul class="help-block">
                     <li *ngIf="form2.controls.id.errors?.required && form2.controls.id.dirty">Nội dung bắt buộc!</li>
-                    <li *ngIf="(form2.controls.id.errors?.minlength || form2.controls.id.errors?.maxlength) && form2.controls.id.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                    <li *ngIf="form2.controls.id.errors?.maxlength && form2.controls.id.dirty">Tối đa 30 ký tự!</li>
                     <li *ngIf="idRegionMessage">{{ idRegionMessage }}</li>
                 </ul>
             </div>
@@ -110,7 +110,7 @@
                 <input class="form-control" type="text" name="name"  formControlName="name"  placeholder="*Tên khu vực" (blur)="checkNameRegion()"/>
                 <ul class="help-block">
                     <li *ngIf="form2.controls.name.errors?.required && form2.controls.name.dirty">Nội dung bắt buộc!</li>
-                    <li *ngIf="(form2.controls.name.errors?.minlength || form2.controls.name.errors?.maxlength) && form2.controls.name.dirty">Lớn hơn 3 ký tự và nhỏ hơn 30 ký tự.</li>
+                    <li *ngIf="form2.controls.name.errors?.maxlength && form2.controls.name.dirty">Tối đa 30 ký tự!</li>
                     <li *ngIf="nameRegionMessage">{{ nameRegionMessage }}</li>
                 </ul>
           </div>

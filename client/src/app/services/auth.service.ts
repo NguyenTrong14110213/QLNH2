@@ -61,11 +61,30 @@ export class AuthService {
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'authentication/profile', this.options).map(res=> res.json());
   }
-  getEmployees(type_account){
+  getAllEmployees(type_account){
     this.createAuthenticationHeaders();
     return this.http.get(this.domain + 'authentication/allEmployees/' + type_account, this.options).map(res => res.json());
   }
-
+  getEmployee(username) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'authentication/employee/' + username, this.options).map(res => res.json());
+  }
+  deleteEmployee(username) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.delete(this.domain + 'authentication/deleteEmployee/' + username, this.options).map(res => res.json());
+  }
+  editEmployee(employee) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.put(this.domain + 'authentication/updateEmployee/', employee, this.options).map(res => res.json());
+  }
+  editPassword(employee) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.put(this.domain + 'authentication/updatePassword/', employee, this.options).map(res => res.json());
+  }
+  editActivedEmployee(employee) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.put(this.domain + 'authentication/updateActivedEmployee/', employee, this.options).map(res => res.json());
+  }
   loggedIn(){
     return tokenNotExpired();
   }

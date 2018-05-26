@@ -14,6 +14,7 @@
       <div [ngClass]="{'has-error': (form.controls.fullname.errors && form.controls.fullname.dirty) , 'has-success': !form.controls.fullname.errors}">
           <input type="text" name="fullname" class="form-control" autocomplete="off" placeholder="*Họ và tên" formControlName="fullname"/>
           <ul class="help-block">
+            <li *ngIf="form.controls.fullname.errors?.maxlength && form.controls.fullname.dirty">Tối đa 30 ký tự!</li>
             <li *ngIf="form.controls.fullname.errors?.required && form.controls.fullname.dirty">Nội dung bắt buộc!</li>
           </ul>
       </div>
@@ -43,7 +44,8 @@
           <input type="text" name="phone" class="form-control" autocomplete="off" placeholder="*Số điện thoại" formControlName="phone" (blur)="checkPhone()"/>
           <ul class="help-block">
             <li *ngIf="form.controls.phone.errors?.required && form.controls.phone.dirty">Nội dung bắt buộc!</li>
-            <li *ngIf="form.controls.phone.errors?.validateNumber && form.controls.phone.dirty">Chỉ nhập số.</li>
+            <li *ngIf="form.controls.phone.errors?.maxlength && form.controls.phone.dirty">Tối đa 13 chữ số!</li>
+            <li *ngIf="form.controls.phone.errors?.validateNumber && form.controls.phone.dirty">Chỉ nhập số!</li>
             <li *ngIf="phoneMessage">{{ phoneMessage }}</li>
           </ul>
       </div>
@@ -54,7 +56,7 @@
             <input type="text" name="username" class="form-control" autocomplete="off" placeholder="*Tên đăng nhập" formControlName="username" (blur)="checkUsername()"/>
             <ul class="help-block">
               <li *ngIf="form.controls.username.errors?.required && form.controls.username.dirty">Nội dung bắt buộc!</li>
-              <li *ngIf="(form.controls.username.errors?.minlength || form.controls.username.errors?.maxlength) && form.controls.username.dirty">Lớn hơn 3 ký tự và nhỏ hơn 15 ký tự.</li>
+              <li *ngIf="form.controls.username.errors?.maxlength && form.controls.username.dirty">Tối đa 30 ký tự!</li>
               <li *ngIf="form.controls.username.errors?.validateUsername && form.controls.username.dirty">Viết liền không dấu, không ký tự đặt biệt</li>
               <li *ngIf="usernameMessage">{{ usernameMessage }}</li>
             </ul>
@@ -67,7 +69,7 @@
           <input type="text" name="email" class="form-control" autocomplete="off" placeholder="*Email" formControlName="email"  (blur)="checkEmail()"/>
           <ul class="help-block">
             <li *ngIf="form.controls.email.errors?.required && form.controls.email.dirty">Nội dung bắt buộc!</li>
-            <li *ngIf="(form.controls.email.errors?.minlength || form.controls.email.errors?.maxlength) && form.controls.email.dirty">Lớn hơn 5 ký tự và nhỏ hơn 30 ký tự.</li>
+            <li *ngIf="form.controls.email.errors?.maxlength && form.controls.email.dirty">Tối đa 254 ký tự!</li>
             <li *ngIf="form.controls.email.errors?.validateEmail && form.controls.email.dirty">Phải đúng định dạng Email</li>
             <li *ngIf="emailMessage">{{ emailMessage }}</li>
           </ul>

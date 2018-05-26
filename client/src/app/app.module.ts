@@ -21,6 +21,7 @@ import { TableManagementComponent } from './components/table-management/table-ma
 import { RegionService } from './services/region.service';
 import { TableService } from './services/table.service';
 import { EmployeeManagerComponent } from './components/employee-manager/employee-manager.component';
+import { ProfileEmployeeComponent } from './components/profile-employee/profile-employee.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +33,8 @@ import { EmployeeManagerComponent } from './components/employee-manager/employee
     ProfileComponent,
     MenuManagementComponent,
     TableManagementComponent,
-    EmployeeManagerComponent
+    EmployeeManagerComponent,
+    ProfileEmployeeComponent
   ],
   imports: [
     BrowserModule,

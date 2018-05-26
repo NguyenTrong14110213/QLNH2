@@ -1,5 +1,9 @@
 <div class="register">
-
+    <div class="row show-hide-message">
+        <div [ngClass]="messageClass0">
+          {{ message0 }}
+        </div>
+      </div>
   <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
       <span class="glyphicon glyphicon-plus"></span> Tạo tài khoản
     </button>
@@ -14,7 +18,7 @@
         </div>
     
           <nav class="menu collapse" id="menu1">
-              <table class="table">
+              <table class="table table-hover" >
                   <thead>
                     <tr>
                       <th>Họ và tên</th>
@@ -36,6 +40,10 @@
                       <td>{{ employee4.email }}</td>
                       <td>{{ employee4.phone }}</td>
                       <td>{{ employee4.identity_card }}</td>
+                      <td >
+                        <i class="btn glyphicon glyphicon-pencil" [routerLink]="['/profile_emloyee/', employee4.username]"></i>
+                        <i class="btn glyphicon glyphicon-trash" (click)="getUsername(employee4.username,4)" data-toggle="modal" data-target="#confirmModal"></i>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -52,7 +60,7 @@
         </div>
     
           <nav class="menu collapse" id="menu2">
-              <table class="table">
+              <table class="table table-hover">
                   <thead>
                     <tr>
                       <th>Họ và tên</th>
@@ -74,6 +82,10 @@
                         <td>{{ employee3.email }}</td>
                         <td>{{ employee3.phone }}</td>
                         <td>{{ employee3.identity_card }}</td>
+                        <td >
+                          <i class="btn glyphicon glyphicon-pencil" [routerLink]="['/profile_emloyee/', employee3.username]"></i>
+                          <i class="btn glyphicon glyphicon-trash" (click)="getUsername(employee3.username,3)" data-toggle="modal" data-target="#confirmModal"></i>
+                        </td>
                       </tr>
                     </tbody>
                 </table>
@@ -89,7 +101,7 @@
         </div>
     
           <nav class="menu collapse" id="menu3">
-              <table class="table">
+              <table class="table table-hover">
                   <thead>
                     <tr>
                       <th>Họ và tên</th>
@@ -111,6 +123,10 @@
                         <td>{{ employee2.email }}</td>
                         <td>{{ employee2.phone }}</td>
                         <td>{{ employee2.identity_card }}</td>
+                        <td >
+                          <i class="btn glyphicon glyphicon-pencil" [routerLink]="['/profile_emloyee/', employee2.username]"></i>
+                          <i class="btn glyphicon glyphicon-trash" (click)="getUsername(employee2.username,2)" data-toggle="modal" data-target="#confirmModal"></i>
+                        </td>
                       </tr>
                     </tbody>
                 </table>
@@ -126,7 +142,7 @@
         </div>
     
           <nav class="menu collapse" id="menu4">
-              <table class="table">
+              <table class="table table-hover">
                   <thead>
                     <tr>
                       <th>Họ và tên</th>
@@ -148,11 +164,32 @@
                         <td>{{ employee1.email }}</td>
                         <td>{{ employee1.phone }}</td>
                         <td>{{ employee1.identity_card }}</td>
+                        <td >
+                          <i class="btn glyphicon glyphicon-pencil" [routerLink]="['/profile_emloyee/', employee1.username]"></i>
+                          <i class="btn glyphicon glyphicon-trash" (click)="getUsername(employee1.username,1)" data-toggle="modal" data-target="#confirmModal"></i>
+                        </td>
                       </tr>
                     </tbody>
                 </table>
           </nav>
     </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="confirmModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Bạn có muốn xóa danh mục này?</h4>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-success" data-dismiss="modal" (click)="deleteEmployee()">Yes</button>
+            <button type="button" class="btn-default" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>  
+
      <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
@@ -186,6 +223,7 @@
         <div [ngClass]="{'has-error': (form.controls.fullname.errors && form.controls.fullname.dirty) , 'has-success': !form.controls.fullname.errors}">
             <input type="text" name="fullname" class="form-control" autocomplete="off" placeholder="*Họ và tên" formControlName="fullname"/>
             <ul class="help-block">
+              <li *ngIf="form.controls.fullname.errors?.maxlength && form.controls.fullname.dirty">Tối đa 30 ký tự!</li>             
               <li *ngIf="form.controls.fullname.errors?.required && form.controls.fullname.dirty">Nội dung bắt buộc!</li>
             </ul>
         </div>
@@ -215,6 +253,7 @@
             <input type="text" name="phone" class="form-control" autocomplete="off" placeholder="*Số điện thoại" formControlName="phone" (blur)="checkPhone()"/>
             <ul class="help-block">
               <li *ngIf="form.controls.phone.errors?.required && form.controls.phone.dirty">Nội dung bắt buộc!</li>
+              <li *ngIf="form.controls.phone.errors?.maxlength && form.controls.phone.dirty">Tối đa 13 chữ số!</li>
               <li *ngIf="form.controls.phone.errors?.validateNumber && form.controls.phone.dirty">Chỉ nhập số.</li>
               <li *ngIf="phoneMessage">{{ phoneMessage }}</li>
             </ul>
@@ -226,8 +265,8 @@
               <input type="text" name="username" class="form-control" autocomplete="off" placeholder="*Tên đăng nhập" formControlName="username" (blur)="checkUsername()"/>
               <ul class="help-block">
                 <li *ngIf="form.controls.username.errors?.required && form.controls.username.dirty">Nội dung bắt buộc!</li>
-                <li *ngIf="(form.controls.username.errors?.minlength || form.controls.username.errors?.maxlength) && form.controls.username.dirty">Lớn hơn 3 ký tự và nhỏ hơn 15 ký tự.</li>
-                <li *ngIf="form.controls.username.errors?.validateUsername && form.controls.username.dirty">Viết liền không dấu, không ký tự đặt biệt</li>
+                <li *ngIf="form.controls.username.errors?.maxlength && form.controls.username.dirty">Tối đa 30 ký tự!</li>
+                <li *ngIf="form.controls.username.errors?.validateUsername && form.controls.username.dirty">Viết liền không dấu, không ký tự đặt biệt!</li>
                 <li *ngIf="usernameMessage">{{ usernameMessage }}</li>
               </ul>
           </div>
@@ -239,8 +278,8 @@
             <input type="text" name="email" class="form-control" autocomplete="off" placeholder="*Email" formControlName="email"  (blur)="checkEmail()"/>
             <ul class="help-block">
               <li *ngIf="form.controls.email.errors?.required && form.controls.email.dirty">Nội dung bắt buộc!</li>
-              <li *ngIf="(form.controls.email.errors?.minlength || form.controls.email.errors?.maxlength) && form.controls.email.dirty">Lớn hơn 5 ký tự và nhỏ hơn 30 ký tự.</li>
-              <li *ngIf="form.controls.email.errors?.validateEmail && form.controls.email.dirty">Phải đúng định dạng Email</li>
+              <li *ngIf="form.controls.email.errors?.maxlength && form.controls.email.dirty">Tối đa 254 ký tự!</li>
+              <li *ngIf="form.controls.email.errors?.validateEmail && form.controls.email.dirty">Phải đúng định dạng Email!</li>
               <li *ngIf="emailMessage">{{ emailMessage }}</li>
             </ul>
         </div>

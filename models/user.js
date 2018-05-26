@@ -3,18 +3,20 @@ mongoose.Promise = global.Promise; // Configure Mongoose Promises
 const Schema = mongoose.Schema; // Import Schema from Mongoose
 
 const bcrypt= require('bcrypt-node');
-
-let emailLengthChecker =(email)=>{
-  if(!email){
-    return false;
-  } else{
-    if(email.length <5 ||email.length >30){
-      return false;
-    }else{
-      return true;
+let emailLengthChecker = (email) => {
+  // Check if username exists
+  if (!email) {
+    return false; // Return error
+  } else {
+    // Check length of username string
+    if (email.length >254) {
+      return false; // Return error if does not meet length requirement
+    } else {
+      return true; // Return as valid username
     }
   }
-}
+};
+
 let validEmailChecker = (email) => {
   // Check if e-mail exists
   if (!email) {
@@ -25,30 +27,29 @@ let validEmailChecker = (email) => {
     return regExp.test(email); // Return regular expression test results (true or false)
   }
 };
-
 const emailValidators=[{
-  validator: emailLengthChecker,
-  message: 'E-mail nust be at least 5 characters but no more 30'},
-  {
+  validator:emailLengthChecker,
+  message: 'Email có tối đa là 254 ký tự!'
+},
+{
     validator: validEmailChecker,
-    message:'Must be a valid e-mail'
+    message:'Phải đúng định dạng email!'
   }
 ];
-// Validate Function to check username length
+
 let usernameLengthChecker = (username) => {
   // Check if username exists
   if (!username) {
     return false; // Return error
   } else {
     // Check length of username string
-    if (username.length < 3 || username.length > 15) {
+    if (username.length >30) {
       return false; // Return error if does not meet length requirement
     } else {
       return true; // Return as valid username
     }
   }
 };
-
 // Validate Function to check if valid username format
 let validUsername = (username) => {
   // Check if username exists
@@ -61,33 +62,100 @@ let validUsername = (username) => {
   }
 };
 
-// Array of Username validators
 const usernameValidators = [
-  // First Username validator
   {
-    validator: usernameLengthChecker,
-    message: 'Username must be at least 3 characters but no more than 15'
+    validator:usernameLengthChecker,
+    message:'Tên người dùng có tối đa là 30 ký tự!'
   },
-  // Second username validator
   {
     validator: validUsername,
-    message: 'Username must not have any special characters'
+    message: 'Tên người dùng không chứa ký tự đặt biệt!'
   }
 ];
 
+// Validate Function to check username length
+let identity_cardLengthChecker = (identity_card) => {
+  // Check if username exists
+  if (!identity_card) {
+    return false; // Return error
+  } else {
+    // Check length of username string
+    if (identity_card.length  = 9) {
+      return true; // Return error if does not meet length requirement
+    } else {
+      return false; // Return as valid username
+    }
+  }
+};
+
+// Array of Username validators
+const identity_cardValidators = [
+  // First Username validator
+  {
+    validator: identity_cardLengthChecker,
+    message: 'Số chứng minh phải 9 chữ số'
+  }
+];
+
+// Validate Function to check username length
+let fullnameLengthChecker = (fullname) => {
+  // Check if username exists
+  if (!fullname) {
+    return false; // Return error
+  } else {
+    // Check length of username string
+    if (fullname.length  > 30) {
+      return false; // Return error if does not meet length requirement
+    } else {
+      return true; // Return as valid username
+    }
+  }
+};
+
+// Array of Username validators
+const fullnameValidators = [
+  // First Username validator
+  {
+    validator: fullnameLengthChecker,
+    message: 'Họ tên có tối đa là 30 ký tự!'
+  }
+];
+// Validate Function to check username length
+let phoneLengthChecker = (phone) => {
+  // Check if username exists
+  if (!phone) {
+    return false; // Return error
+  } else {
+    // Check length of username string
+    if (phone.length  > 13) {
+      return false; // Return error if does not meet length requirement
+    } else {
+      return true; // Return as valid username
+    }
+  }
+};
+
+// Array of Username validators
+const phoneValidators = [
+  // First Username validator
+  {
+    validator: phoneLengthChecker,
+    message: 'Số điện thoại có tối đa là 13 chữ số!'
+  }
+];
 
 // User Model Definition
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true, lowercase: true, validate: emailValidators},
   username: { type: String, required: true, unique: true, lowercase: true, validate: usernameValidators },
   password: { type: String, required: true },
-  fullname: { type: String},
-  gender: { type: Boolean},
-  identity_card: { type: Number},
-  phone: { type: Number },
-  url_profile: { type: String },
-  type_account: { type:Number },
-  actived: { type: String , default: '0'}
+  fullname: { type: String,required: true, validate:fullnameValidators},
+  gender: { type: Boolean,required: true},
+  identity_card: { type: Number,required: true, validate:identity_cardValidators},
+  phone: { type: Number , required: true, validate:phoneLengthChecker},
+  url_profile: { type: String ,required: true},
+  type_account: { type:Number,required: true },
+  actived: { type: Boolean , default: true, required: true}
 });
 
 userSchema.pre('save', function(next){

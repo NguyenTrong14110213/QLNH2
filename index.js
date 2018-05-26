@@ -92,6 +92,10 @@ io.on("connection", function(socket){
         console.log(data);
         io.sockets.emit("server-loadTables", 'Cap nhan ban');
     })
+    socket.on("client-loadEmployee", (data)=>{
+        console.log(data);
+        io.sockets.emit("server-loadEmployee", 'Cap nhan nhan vien');
+    })
 });
 
 
