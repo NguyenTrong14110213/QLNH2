@@ -2,7 +2,13 @@
     display:block;
     padding: 15px;
 }
-
+.well-right {
+    background: white;
+}
+.well-left {
+    margin-top:15px;
+    background-color: white;
+}
 
 [aria-expanded="false"] .menu__icon--open {
     display: block;

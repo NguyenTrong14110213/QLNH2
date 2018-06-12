@@ -1,0 +1,124 @@
+<div class="row container">
+  <div class="col-sm-6 ">
+    <div class="iwt">
+      <a id="circle" class="pay alignleft"></a>
+      <select class="form-control slt">
+        <option value="1">Khu vực 1</option>
+        <option value="2">Khu vực 2</option>
+        <option value="3" class="pay">Khu vực 3</option>
+        <option value="4">khu vực 4</option>
+      </select>
+    </div>
+    <div class="well well-left">
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Mã bàn</th>
+                <th>Khách hàng</th>
+                <th>Tổng tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>MB101; MB102 ; MB102; MB102; MB102</td>
+                <td>Nguyễn văn a</td>
+                <td>100000 đ</td>
+                <td>
+                  <div id="circle" class="pay"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>MB101</td>
+                <td>nguyễn văn b</td>
+                <td>100000 đ</td>
+              </tr>
+              <tr>
+                <td>MB101</td>
+                <td>nguyễn văn c</td>
+                <td>100000 đ</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+   
+  </div>
+  <div class="col-sm-6 ">
+    <h4>Hóa đơn</h4>
+    <div id="bill" class="well well-right">
+
+        <div class="row inf">
+            <div class="col-sm-4">
+                <i class="glyphicon glyphicon-calendar"></i>
+                <label id="time_order" for="disabled">Thời gian</label>
+            </div>
+        </div>
+        <div class="row inf">
+          <div class="col-sm-4">
+              <i class="glyphicon glyphicon-map-marker"></i>
+              <label id="region_order" for="disabled">Khu vực</label>
+          </div>
+          <div class="col-sm-4">
+              <i class="glyphicon glyphicon-cutlery"></i>
+              <label id="table_order" for="disabled">Số bàn </label>
+          </div>
+        </div>
+        <div class="row inf">
+            <div class="col-sm-4">
+          <i class="glyphicon glyphicon-user"></i>
+          <label id="customer_order" for="disabled">Tên khách hàng</label>
+          </div>
+        </div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Mã món</th>
+              <th>Tên món</th>
+              <th>Số lượng</th>
+              <th>Đơn giá</th>
+              <th>Chiếc khấu</th>
+            </tr>
+          </thead>
+          <tbody id="body_order">
+            <tr>
+              <td>MB101</td>
+              <td>Cá hấp nhỏ</td>
+              <td> 2</td>
+              <td>100000 đ</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>MB101</td>
+              <td>Cá hấp nhỏ</td>
+              <td>2</td>
+              <td>100000 đ</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>MB101</td>
+              <td>Cá hấp nhỏ</td>
+              <td>2</td>
+              <td>100000 đ</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>MB101</td>
+              <td>Cá hấp nhỏ</td>
+              <td>2</td>
+              <td>100000 đ</td>
+              <td>0</td>
+            </tr>
+    
+          </tbody>
+        </table>
+    </div>
+    <div class="row alignright">
+      <button class="circle-btn">
+          <i class="glyphicon glyphicon-usd"></i>
+      </button>
+      <button>
+          <i class="glyphicon glyphicon-print" (click)="print()"></i>
+      </button>
+    </div>
+  
+  </div>
+</div>

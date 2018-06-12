@@ -57,6 +57,13 @@ export class EmployeeManagerComponent implements OnInit {
         Validators.required,
         Validators.maxLength(30)
       ])],
+      birthdate:['', Validators.compose([
+        Validators.required
+      ])],
+      address:['', Validators.compose([
+        Validators.required,
+        Validators.maxLength(100)
+      ])],
       gender:['-1', Validators.required],
       identity_card:['', Validators.compose([
         Validators.required,
@@ -126,6 +133,8 @@ export class EmployeeManagerComponent implements OnInit {
      gender: this.form.get('gender').value,
      identity_card: this.form.get('identity_card').value,
      phone: this.form.get('phone').value,
+     address: this.form.get('address').value,
+     birthdate: this.form.get('birthdate').value,
      type_account: this.form.get('type_account').value,
      url_profile: 'default.png'
    }

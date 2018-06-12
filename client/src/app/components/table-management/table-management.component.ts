@@ -46,13 +46,21 @@ export class TableManagementComponent implements OnInit {
     this.createTableForm();
   }
 
-
+  validateId(controls){
+    const regExp = new RegExp(/^[a-zA-Z0-9]+$/);
+    if(regExp.test(controls.value)){
+      return null;
+    }else{
+      return { 'validateId': true }
+    }
+  }
   createRegionForm() {
     this.form2 = this.formBuilder.group({
       // trường id 
       id: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30)
+        Validators.maxLength(30),
+        this.validateId
       ])],
       // trường name 
       name: ['', Validators.compose([
@@ -66,7 +74,8 @@ export class TableManagementComponent implements OnInit {
       // trường id 
       id: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(30)
+        Validators.maxLength(30),
+        this.validateId
       ])],
       // trường name 
       region_id: ['', Validators.compose([

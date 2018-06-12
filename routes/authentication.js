@@ -31,8 +31,10 @@ module.exports=(router)=>{
                                         password: req.body.password,
                                         fullname: req.body.fullname,
                                         gender: req.body.gender,
+                                        birthdate: req.body.birthdate,
                                         identity_card:req.body.identity_card,
                                         phone:req.body.phone,
+                                        address:req.body.address,
                                         type_account:req.body.type_account,
                                         url_profile: req.body.url_profile
                                     });
@@ -218,9 +220,13 @@ module.exports=(router)=>{
                 user.email = req.body.email; // Save latest blog title
                 user.fullname =req.body.fullname;
                 user.gender=req.body.gender;
+                user.birthdate= req.body.birthdate;
                 user.identity_card=req.body.identity_card;
                 user.phone=req.body.phone;
+                user.address =req.body.address;
                 user.type_account =req.body.type_account;
+                user.birthdate =req.body.birthdate;
+                user.address =req.body.address;
                 user.save((err) => {
                           if (err) {
                             if (err.errors) {

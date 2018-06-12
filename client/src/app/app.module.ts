@@ -22,6 +22,7 @@ import { RegionService } from './services/region.service';
 import { TableService } from './services/table.service';
 import { EmployeeManagerComponent } from './components/employee-manager/employee-manager.component';
 import { ProfileEmployeeComponent } from './components/profile-employee/profile-employee.component';
+import { PayComponent } from './components/pay/pay.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +35,8 @@ import { ProfileEmployeeComponent } from './components/profile-employee/profile-
     MenuManagementComponent,
     TableManagementComponent,
     EmployeeManagerComponent,
-    ProfileEmployeeComponent
+    ProfileEmployeeComponent,
+    PayComponent
   ],
   imports: [
     BrowserModule,

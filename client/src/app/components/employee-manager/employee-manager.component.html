@@ -4,10 +4,12 @@
           {{ message0 }}
         </div>
       </div>
-  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
-      <span class="glyphicon glyphicon-plus"></span> Tạo tài khoản
-    </button>
 
+      <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
+          <span class="glyphicon glyphicon-plus"></span> Tạo tài khoản
+        </button>
+
+<div class="row well well-left">
     <div class="row">
         <div class="iwt">
             <button class="circle-btn" type="button"  data-toggle="collapse" data-target="#menu1"  aria-expanded="false"  aria-controls="menu1" (click)="getAllEmployees(4)">
@@ -173,7 +175,7 @@
                 </table>
           </nav>
     </div>
-
+  </div>
     <!-- Modal -->
 <div class="modal fade" id="confirmModal" role="dialog">
     <div class="modal-dialog modal-sm">
@@ -209,7 +211,7 @@
             </div>
       <!-- Category -->
       <div class="form-group">
-          <select formControlName="type_account" (change)="changeTypeAccount()">
+          <select formControlName="type_account" class="form-control" (change)="changeTypeAccount()">
             <option disabled selected value = "-1">-- chọn quyền hạn --</option>
             <option value = "1">Nhân viên phục vụ</option>
             <option value = "2">Nhân viên thu ngân</option>
@@ -230,11 +232,15 @@
       </div>
         <!-- Gender -->
         <div class="form-group">
-          <select formControlName="gender" (change)="changeGender()">
+          <select formControlName="gender" class="form-control" (change)="changeGender()">
             <option disabled selected value = "-1">-- chọn giới tính --</option>
             <option value = "true">Nam</option>
             <option value = "false">Nữ</option>
           </select>
+      </div>
+         <!-- Birthdate -->
+         <div class="form-group">
+          <input type="date"  name="birthdate" class="form-control" autocomplete="off"  formControlName="birthdate">
       </div>
     <!-- Identity_card Input -->
     <div class="form-group">
@@ -259,6 +265,17 @@
             </ul>
         </div>
     </div>
+          <!-- Address -->
+          <div class="form-group">
+            <div [ngClass]="{'has-error': (form.controls.address.errors && form.controls.address.dirty) , 'has-success': !form.controls.address.errors}">
+              <input type="text" name="address" class="form-control" autocomplete="off" placeholder="*Địa chỉ" formControlName="address"
+              />
+              <ul class="help-block">
+                <li *ngIf="form.controls.address.errors?.maxlength && form.controls.address.dirty">Tối đa 100 ký tự!</li>
+                <li *ngIf="form.controls.address.errors?.required && form.controls.address.dirty">Nội dung bắt buộc!</li>
+              </ul>
+            </div>
+          </div>
       <!-- Username Input -->
       <div class="form-group">
           <div [ngClass]="{'has-error': (form.controls.username.errors && form.controls.username.dirty)|| (!usernameValid && form.controls.username.dirty), 'has-success': !form.controls.username.errors && usernameValid}">

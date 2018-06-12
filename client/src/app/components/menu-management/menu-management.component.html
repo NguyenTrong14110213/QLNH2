@@ -5,131 +5,135 @@
     </div>
 </div>
 <div class="row">
-  <div class="col-sm-3 ">
- <div class="list-group">
-    <a class="list-group-item active waves-effect">Danh mục</a>
-    <div *ngFor="let categoryfoods of categoryFoods">
-        <div class="dropdown ">
-        <a (click)="getCategoryId(categoryfoods.id)" [ngClass]="{'list-group-item-info': category_id == categoryfoods.id}" class="list-group-item">{{ categoryfoods.name }}</a>
-        <div class="dropdown-content dropdown-menu">
-            <a (click)="getCategoryFood(categoryfoods.id,categoryfoods.name)" data-toggle="modal" data-target="#editModal">Sửa</a>
-            <!-- <a (click)="deleteCategoryFood(categoryfoods.id)">Xóa</a> -->
-            <a (click)="getCategoryId2(categoryfoods.id)" data-toggle="modal" data-target="#confirmModal">Xóa</a>
+  <div class="col-sm-3">
+      <div class="well well-left">
+                 <span class="title"><i class="glyphicon glyphicon-list-alt"></i> Danh mục</span>
+                    <div *ngFor="let categoryfoods of categoryFoods">
+                        <div class="dropdown ">
+                        <li (click)="getCategoryId(categoryfoods.id)" [ngClass]="{'list-group-item-info': category_id == categoryfoods.id}">{{ categoryfoods.name }}</li>
+                        <div class="dropdown-content dropdown-menu">
+                            <a (click)="getCategoryFood(categoryfoods.id,categoryfoods.name)" data-toggle="modal" data-target="#editModal">Sửa</a>
+                            <!-- <a (click)="deleteCategoryFood(categoryfoods.id)">Xóa</a> -->
+                            <a (click)="getCategoryId2(categoryfoods.id)" data-toggle="modal" data-target="#confirmModal">Xóa</a>
+                        </div>
+                    </div>
+                  </div>
         </div>
-    </div>
-  </div>
-<!-- Modal -->
-<div class="modal fade" id="confirmModal" role="dialog">
-        <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Bạn có muốn xóa danh mục này?</h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-success" data-dismiss="modal" (click)="deleteCategoryFood(category_id2)">Yes</button>
-                <button type="button" class="btn-default" data-dismiss="modal">No</button>
-            </div>
-          </div>
-        </div>
-      </div>  
-</div>
+                <!-- Modal -->
+                <div class="modal fade" id="confirmModal" role="dialog">
+                        <div class="modal-dialog modal-sm">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 class="modal-title">Bạn có muốn xóa danh mục này?</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-success" data-dismiss="modal" (click)="deleteCategoryFood(category_id2)">Yes</button>
+                                <button type="button" class="btn-default" data-dismiss="modal">No</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>  
+                
+                
+                  <!-- Modal -->
+                  <div class="modal fade" id="editModal" role="dialog">
+                    <div class="modal-dialog">
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                        <form [formGroup] ="form3" (submit)="editCategoryFood()">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <h4 class="modal-title">Sửa danh mục</h4>
+                        </div>
+                        <div class="modal-body">
+                          <!-- Custom Success/Error Message -->
+                          <div class="row show-hide-message">
+                              <div [ngClass]="messageClass">
+                                {{ message }}
+                              </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <input class="form-control" type="text" name="id" formControlName="id" value="{{ idCategoryFood }}" disabled/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div [ngClass]="{'has-error': (form3.controls.name.errors && form3.controls.name.dirty) || (!nameCategoryValid && form3.controls.name.dirty)  , 'has-success': !form3.controls.name.errors && nameCategoryValid}">
+                                    <input class="form-control" type="text" name="name"  formControlName="name"  value="{{ nameCategoryFood }}" (blur)="checkNameCategory2()"/>
+                                    <ul class="help-block">
+                                        <li *ngIf="form3.controls.name.errors?.required && form3.controls.name.dirty">Nội dung bắt buộc!</li>
+                                        <li *ngIf="form3.controls.name.errors?.maxlength && form3.controls.name.dirty">Tối đa 30 ký tự!</li>
+                                        <li *ngIf="nameCategoryMessage">{{ nameCategoryMessage }}</li>
+                                    </ul>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button [disabled]="!nameCategoryValid " type="submit" name="button" class="btn btn-success" >Đồng ý</button>
+                        </div>
+                      </form>
+                      </div>
+                      
+                    </div>
+                  </div>
+                  <!-- Modal end-->
+                  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
+                      <span class="glyphicon glyphicon-plus"></span> Thêm danh mục
+                    </button>
+                     <!-- Modal -->
+                  <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                        <form [formGroup] ="form2" (submit)="onCategoryFoodSubmit()">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <h4 class="modal-title">Thêm danh mục</h4>
+                        </div>
+                        <div class="modal-body">
+                          <!-- Custom Success/Error Message -->
+                          <div class="row show-hide-message">
+                              <div [ngClass]="messageClass">
+                                {{ message }}
+                              </div>
+                            </div>
+                            <div class="form-group">
+                                <div [ngClass]="{'has-error': (form2.controls.id.errors && form2.controls.id.dirty) || (!idCategoryValid && form2.controls.id.dirty), 'has-success': !form2.controls.id.errors && idCategoryValid}">
+                                    <input class="form-control" type="text" name="id" formControlName="id" placeholder="*Mã danh mục"  (blur)="checkIdCategory()"/>
+                                    <ul class="help-block">
+                                        <li *ngIf="form2.controls.id.errors?.required && form2.controls.id.dirty">Nội dung bắt buộc!</li>
+                                        <li *ngIf="form2.controls.id.errors?.maxlength && form2.controls.id.dirty">Tối đa 30 ký tự!</li>
+                                        <li *ngIf="form2.controls.id.errors?.validateId && form2.controls.id.dirty">Viết liền không dấu, không ký tự đặt biệt</li>
+                                        <li *ngIf="idCategoryMessage">{{ idCategoryMessage }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div [ngClass]="{'has-error': (form2.controls.name.errors && form2.controls.name.dirty) || (!nameCategoryValid && form2.controls.name.dirty)  , 'has-success': !form2.controls.name.errors && nameCategoryValid}">
+                                    <input class="form-control" type="text" name="name"  formControlName="name"  placeholder="*Tên danh mục" (blur)="checkNameCategory()"/>
+                                    <ul class="help-block">
+                                        <li *ngIf="form2.controls.name.errors?.required && form2.controls.name.dirty">Nội dung bắt buộc!</li>
+                                        <li *ngIf="form2.controls.name.errors?.maxlength && form2.controls.name.dirty">Tối đa 30 ký tự!</li>
+                                        <li *ngIf="nameCategoryMessage">{{ nameCategoryMessage }}</li>
+                                    </ul>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button [disabled]="!form2.valid || !idCategoryValid || !nameCategoryValid " type="submit" name="button" class="btn btn-success" >Đồng ý</button>
+                        </div>
+                      </form>
+                      </div>
+                      
+                    </div>
+                  </div>
+                  <!-- Modal end-->
+ 
 
-  <!-- Modal -->
-  <div class="modal fade" id="editModal" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <form [formGroup] ="form3" (submit)="editCategoryFood()">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Sửa danh mục</h4>
-        </div>
-        <div class="modal-body">
-          <!-- Custom Success/Error Message -->
-          <div class="row show-hide-message">
-              <div [ngClass]="messageClass">
-                {{ message }}
-              </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    <input class="form-control" type="text" name="id" formControlName="id" value="{{ idCategoryFood }}" disabled/>
-                </div>
-            </div>
-            <div class="form-group">
-                <div [ngClass]="{'has-error': (form3.controls.name.errors && form3.controls.name.dirty) || (!nameCategoryValid && form3.controls.name.dirty)  , 'has-success': !form3.controls.name.errors && nameCategoryValid}">
-                    <input class="form-control" type="text" name="name"  formControlName="name"  value="{{ nameCategoryFood }}" (blur)="checkNameCategory2()"/>
-                    <ul class="help-block">
-                        <li *ngIf="form3.controls.name.errors?.required && form3.controls.name.dirty">Nội dung bắt buộc!</li>
-                        <li *ngIf="form3.controls.name.errors?.maxlength && form3.controls.name.dirty">Tối đa 30 ký tự!</li>
-                        <li *ngIf="nameCategoryMessage">{{ nameCategoryMessage }}</li>
-                    </ul>
-              </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button [disabled]="!nameCategoryValid " type="submit" name="button" class="btn btn-success" >Đồng ý</button>
-        </div>
-      </form>
-      </div>
-      
-    </div>
   </div>
-  <!-- Modal end-->
-  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
-      <span class="glyphicon glyphicon-plus"></span> Thêm danh mục
-    </button>
-     <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <form [formGroup] ="form2" (submit)="onCategoryFoodSubmit()">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Thêm danh mục</h4>
-        </div>
-        <div class="modal-body">
-          <!-- Custom Success/Error Message -->
-          <div class="row show-hide-message">
-              <div [ngClass]="messageClass">
-                {{ message }}
-              </div>
-            </div>
-            <div class="form-group">
-                <div [ngClass]="{'has-error': (form2.controls.id.errors && form2.controls.id.dirty) || (!idCategoryValid && form2.controls.id.dirty), 'has-success': !form2.controls.id.errors && idCategoryValid}">
-                    <input class="form-control" type="text" name="id" formControlName="id" placeholder="*Mã danh mục"  (blur)="checkIdCategory()"/>
-                    <ul class="help-block">
-                        <li *ngIf="form2.controls.id.errors?.required && form2.controls.id.dirty">Nội dung bắt buộc!</li>
-                        <li *ngIf="form2.controls.id.errors?.maxlength && form2.controls.id.dirty">Tối đa 30 ký tự!</li>
-                        <li *ngIf="form2.controls.id.errors?.validateId && form2.controls.id.dirty">Viết liền không dấu, không ký tự đặt biệt</li>
-                        <li *ngIf="idCategoryMessage">{{ idCategoryMessage }}</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="form-group">
-                <div [ngClass]="{'has-error': (form2.controls.name.errors && form2.controls.name.dirty) || (!nameCategoryValid && form2.controls.name.dirty)  , 'has-success': !form2.controls.name.errors && nameCategoryValid}">
-                    <input class="form-control" type="text" name="name"  formControlName="name"  placeholder="*Tên danh mục" (blur)="checkNameCategory()"/>
-                    <ul class="help-block">
-                        <li *ngIf="form2.controls.name.errors?.required && form2.controls.name.dirty">Nội dung bắt buộc!</li>
-                        <li *ngIf="form2.controls.name.errors?.maxlength && form2.controls.name.dirty">Tối đa 30 ký tự!</li>
-                        <li *ngIf="nameCategoryMessage">{{ nameCategoryMessage }}</li>
-                    </ul>
-              </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button [disabled]="!form2.valid || !idCategoryValid || !nameCategoryValid " type="submit" name="button" class="btn btn-success" >Đồng ý</button>
-        </div>
-      </form>
-      </div>
-      
-    </div>
-  </div>
-  <!-- Modal end-->
-  </div>
-  <div class="col-sm-9 ">
+  <div class="col-sm-9">
+      <div class="row well well-sm well-right">
       <div class="col-sm-3 col-md-3">
           <div type="button" class="thumbnail btn btn-info btn-lg" data-toggle="modal" data-target="#foodsModal" > 
             <img src="http://localhost:8080/icon/plus.png" alt="Generic placeholder image" width="140" height="140">
@@ -240,6 +244,7 @@
           <div  [routerLink]="['/food/', food.id]" class=thumbnail style="height:250px">
             <div class="custom-image ">
                     <img class="foods"src="http://localhost:8080/foods/{{ food.url_image[0] }}" width="170" height="165">
+                    <a class="dot" [ngClass]="{'active': food.actived , 'inactive': !food.actived}"></a>
             </div> 
             <div class=caption>
               <h4>{{ food.name }}</h4>
@@ -249,4 +254,6 @@
       </div>
      </div>
   </div>
+
+</div>
 </div>

@@ -1,3 +1,9 @@
+.well-left {
+    background-color: white;
+}
+.well-right {
+    background: white;
+}
 div.overflow {
     background-color: rgb(255, 255, 255);
     height: 380px;

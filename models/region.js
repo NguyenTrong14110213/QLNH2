@@ -56,6 +56,28 @@ let nameLengthChecker = (name) => {
   }
 };
 
+
+let descriptionLengthChecker = (description) => {
+  // Check if username exists
+  if (!description) {
+    return false; // Return error
+  } else {
+    // Check length of username string
+    if (description.length >200) {
+      return false; // Return error if does not meet length requirement
+    } else {
+      return true; // Return as valid username
+    }
+  }
+};
+
+const descriptionValidators = [
+  {
+    validator:nameLengthChecker,
+    message:'Mô tả món có tối đa là 200 ký tự!'
+  }
+  
+];
 const nameValidators = [
   {
     validator:nameLengthChecker,
@@ -66,6 +88,7 @@ const nameValidators = [
 const regionSchema = new Schema({
   id: { type: String,unique: true, required: true , validate:idValidators},
   name: { type: String,unique: true, required: true, validate:nameValidators},
+  description: {type: String , validate:descriptionValidators },
   actived: { type: Boolean , default: true,required: true}
 });
 

@@ -144,15 +144,40 @@ const phoneValidators = [
   }
 ];
 
+// Validate Function to check username length
+let addressLengthChecker = (address) => {
+  // Check if username exists
+  if (!address) {
+    return false; // Return error
+  } else {
+    // Check length of username string
+    if (address.length  > 100) {
+      return false; // Return error if does not meet length requirement
+    } else {
+      return true; // Return as valid username
+    }
+  }
+};
+
+// Array of Username validators
+const addressValidators = [
+  // First Username validator
+  {
+    validator: addressLengthChecker,
+    message: 'Địa chỉ có tối đa là 100 ký tự!'
+  }
+];
 // User Model Definition
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true, lowercase: true, validate: emailValidators},
   username: { type: String, required: true, unique: true, lowercase: true, validate: usernameValidators },
   password: { type: String, required: true },
   fullname: { type: String,required: true, validate:fullnameValidators},
+  birthdate:{ type: Date, required: true },
   gender: { type: Boolean,required: true},
   identity_card: { type: Number,required: true, validate:identity_cardValidators},
   phone: { type: Number , required: true, validate:phoneLengthChecker},
+  address:{ type: String, required: true, validate:addressValidators},
   url_profile: { type: String ,required: true},
   type_account: { type:Number,required: true },
   actived: { type: Boolean , default: true, required: true}

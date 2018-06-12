@@ -23,6 +23,8 @@ export class ProfileEmployeeComponent implements OnInit {
   gender;
   identity_card;
   phone;
+  address;
+  birthdate;
   type_account;
   actived;
   checkChange =false;
@@ -68,6 +70,13 @@ export class ProfileEmployeeComponent implements OnInit {
         Validators.required,
         Validators.maxLength(13),
         this.validateNumber
+      ])],
+      birthdate:['', Validators.compose([
+        Validators.required
+      ])],
+      address:['', Validators.compose([
+        Validators.required,
+        Validators.maxLength(100)
       ])],
       url_profile:'',
       type_account:''
@@ -134,6 +143,15 @@ export class ProfileEmployeeComponent implements OnInit {
     this.phone = this.form.get('phone').value;
     this.checkChange =true;
   } 
+  changeAddress(){
+    this.address =this.form.get('address').value;
+    this.checkChange =true;
+  }
+  changeBirthDate(){
+    this.birthdate =this.form.get('birthdate').value;
+    console.log(this.birthdate);
+    this.checkChange =true;
+  }
   changePassword(){
     this.checkChange =true;
   }
@@ -145,7 +163,9 @@ export class ProfileEmployeeComponent implements OnInit {
         phone: this.phone,
         gender: this.gender,
         fullname: this.fullname,
-        type_account: this.type_account
+        type_account: this.type_account,
+        address: this.address,
+        birthdate: this.birthdate
       }
       console.log(employee);
   
@@ -224,6 +244,8 @@ export class ProfileEmployeeComponent implements OnInit {
           this.identity_card =this.employee.identity_card;
           this.email =this.employee.email;
           this.gender =this.employee.gender;
+          this.address= this.employee.address;
+          this.birthdate =this.employee.birthdate;
       }
   ngOnInit() {
     this.currentUrl =this.activatedRouter.snapshot.params;

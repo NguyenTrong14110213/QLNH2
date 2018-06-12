@@ -11,6 +11,7 @@ import { MenuManagementComponent } from './components/menu-management/menu-manag
 import { TableManagementComponent } from './components/table-management/table-management.component';
 import { EmployeeManagerComponent } from './components/employee-manager/employee-manager.component';
 import { ProfileEmployeeComponent } from './components/profile-employee/profile-employee.component';
+import { PayComponent } from './components/pay/pay.component';
 
 const appRoutes:Routes=[
     { path:'', component: HomeComponent },
@@ -22,6 +23,7 @@ const appRoutes:Routes=[
     { path:'table_management', component:TableManagementComponent, canActivate:[AuthGuard]},
     { path:'emloyee_management', component:EmployeeManagerComponent, canActivate:[AuthGuard]},
     { path:'profile_emloyee/:username', component:ProfileEmployeeComponent, canActivate:[AuthGuard]},
+    { path:'pay', component:PayComponent, canActivate:[AuthGuard]},
     { path:'**', component:HomeComponent}
 ];
 
