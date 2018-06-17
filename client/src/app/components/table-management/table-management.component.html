@@ -190,7 +190,7 @@
       <div class="col-sm-3 col-md-3">
           <div class="dropdown">
               <div class=thumbnail style="height:220px">
-                  <div class="custom-image ">
+                  <div class="custom-image">
                           <img class="foods"src="http://localhost:8080/icon/table.png" width="170" height="145">
                           <a class="dot" [ngClass]="{'active': table.actived , 'inactive': !table.actived}"></a>
                   </div> 
@@ -199,7 +199,8 @@
                   </div>
                 </div>
               <div class="dropdown-content dropdown-menu">
-                  <a>Tạm ngưng</a>
+                  <a *ngIf="table.actived"  (click)="changeActived(table.id, false)" >Tạm ngưng</a>
+                  <a *ngIf="!table.actived" (click)="changeActived(table.id, true)" >Mở bàn</a>
                   <a (click)="getTableId(table.id)" data-toggle="modal" data-target="#confirmModal2">Xóa</a>
               </div>
                 <!-- Modal -->

@@ -32,7 +32,10 @@ export class TableService {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.get(this.domain + 'table/checkIdTable/' + id ,this.options).map(res=>res.json());
   }
-
+  editActivedTable(table) {
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.put(this.domain + 'authentication/updateActivedTable/', table, this.options).map(res => res.json());
+  }
   deleteTable(id) {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.delete(this.domain + 'table/deleteTable/' + id, this.options).map(res => res.json());

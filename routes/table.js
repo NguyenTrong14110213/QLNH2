@@ -2,8 +2,8 @@ const User = require('../models/user');// Import User Model Schema
 const jwt =require('jsonwebtoken'); // Các phương tiện đại diện cho các yêu cầu được chuyển giao giữa hai bên hợp lý, an toàn với URL.
 const config =require('../config/database');// Import cấu hình database 
 const Table =require('../models/tables');
-module.exports =(router)=>{
 
+module.exports =(router,io)=>{
     
     router.post('/createTable',(req, res)=>{
        
@@ -13,11 +13,11 @@ module.exports =(router)=>{
             if(!req.body.region_id){
                 res.json({success: false, message: 'Chưa nhập mã khu vực!'});
             }else{
-                const region = new Table({
+                const table = new Table({
                     id: req.body.id,
                     region_id: req.body.region_id
                 });
-                region.save((err)=>{
+                table.save((err)=>{
                     if(err){
                         if(err.code===11000)
                         {
@@ -39,7 +39,8 @@ module.exports =(router)=>{
                         }
                         
                     }else{
-                        res.json({success: true, message: 'Đã lưu bàn!'})
+                        res.json({success: true, message: 'Đã lưu bàn!'});
+                        io.sockets.emit("server-add-table", {id: table.id});
                     }
                 })
             }
@@ -110,6 +111,7 @@ module.exports =(router)=>{
                                 res.json({ success: false, message: err }); // Return error message
                                 } else {
                                     res.json({ success: true, message: 'Bàn đã được xóa.' }); // Return success message
+                                    io.sockets.emit("server-delete-table", {id: req.params.id});
                                 }
                             });
                         }
@@ -119,8 +121,34 @@ module.exports =(router)=>{
             })
         }
       });
-
-    
-
+      router.put('/updateActivedTable', (req, res) => {
+        if (!req.body.id) {
+          res.json({ success: false, message: 'Chưa cung cấp mã bàn' }); 
+        } else {
+          Table.findOne({ id: req.body.id }, (err, table) => {
+            if (err) {
+              res.json({ success: false, message: err }); // Return error message
+            } else {
+              if (!table) {
+                res.json({ success: false, message: 'Không tìm thấy bàn.' }); // Return error message
+              } else {
+                table.actived = req.body.actived; 
+                table.save((err) => {
+                          if (err) {
+                            if (err.errors) {
+                                res.json({ success: false, message: err });
+                            } else {
+                              res.json({ success: false, message: err }); // Return error message
+                            }
+                          } else {
+                            res.json({ success: true, message: 'Trạng thái đã được cập nhật!' }); // Return success message
+                            io.sockets.emit("server-update-active-table", {id: table.id});
+                        }
+                    });
+                }
+              }
+          });
+        }
+      });
     return router;
 };

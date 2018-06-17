@@ -3,7 +3,7 @@ const jwt =require('jsonwebtoken'); // Các phương tiện đại diện cho c�
 const Region =require('../models/region');// Import Blog Model Schema
 const config =require('../config/database');// Import cấu hình database 
 const Table =require('../models/tables');
-module.exports =(router)=>{
+module.exports =(router,io)=>{
 
     
     // tạo một Category_food  mới 
@@ -44,7 +44,8 @@ module.exports =(router)=>{
                         }
                         
                     }else{
-                        res.json({success: true, message: 'Đã lưu khu vực!'})
+                        res.json({success: true, message: 'Đã lưu khu vực!'});
+                        io.sockets.emit("server-add-region", {id: region.id});
                     }
                 })
             }
@@ -126,6 +127,7 @@ module.exports =(router)=>{
                                 res.json({ success: false, message: err }); // Return error message
                                 } else {
                                     res.json({ success: true, message: 'Khu vực đã được xóa.' }); // Return success message
+                                    io.sockets.emit("server-delete-region", {id: req.params.id});
                                 }
                             });
                         }
@@ -159,7 +161,8 @@ module.exports =(router)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Khu vực dã được cập nhật!' }); // Return success message
-                          }
+                            io.sockets.emit("server-update-region", {id: region.id});
+                        }
                     });
                 }
               }

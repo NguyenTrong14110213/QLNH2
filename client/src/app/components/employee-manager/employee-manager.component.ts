@@ -148,7 +148,6 @@ export class EmployeeManagerComponent implements OnInit {
       this.checkChangeGender= false;
       this.checkChangeTypeAccount= false;
       this.type_account=this.form.get('type_account').value;
-      this.authService.socket.emit("client-loadEmployee","them nhan vien");
       setTimeout(()=>{
         this.form.reset(); // Reset all form fields
         this.messageClass= false;
@@ -229,7 +228,6 @@ deleteEmployee(){
       this.messageClass = 'alert alert-danger'; // Return error bootstrap class
       this.message = data.message; // Return error message
     } else {
-      this.authService.socket.emit("client-loadEmployee","xoa nhan vien");
       this.messageClass = 'alert alert-success'; // Return bootstrap success class
       this.message = data.message; // Return success message
       // After two second timeout, route to blog page
@@ -241,10 +239,6 @@ deleteEmployee(){
   });
 }
   ngOnInit() {
-    this.authService.socket.on("server-loadEmployee",(data)=>{
-      this.getAllEmployees(this.type_account);
-      console.log(data);
-    }); 
   }
 
 }

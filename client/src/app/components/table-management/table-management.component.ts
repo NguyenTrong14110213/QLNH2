@@ -188,7 +188,6 @@ export class TableManagementComponent implements OnInit {
   getRegionId(region_id){
     this.getAllTable(region_id);
     this.region_id =region_id;
-    console.log(this.region_id);
   }
 
   getRegionId2(region_id2){
@@ -259,6 +258,29 @@ export class TableManagementComponent implements OnInit {
       }, 2000);
     })
   }
+  changeActived(id, active){
+    console.log(id + " " +active);
+    const table = {  
+      id: id,
+      actived: active
+    }
+        this.tableService.editActivedTable(table).subscribe(data => {
+          if (!data.success) {
+            this.messageClass = 'alert alert-danger';
+            this.message = data.message;
+          } else {
+        //   this.authService.socket.emit("client-loadTables","cap nhat trang thai");
+            this.messageClass = 'alert alert-success';
+            this.message = data.message;
+            // Clear form data after two seconds
+            setTimeout(() => {
+            //  this.form.reset(); // Reset all form fields
+              this.messageClass = false; // Erase error/success message
+              this.message='';
+            }, 2000);
+          }
+        });
+  }
   getAllRegion(){
     this.regionService.getAllRegion().subscribe(data=>{
       this.regions =data.region;
@@ -267,18 +289,28 @@ export class TableManagementComponent implements OnInit {
   getAllTable(region_id){
     this.tableService.getAllTables(region_id).subscribe(data=>{
       this.tables =data.tables;
-      console.log(this.tables);
     })
   }
   ngOnInit() {
     this.getAllRegion();
     this.getAllTable(0);
-    this.authService.socket.on("server-loadTables", (data)=>{
-      console.log(data);
+    this.authService.socket.on("server-add-table", (data)=>{
       this.getAllTable(this.region_id);
     });
-    this.authService.socket.on("server-loadRegions", (data)=>{
-      console.log(data);
+    this.authService.socket.on("server-update_active-table", (data)=>{
+      this.getAllTable(this.region_id);
+    });
+    this.authService.socket.on("server-delete-table", (data)=>{
+      this.getAllTable(this.region_id);
+    });
+
+    this.authService.socket.on("server-add-region", (data)=>{
+      this.getAllRegion();
+    });
+    this.authService.socket.on("server-update-region", (data)=>{
+      this.getAllRegion();
+    });
+    this.authService.socket.on("server-delete-region", (data)=>{
       this.getAllRegion();
     });
   }

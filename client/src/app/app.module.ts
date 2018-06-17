@@ -23,6 +23,10 @@ import { TableService } from './services/table.service';
 import { EmployeeManagerComponent } from './components/employee-manager/employee-manager.component';
 import { ProfileEmployeeComponent } from './components/profile-employee/profile-employee.component';
 import { PayComponent } from './components/pay/pay.component';
+import { AdminGuard } from './guards/admin.guard';
+import { ManagerGuard } from './guards/manager.guard';
+import { CashierGuard } from './guards/cashier.guard';
+import { CookGuard } from './guards/cook.guard';
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,7 +49,7 @@ import { PayComponent } from './components/pay/pay.component';
     AppRoutingModule,
     FlashMessagesModule
   ],
-  providers: [AuthService, AuthGuard, NotAuthGuard, CategoryFoodService, FoodService, RegionService, TableService],
+  providers: [AuthService, AuthGuard, NotAuthGuard,AdminGuard, ManagerGuard,CashierGuard,CookGuard, CategoryFoodService, FoodService, RegionService, TableService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

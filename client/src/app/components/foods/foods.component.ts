@@ -103,22 +103,21 @@ export class FoodsComponent implements OnInit {
   }
   deleteImage(id, url_image) {
     console.log(id + " " + url_image);
-    this.foodService.deleteImage(id, url_image).subscribe(data => {
-      if (!data.success) {
-        this.messageClass = 'alert alert-danger';
-        this.message = data.message;
-      } else {
-        this.authService.socket.emit("client-loadFoods", "xóa ảnh.");
-        this.messageClass = 'alert alert-success';
-        this.message = data.message;
-        setTimeout(() => {
-          //  this.form.reset(); // Reset all form fields
-          this.messageClass = false; // Erase error/success message
-          this.message = '';
-        }, 2000);
-      }
+    // this.foodService.deleteImage(id, url_image).subscribe(data => {
+    //   if (!data.success) {
+    //     this.messageClass = 'alert alert-danger';
+    //     this.message = data.message;
+    //   } else {
+    //     this.messageClass = 'alert alert-success';
+    //     this.message = data.message;
+    //     setTimeout(() => {
+    //       //  this.form.reset(); // Reset all form fields
+    //       this.messageClass = false; // Erase error/success message
+    //       this.message = '';
+    //     }, 2000);
+    //   }
 
-    });
+    // });
   }
   changeName() {
     this.name = this.form.get('name').value;
@@ -146,13 +145,19 @@ export class FoodsComponent implements OnInit {
     this.checkChange = true;
   }
 
-  getValue() {
+  getValue(data) {
+    this.food = data.food;
+    this.images = data.food.url_image;
+    this.selectedState = data.food.category_id;
+
     this.name = this.food.name;
     this.category_id = this.food.category_id;
     this.description = this.food.description;
     this.discount = this.food.discount;
     this.price_unit = this.food.price_unit;
     this.unit = this.food.unit
+
+    
   }
   editFood() {
     const food = {
@@ -171,7 +176,6 @@ export class FoodsComponent implements OnInit {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
       } else {
-        this.authService.socket.emit("client-loadFoods", "sửa thông tin món.");
         this.messageClass = 'alert alert-success';
         this.message = data.message;
         this.checkChange = false;
@@ -216,7 +220,6 @@ export class FoodsComponent implements OnInit {
             this.message = data.message;
           } else {
             this.selectedImage = false;
-            this.authService.socket.emit("client-loadFoods", "thêm ảnh");
             this.message = data.message;
             setTimeout(() => {
               //  this.form.reset(); // Reset all form fields
@@ -240,7 +243,6 @@ export class FoodsComponent implements OnInit {
             this.messageClass = 'alert alert-danger';
             this.message = data.message;
           } else {
-            this.authService.socket.emit("client-loadFood","cap nhat trang thai");
             this.messageClass = 'alert alert-success';
             this.message = data.message;
             this.checkChange = false;
@@ -257,19 +259,38 @@ export class FoodsComponent implements OnInit {
   ngOnInit() {
     this.currentUrl = this.activatedRouter.snapshot.params;
     this.foodService.getFood(this.currentUrl.id).subscribe(data => {
-      this.food = data.food;
-      this.images = data.food.url_image;
-      this.selectedState = data.food.category_id;
-      this.getValue();
+
+      this.getValue(data);
     });
-    this.authService.socket.on("server-loadFoods", (data) => {
+    this.authService.socket.on("server-add-food", (data) => {
       this.foodService.getFood(this.currentUrl.id).subscribe(data => {
-        this.food = data.food;
-        this.images = data.food.url_image;
-        this.selectedState = data.food.category_id;
-        this.getValue();
+        this.getValue(data);
       });
-      console.log(data);
+    });
+    this.authService.socket.on("server-update-food", (data) => {
+      this.foodService.getFood(this.currentUrl.id).subscribe(data => {
+        this.getValue(data);
+      });
+    });
+    this.authService.socket.on("server-update-active-food", (data) => {
+      this.foodService.getFood(this.currentUrl.id).subscribe(data => {
+        this.getValue(data);
+      });
+    });
+    this.authService.socket.on("server-delete-food", (data) => {
+      this.foodService.getFood(this.currentUrl.id).subscribe(data => {
+        this.getValue(data);
+      });
+    });
+    this.authService.socket.on("server-delete-image-food", (data) => {
+      this.foodService.getFood(this.currentUrl.id).subscribe(data => {
+        this.getValue(data);
+      });
+    });
+    this.authService.socket.on("server-add-image-food", (data) => {
+      this.foodService.getFood(this.currentUrl.id).subscribe(data => {
+        this.getValue(data);
+      });
     });
     this.getAllCategoryFoods();
   }

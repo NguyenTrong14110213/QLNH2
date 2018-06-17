@@ -4,11 +4,20 @@ const mongoose =require('mongoose');
 const config = require('./config/database');
 const path = require('path');
 const router= express.Router();
-const authentication = require('./routes/authentication')(router);
-const categoryFood = require('./routes/categoryFood')(router);
-const foods = require('./routes/foods')(router);
-const region = require('./routes/region')(router);
-const table = require('./routes/table')(router);
+
+const server = app.listen(8080,()=>{
+    console.log('Listening on port 8080');
+})
+
+
+const socket = require("socket.io");
+const io = socket(server);
+
+const authentication = require('./routes/authentication')(router,io);
+const categoryFood = require('./routes/categoryFood')(router,io);
+const foods = require('./routes/foods')(router,io);
+const region = require('./routes/region')(router,io);
+const table = require('./routes/table')(router,io);
 const bodyParser =require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
@@ -66,36 +75,30 @@ app.post("/uploadImageFood",(req, res) => {
 });
 
 
-const server = app.listen(8080,()=>{
-    console.log('Listening on port 8080');
-})
-
-const socket = require("socket.io");
-const io = socket(server);
 
 io.on("connection", function(socket){
-    console.log("co nguoi ket noi " + socket.id);
+     console.log("co nguoi ket noi " + socket.id);
     
-    socket.on("client-loadCategoryFoods",(data)=>{
-        console.log(data);
-        io.sockets.emit("server-loadCategoryFoods", 'Cap nhat danh muc');
-    });
-    socket.on("client-loadFoods",(data)=>{
-        console.log(data);
-        io.sockets.emit("server-loadFoods", 'Cap nhat mon');
-    });
-    socket.on("client-loadRegions", (data)=>{
-        console.log(data);
-        io.sockets.emit("server-loadRegions", 'Cap nhan khu vuc');
-    });
-    socket.on("client-loadTables", (data)=>{
-        console.log(data);
-        io.sockets.emit("server-loadTables", 'Cap nhan ban');
-    })
-    socket.on("client-loadEmployee", (data)=>{
-        console.log(data);
-        io.sockets.emit("server-loadEmployee", 'Cap nhan nhan vien');
-    })
+    // socket.on("client-loadCategoryFoods",(data)=>{
+    //     console.log(data);
+    //     io.sockets.emit("server-loadCategoryFoods", 'Cap nhat danh muc');
+    // });
+    // socket.on("client-loadFoods",(data)=>{
+    //     console.log(data);
+    //     io.sockets.emit("server-loadFoods", 'Cap nhat mon');
+    // });
+    // socket.on("client-loadRegions", (data)=>{
+    //     console.log(data);
+    //     io.sockets.emit("server-loadRegions", 'Cap nhan khu vuc');
+    // });
+    // socket.on("client-loadTables", (data)=>{
+    //     console.log(data);
+    //     io.sockets.emit("server-loadTables", 'Cap nhan ban');
+    // })
+    // socket.on("client-loadEmployee", (data)=>{
+    //     console.log(data);
+    //     io.sockets.emit("server-loadEmployee", 'Cap nhan nhan vien');
+    // })
 });
 
-
+module.exports =io;

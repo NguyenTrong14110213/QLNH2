@@ -253,6 +253,7 @@ export class ProfileEmployeeComponent implements OnInit {
       this.employee =data.employee;
       this.selectedType =this.employee.type_account;
       this.selectedGender= this.employee.gender;
+
       this.getValue();
     });
 

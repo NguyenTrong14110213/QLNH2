@@ -3,7 +3,7 @@ const jwt =require('jsonwebtoken'); // Các phương tiện đại diện cho c�
 const CategoryFood =require('../models/categoryFood');// Import Blog Model Schema
 const config =require('../config/database');// Import cấu hình database 
 const Food =require('../models/foods');
-module.exports =(router)=>{
+module.exports =(router,io)=>{
 
     // tạo một Category_food  mới 
     router.post('/createCategoryFood',(req, res)=>{
@@ -43,7 +43,8 @@ module.exports =(router)=>{
                         }
                         
                     }else{
-                        res.json({success: true, message: 'Đã lưu danh mục!'})
+                        res.json({success: true, message: 'Đã lưu danh mục!'});
+                        io.sockets.emit("server-add-categoryFood", {id: categoryFood.id});
                     }
                 })
             }
@@ -126,6 +127,7 @@ module.exports =(router)=>{
                                 res.json({ success: false, message: err }); // Return error message
                                 } else {
                                     res.json({ success: true, message: 'Danh mục đã được xóa.' }); // Return success message
+                                    io.sockets.emit("server-delete-categoryFood", {id: req.params.id});
                                 }
                             });
                         }
@@ -159,7 +161,8 @@ module.exports =(router)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Danh mục dã được cập nhật!' }); // Return success message
-                          }
+                            io.sockets.emit("server-update-categoryFood", {id: ctegoryFood.id});
+                        }
                     });
                 }
               }

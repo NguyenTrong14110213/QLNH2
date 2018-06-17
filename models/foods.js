@@ -113,10 +113,11 @@ const foodsSchema = new Schema({
   actived: { type: Boolean , default: false},
   date_created: { type: Date, default: Date.now() ,required: true},
   category_id: { type: String, required: true},
+  category_name: { type: String, required: true},
   description: {type: String , validate:descriptionValidators },
-  discount: { type: Number ,required:true},
-  inventory: { type :Number , default: 0},
-  price_unit: { type: Number,required:true},
+  discount: { type: String },
+  inventory: { type :String},
+  price_unit: { type: String},
   unit: {type:String,required:true, validate:unitValidators},
   url_image:{type: Array }
 });

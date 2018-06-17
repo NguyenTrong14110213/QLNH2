@@ -8,10 +8,10 @@ import * as io from 'socket.io-client';
 export class AuthService {
 
   domain ="http://localhost:8080/";
-  authToken;
-  user;
-  options;
-  socket;
+   authToken;
+   user;
+   options;
+  socket = io.connect(this.domain);
   constructor(
     private http: Http
   ) { }
@@ -24,6 +24,9 @@ export class AuthService {
       })
     });
   }
+  // loadSocket(){
+  //   this.socket = localStorage.getItem('socket');
+  // }
   loadToken(){
     this.authToken = localStorage.getItem('token');
   }
@@ -53,9 +56,10 @@ export class AuthService {
   storeUserData(token, user){
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
+    
     this.authToken= token;
     this.user =user;
-    this.socket = io.connect(this.domain);
+
   }
   getProfile(){
     this.createAuthenticationHeaders();
@@ -88,5 +92,45 @@ export class AuthService {
   loggedIn(){
     return tokenNotExpired();
   }
+ 
+  accountCustomer(){
+    if(this.loggedIn()){
+      if(JSON.parse(localStorage.getItem('user')).type_account == 0) return true;
+      else return false;
+    }  else return false;
+ 
+  }
+  accountStaff(){
+    if(this.loggedIn()){
+      if(JSON.parse(localStorage.getItem('user')).type_account == 1) return true;
+      else return false;
+    }  else return false;
+
+  }
+  accountCashier(){
+    if(this.loggedIn()){
+      if(JSON.parse(localStorage.getItem('user')).type_account == 2) return true;
+      else return false;
+    }  else return false;
+  }
+  accountCook(){
+    if(this.loggedIn()){
+      if(JSON.parse(localStorage.getItem('user')).type_account == 3) return true;
+      else return false;
+    }  else return false;
+  }
+  accountManager(){
+    if(this.loggedIn()){
+      if(JSON.parse(localStorage.getItem('user')).type_account == 4) return true;
+      else return false;
+    }  else return false;
+  }
+  accountAdmin(){
+    if(this.loggedIn()){
+      if(JSON.parse(localStorage.getItem('user')).type_account == 5) return true;
+      else return false;
+    }  else return false;
+  }
+
 }
  

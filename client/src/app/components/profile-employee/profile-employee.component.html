@@ -101,7 +101,7 @@
                     </div>
                     <!-- Birthdate -->
                     <div class="form-group">
-                        <input type="date" name="birthdate" class="form-control" autocomplete="off" formControlName="birthdate" value="{{ employee.birthdate }}" (change)="changeBirthDate()">
+                        <input type="date" name="birthdate" class="form-control" autocomplete="off" formControlName="birthdate" value="{{ employee.birthdate | date:'yyyy-MM-dd' }}" (change)="changeBirthDate()">
                     </div>
                     <!-- Identity_card Input -->
                     <div class="form-group">
@@ -177,7 +177,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <button [disabled]="!checkChange || !matchingPasswords" name="button" class="btn btn-success" (click)="editPassword()">Lưu mật khẩu mới</button>
+                        <button [disabled]="!checkChange || form.errors?.matchingPasswords" name="button" class="btn btn-success" (click)="editPassword()">Lưu mật khẩu mới</button>
                     </div>
                     <div class="modal-footer">
                         <button [disabled]="!checkChange" type="submit" name="button" class="btn btn-success">Lưu thay đổi</button>

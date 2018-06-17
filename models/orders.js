@@ -67,14 +67,16 @@ let descriptionLengthChecker = (description) => {
     
   ];
 
-const tableSchema = new Schema({
+const orderSchema = new Schema({
   id: { type: String,unique: true, required: true , validate:idValidators },
-  username: { type: String, required: true },
+  customer_name: { type: String, required: true },
+  waiter_username : { type: String, required: true },
+  waiter_fullname : { type: String, required: true },
+  cashier_username : { type: String },
+  cashier_fullname : { type: String },
   flag_status: { type: Number , required: true },
   time_creadted: { type: Date, default: Date.now() ,required: true },
-  time_begin:{type: Date, required: true },
-  time_end:{type: Date, required: true },
-  paid_cost:{type: Number, required: true },
+  paid_cost:{type: Number},
   final_cost:{type: Number, required: true},
   description:{type: String, required: true, validate:descriptionValidators},
   detail_orders:[{
@@ -83,7 +85,6 @@ const tableSchema = new Schema({
     price_unit:{type: String, required:true},
     discount:{type: String, required:true },
     count:{type: String, required:true },
-    compensation:{type: String, required:true},
     status:{type: String, required:true}
   }],
   tables:{ type: Array }

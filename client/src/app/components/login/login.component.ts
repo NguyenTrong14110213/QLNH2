@@ -54,13 +54,13 @@ export class LoginComponent implements OnInit {
         this.messageClass = 'alert alert-success';
         this.message= data.message;
         this.authService.storeUserData(data.token, data.user);
-        setTimeout(()=>{
+     
           if(this.previousUrl){
             this.router.navigate([this.previousUrl]);
           }else{
             this.router.navigate(['/foods']);
           }
-        }, 2000);
+  
       }
     })
   }

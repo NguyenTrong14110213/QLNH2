@@ -4,7 +4,7 @@ const Food =require('../models/foods');// Import Blog Model Schema
 const config =require('../config/database');// Import cấu hình database 
 const fs = require('fs');
 
-module.exports =(router)=>{
+module.exports =(router,io)=>{
 
     // tạo một Category_food  mới 
     router.post('/createFood',(req, res)=>{        
@@ -27,7 +27,9 @@ module.exports =(router)=>{
                                     id: req.body.id,
                                     name: req.body.name,
                                     category_id: req.body.category_id,
+                                    category_name: req.body.category_name,
                                     description: req.body.description,
+                                    inventory:req.body.inventory,
                                     discount: req.body.discount,                                    
                                     price_unit: req.body.price_unit,
                                     unit: req.body.unit,
@@ -80,7 +82,8 @@ module.exports =(router)=>{
                                             }
                                         }
                                     }else{
-                                        res.json({success: true, message: 'Đã lưu món ăn!'})
+                                        res.json({success: true, message: 'Đã lưu món ăn!'});
+                                        io.sockets.emit("server-add-food", {id: food.id});
                                     }
                                 })
                             }
@@ -186,11 +189,14 @@ module.exports =(router)=>{
                 res.json({ success: false, message: 'Không tìm thấy món.' }); // Return error message
               } else {
                 food.name = req.body.name; // Save latest blog title
-                food.category_id= req.body.category_id,
-                food.description= req.body.description,
-                food.discount= req.body.discount,                                    
-                food.price_unit= req.body.price_unit,
-                food.unit= req.body.unit
+                food.category_id= req.body.category_id;
+                food.description= req.body.description;
+                food.discount= req.body.discount;                              
+                food.price_unit= req.body.price_unit;
+                food.unit= req.body.unit;
+                food.inventory = req.body.inventory;
+                food.category_name =req.body.category_name;
+
                 food.save((err) => {
                           if (err) {
                             if (err.errors) {
@@ -200,6 +206,7 @@ module.exports =(router)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Thông tin món ăn dã được cập nhật!' }); // Return success message
+                            io.sockets.emit("server-update-food", {id: food.id});
                           }
                     });
                 }
@@ -234,6 +241,7 @@ module.exports =(router)=>{
                                         console.log('path/file.txt was deleted');
                                     });
                                   res.json({ success: true, message: 'Xóa ảnh thành công!' }); // Return success message
+                                  io.sockets.emit("server-delete-image-food", {id: food.id});
                                 }
                               });
 
@@ -264,7 +272,8 @@ module.exports =(router)=>{
                                 res.json({ success: false, message: 'Something went wrong.' }); // Return error message
                               } else {
                                 res.json({ success: true, message: 'Thêm ảnh thành công!' }); // Return success message
-                              }
+                                io.sockets.emit("server-add-image-food", {id: food.id});
+                            }
                             });
                     }
                 }
@@ -292,7 +301,8 @@ module.exports =(router)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Trạng thái đã được cập nhật!' }); // Return success message
-                          }
+                            io.sockets.emit("server-update-ative-food", {id: food.id});
+                        }
                     });
                 }
               }

@@ -218,7 +218,6 @@ export class MenuManagementComponent implements OnInit {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
       } else {
-        this.authService.socket.emit("client-loadCategoryFoods","tao danh muc");
         this.messageClass = 'alert alert-success';
         this.message = data.message;
         // Clear form data after two seconds
@@ -258,6 +257,7 @@ export class MenuManagementComponent implements OnInit {
           id: this.form.get('id').value,
           name: this.form.get('name').value,
           category_id:this.form.get('category_id').value,
+          category_name:'name',
           description: this.form.get('description').value,
           discount: this.form.get('discount').value,
           price_unit: this.form.get('price_unit').value,
@@ -268,7 +268,6 @@ export class MenuManagementComponent implements OnInit {
           if (!data.success) {
             this.message2 = data.message;
           } else {
-            this.authService.socket.emit("client-loadFoods","tao mon");
             this.message2 = data.message;
             // Clear form data after two seconds
             setTimeout(() => {
@@ -290,7 +289,6 @@ export class MenuManagementComponent implements OnInit {
         this.messageClass0 = 'alert alert-danger'; // Return error bootstrap class
         this.message0 = data.message; // Return error message
       } else {
-        this.authService.socket.emit("client-loadCategoryFoods","cập nhật danh mục");
         this.messageClass0 = 'alert alert-success'; // Return bootstrap success class
         this.message0 = data.message; // Return success message
         // After two second timeout, route to blog page
@@ -317,7 +315,6 @@ export class MenuManagementComponent implements OnInit {
         this.messageClass = 'alert alert-danger';
         this.message = data.message;
       } else {
-       this.authService.socket.emit("client-loadCategoryFoods","xóa danh mục.");
         this.messageClass = 'alert alert-success';
         this.message = data.message;
         // Clear form data after two seconds
@@ -331,13 +328,24 @@ export class MenuManagementComponent implements OnInit {
   ngOnInit() {
     this.getAllCategoryFoods();
     this.getAllFoods(0);
-    this.authService.socket.on("server-loadCategoryFoods",(data)=>{
+    this.authService.socket.on("server-add-categoryFood",(data)=>{
       this.getAllCategoryFoods();
-      console.log(data);
     });
-    this.authService.socket.on("server-loadFoods",(data)=>{
+    this.authService.socket.on("server-delete-categoryFood",(data)=>{
+      this.getAllCategoryFoods();
+    });
+    this.authService.socket.on("server-update-categoryFood",(data)=>{
+      this.getAllCategoryFoods();
+    });
+
+    this.authService.socket.on("server-add-food",(data)=>{
       this.getAllFoods(this.category_id);
-      console.log(data);
+    });
+    this.authService.socket.on("server-delete-food",(data)=>{
+      this.getAllFoods(this.category_id);
+    });
+    this.authService.socket.on("server-update-food",(data)=>{
+      this.getAllFoods(this.category_id);
     });
   }
 

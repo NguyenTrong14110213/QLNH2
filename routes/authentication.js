@@ -2,7 +2,7 @@ const User =require('../models/user');
 const jwt = require('jsonwebtoken');
 const config =require('../config/database');
 
-module.exports=(router)=>{
+module.exports=(router,io)=>{
     router.post('/register', (req,res)=>{
         if(!req.body.email){
             res.json({success:false, message:'Bạn phải nhập e-mail'});
@@ -69,6 +69,7 @@ module.exports=(router)=>{
                                             }
                                         }else{
                                             res.json({ success:true, message:'Đăng ký thành công!'});
+                                            io.sockets.emit('server-register', {username: user.username})
                                         }
                                     });
                             
@@ -173,8 +174,9 @@ module.exports=(router)=>{
                             if(!validPassword){
                                 res.json({success:false, message:'Sai mật khẩu.'});
                             }else{
-                                const token = jwt.sign({ userId: user._id }, config.secret, {expiresIn: '24h'});
-                                res.json({success:true, message:'Đăng nhập thành công!', token:token, user:{username: user.username}});
+                                const token = jwt.sign({ userId: user._id }, config.secret);
+                                res.json({success:true, message:'Đăng nhập thành công!', token:token,
+                                 user:{username: user.username, type_account: user.type_account}});
                             }
                         }
                     }
@@ -199,6 +201,7 @@ module.exports=(router)=>{
                                 res.json({ success: false, message: err }); // Return error message
                                 } else {
                                     res.json({ success: true, message: 'Nhân viên đã được xóa.' }); // Return success message
+                                    io.sockets.emit("server-delete-employee", {username: req.params.username});
                                 }
                             });
                         }
@@ -253,8 +256,10 @@ module.exports=(router)=>{
                               res.json({ success: false, message: err }); // Return error message
                             }
                           } else {
-                            res.json({ success: true, message: 'Thông tin nhân viên đã được cập nhật!' }); // Return success message
-                          }
+                              //anh muon truyen nguyen cai object user hay la chi username
+                            res.json({ success: true, message: 'Thông tin nhân viên đã được cập nhật!'}); // Return success message
+                            io.sockets.emit("server-update-employee", {username: user.username});
+                        }
                     });
                 }
               }

@@ -12,18 +12,22 @@ import { TableManagementComponent } from './components/table-management/table-ma
 import { EmployeeManagerComponent } from './components/employee-manager/employee-manager.component';
 import { ProfileEmployeeComponent } from './components/profile-employee/profile-employee.component';
 import { PayComponent } from './components/pay/pay.component';
+import { AdminGuard } from './guards/admin.guard';
+import { CashierGuard } from './guards/cashier.guard';
+import { CookGuard } from './guards/cook.guard';
+import { ManagerGuard } from './guards/manager.guard';
 
 const appRoutes:Routes=[
     { path:'', component: HomeComponent },
-    { path:'food/:id', component:FoodsComponent, canActivate:[AuthGuard]},
+    { path:'food/:id', component:FoodsComponent, canActivate:[AdminGuard||CookGuard]},
     { path:'register', component: RegisterComponent, canActivate:[NotAuthGuard]},
     { path:'login', component:LoginComponent, canActivate:[NotAuthGuard]},
     { path:'profile', component:ProfileComponent, canActivate:[AuthGuard]},
-    { path:'menu_management', component:MenuManagementComponent, canActivate:[AuthGuard]},
-    { path:'table_management', component:TableManagementComponent, canActivate:[AuthGuard]},
-    { path:'emloyee_management', component:EmployeeManagerComponent, canActivate:[AuthGuard]},
-    { path:'profile_emloyee/:username', component:ProfileEmployeeComponent, canActivate:[AuthGuard]},
-    { path:'pay', component:PayComponent, canActivate:[AuthGuard]},
+    { path:'menu_management', component:MenuManagementComponent, canActivate:[AdminGuard||CookGuard||ManagerGuard]},
+    { path:'table_management', component:TableManagementComponent, canActivate:[AdminGuard || ManagerGuard]},
+    { path:'emloyee_management', component:EmployeeManagerComponent, canActivate:[AdminGuard]},
+    { path:'profile_emloyee/:username', component:ProfileEmployeeComponent, canActivate:[AdminGuard]},
+    { path:'pay', component:PayComponent, canActivate:[AdminGuard||CashierGuard]},
     { path:'**', component:HomeComponent}
 ];
 
