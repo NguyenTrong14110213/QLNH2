@@ -40,7 +40,7 @@ module.exports =(router,io)=>{
                         
                     }else{
                         res.json({success: true, message: 'Đã lưu bàn!'});
-                        io.sockets.emit("server-add-table", {id: table.id});
+                        io.sockets.emit("server-add-table", {table:table});
                     }
                 })
             }
@@ -142,7 +142,7 @@ module.exports =(router,io)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Trạng thái đã được cập nhật!' }); // Return success message
-                            io.sockets.emit("server-update-active-table", {id: table.id});
+                            io.sockets.emit("server-update-active-table",  {table:table});
                         }
                     });
                 }

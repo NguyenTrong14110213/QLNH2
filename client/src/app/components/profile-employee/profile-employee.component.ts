@@ -249,6 +249,9 @@ export class ProfileEmployeeComponent implements OnInit {
       }
   ngOnInit() {
     this.currentUrl =this.activatedRouter.snapshot.params;
+    this.authService.socket.on("server-update-employee", data=>{
+      console.log(data.user.username);
+    })
     this.authService.getEmployee(this.currentUrl.username).subscribe(data=>{
       this.employee =data.employee;
       this.selectedType =this.employee.type_account;

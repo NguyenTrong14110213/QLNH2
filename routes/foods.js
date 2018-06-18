@@ -83,7 +83,7 @@ module.exports =(router,io)=>{
                                         }
                                     }else{
                                         res.json({success: true, message: 'Đã lưu món ăn!'});
-                                        io.sockets.emit("server-add-food", {id: food.id});
+                                        io.sockets.emit("server-add-food", {food: food});
                                     }
                                 })
                             }
@@ -206,7 +206,7 @@ module.exports =(router,io)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Thông tin món ăn dã được cập nhật!' }); // Return success message
-                            io.sockets.emit("server-update-food", {id: food.id});
+                            io.sockets.emit("server-update-food",  {food: food});
                           }
                     });
                 }
@@ -241,7 +241,7 @@ module.exports =(router,io)=>{
                                         console.log('path/file.txt was deleted');
                                     });
                                   res.json({ success: true, message: 'Xóa ảnh thành công!' }); // Return success message
-                                  io.sockets.emit("server-delete-image-food", {id: food.id});
+                                  io.sockets.emit("server-delete-image-food",  {food: food});
                                 }
                               });
 
@@ -272,7 +272,7 @@ module.exports =(router,io)=>{
                                 res.json({ success: false, message: 'Something went wrong.' }); // Return error message
                               } else {
                                 res.json({ success: true, message: 'Thêm ảnh thành công!' }); // Return success message
-                                io.sockets.emit("server-add-image-food", {id: food.id});
+                                io.sockets.emit("server-add-image-food", {food: food});
                             }
                             });
                     }
@@ -301,7 +301,7 @@ module.exports =(router,io)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Trạng thái đã được cập nhật!' }); // Return success message
-                            io.sockets.emit("server-update-ative-food", {id: food.id});
+                            io.sockets.emit("server-update-ative-food",  {food: food});
                         }
                     });
                 }

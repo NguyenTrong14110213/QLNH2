@@ -69,7 +69,7 @@ module.exports=(router,io)=>{
                                             }
                                         }else{
                                             res.json({ success:true, message:'Đăng ký thành công!'});
-                                            io.sockets.emit('server-register', {username: user.username})
+                                            io.sockets.emit('server-register', {user:user})
                                         }
                                     });
                             
@@ -258,7 +258,7 @@ module.exports=(router,io)=>{
                           } else {
                               //anh muon truyen nguyen cai object user hay la chi username
                             res.json({ success: true, message: 'Thông tin nhân viên đã được cập nhật!'}); // Return success message
-                            io.sockets.emit("server-update-employee", {username: user.username});
+                            io.sockets.emit("server-update-employee", {user:user});
                         }
                     });
                 }
@@ -287,7 +287,8 @@ module.exports=(router,io)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Mật khẩu đã được cập nhật!' }); // Return success message
-                          }
+                            io.sockets.emit("server-update-password",{user:user});
+                        }
                     });
                 }
               }
@@ -315,7 +316,8 @@ module.exports=(router,io)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Trạng thái đã được cập nhật!' }); // Return success message
-                          }
+                            io.sockets.emit("server-update-active-employee",{user:user});
+                        }
                     });
                 }
               }

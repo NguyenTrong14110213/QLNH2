@@ -44,7 +44,7 @@ module.exports =(router,io)=>{
                         
                     }else{
                         res.json({success: true, message: 'Đã lưu danh mục!'});
-                        io.sockets.emit("server-add-categoryFood", {id: categoryFood.id});
+                        io.sockets.emit("server-add-categoryFood", {categoryFood:categoryFood});
                     }
                 })
             }
@@ -161,7 +161,7 @@ module.exports =(router,io)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Danh mục dã được cập nhật!' }); // Return success message
-                            io.sockets.emit("server-update-categoryFood", {id: ctegoryFood.id});
+                            io.sockets.emit("server-update-categoryFood", {categoryFood:categoryFood});
                         }
                     });
                 }

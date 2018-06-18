@@ -45,7 +45,7 @@ module.exports =(router,io)=>{
                         
                     }else{
                         res.json({success: true, message: 'Đã lưu khu vực!'});
-                        io.sockets.emit("server-add-region", {id: region.id});
+                        io.sockets.emit("server-add-region", {region: region});
                     }
                 })
             }
@@ -161,7 +161,7 @@ module.exports =(router,io)=>{
                             }
                           } else {
                             res.json({ success: true, message: 'Khu vực dã được cập nhật!' }); // Return success message
-                            io.sockets.emit("server-update-region", {id: region.id});
+                            io.sockets.emit("server-update-region",  {region: region});
                         }
                     });
                 }
