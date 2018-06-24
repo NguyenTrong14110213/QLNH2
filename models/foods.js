@@ -113,7 +113,6 @@ const foodsSchema = new Schema({
   actived: { type: Boolean , default: false},
   date_created: { type: Date, default: Date.now() ,required: true},
   category_id: { type: String, required: true},
-  category_name: { type: String, required: true},
   description: {type: String , validate:descriptionValidators },
   discount: { type: String },
   inventory: { type :String},

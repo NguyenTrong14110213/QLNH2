@@ -3,7 +3,7 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot} from 
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
-export class AdminGuard implements CanActivate {
+export class TableGuard implements CanActivate {
     redirectUrl;
     constructor(
         private authService: AuthService,

@@ -17,9 +17,8 @@ export class CashierGuard implements CanActivate {
       state: RouterStateSnapshot
 
   ) {
-        if(this.authService.accountCook()){
-            return true;
-        }else{
+        if(this.authService.accountAdmin()|| this.authService.accountCashier())return true;
+        else{
             this.redirectUrl = state.url;
             this.router.navigate(['/login']);
             return false;

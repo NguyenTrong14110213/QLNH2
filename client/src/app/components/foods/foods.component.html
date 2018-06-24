@@ -18,7 +18,7 @@
                 <div class="thumbnail"> 
                     <div class="custom-image" >
                         <img src="http://localhost:8080/foods/{{ image }}" alt="Generic placeholder image" width="210" height="210">
-                        <a class="btn" data-toggle="modal" data-target="#myModal">Xóa</a>
+                        <a class="btn" data-toggle="modal" data-target="#myModal" (click)="getImageName(image)">Xóa</a>
                           <!-- Modal -->
                           <div class="modal fade" id="myModal" role="dialog">
                             <div class="modal-dialog modal-sm">
@@ -28,7 +28,7 @@
                                   <h4 class="modal-title">Bạn có muốn xóa ảnh này?</h4>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn-success" data-dismiss="modal" (click)="deleteImage(food.id,image)">Yes</button>
+                                    <button type="button" class="btn-success" data-dismiss="modal" (click)="deleteImage(food.id)">Yes</button>
                                     <button type="button" class="btn-default" data-dismiss="modal">No</button>
                                 </div>
                               </div>
@@ -73,6 +73,9 @@
                                 <label for="discount">Giảm giá:</label>
                         </div>
                         <div class="lbl">
+                                <label for="inventory">Tồn kho:</label>
+                        </div>
+                        <div class="lbl">
                                 <label for="unit">Đơn vị:</label>
                         </div>
                     </div>
@@ -111,7 +114,7 @@
                             </div>
                             <div class="form-group">
                                 <div [ngClass]="{'has-error': (form.controls.price_unit.errors && form.controls.price_unit.dirty) , 'has-success': !form.controls.price_unit.errors}">
-                                    <input class="form-control" type="text" name="price_unit" formControlName="price_unit" value="{{ food.price_unit }}" placeholder="*Đơn giá" (change)="changePriceUnit()" />
+                                    <input class="form-control" type="text" name="price_unit" formControlName="price_unit" value="{{ food.price_unit }}" placeholder="0" (change)="changePriceUnit()" />
                                     <ul class="help-block">
                                         <li *ngIf="form.controls.price_unit.errors?.required && form.controls.price_unit.dirty">Nội dung bắt buộc!</li>
                                         <li *ngIf="form.controls.price_unit.errors?.validateNumber  && form.controls.price_unit.dirty">Chỉ nhập số.</li>
@@ -120,10 +123,19 @@
                             </div>
                             <div class="form-group">
                                 <div [ngClass]="{'has-error': (form.controls.discount.errors && form.controls.discount.dirty) , 'has-success': !form.controls.discount.errors}">
-                                    <input class="form-control" type="text" name="discount" formControlName="discount" value="{{ food.discount }}" placeholder="*Giảm giá"  (change)="changeDiscount()" />
+                                    <input class="form-control" type="text" name="discount" formControlName="discount" value="{{ food.discount }}" placeholder="0"  (change)="changeDiscount()" />
                                     <ul class="help-block">
                                             <li *ngIf="form.controls.price_unit.errors?.required && form.controls.price_unit.dirty">Nội dung bắt buộc!</li>
                                         <li *ngIf="form.controls.discount.errors?.validateNumber  && form.controls.discount.dirty">Chỉ nhập số.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div [ngClass]="{'has-error': (form.controls.inventory.errors && form.controls.inventory.dirty) , 'has-success': !form.controls.inventory.errors}">
+                                    <input class="form-control" type="text" name="inventory" formControlName="inventory" value="{{ food.inventory }}" placeholder="0"  (change)="changeInventory()" />
+                                    <ul class="help-block">
+                                            <li *ngIf="form.controls.price_unit.errors?.required && form.controls.price_unit.dirty">Nội dung bắt buộc!</li>
+                                        <li *ngIf="form.controls.inventory.errors?.validateNumber  && form.controls.inventory.dirty">Chỉ nhập số.</li>
                                     </ul>
                                 </div>
                             </div>

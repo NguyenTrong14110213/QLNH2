@@ -3,7 +3,7 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot} from 
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
-export class CookGuard implements CanActivate {
+export class FoodGuard implements CanActivate {
     redirectUrl;
     constructor(
         private authService: AuthService,
@@ -17,7 +17,7 @@ export class CookGuard implements CanActivate {
       state: RouterStateSnapshot
 
   ) {
-        if(this.authService.accountCook()){
+        if(this.authService.accountCook() || this.authService.accountAdmin()){
             return true;
         }else{
             this.redirectUrl = state.url;

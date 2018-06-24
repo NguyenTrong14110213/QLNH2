@@ -12,48 +12,6 @@
 <div class="row well well-left">
     <div class="row">
         <div class="iwt">
-            <button class="circle-btn" type="button"  data-toggle="collapse" data-target="#menu1"  aria-expanded="false"  aria-controls="menu1" (click)="getAllEmployees(4)">
-                <span class="menu__icon menu__icon--open"> <i class="glyphicon glyphicon-plus"></i></span> 
-                <span class="menu__icon menu__icon--close"> <i class="glyphicon glyphicon-minus"></i> </span>
-            </button>
-            <span class="page-header">Nhân viên quản lý</span>
-        </div>
-    
-          <nav class="menu collapse" id="menu1">
-              <table class="table table-hover" >
-                  <thead>
-                    <tr>
-                      <th>Họ và tên</th>
-                      <th>Giới tính</th>
-                      <th>Tài khoản</th>
-                      <th>Email</th>
-                      <th>Số điện thoại</th>
-                      <th>Số CMND</th>
-                    </tr>
-                  </thead>
-                  <tbody *ngFor="let employee4 of employees4">
-                    <tr>
-                      <td>{{ employee4.fullname }}</td>
-                      <td> 
-                          <span *ngIf="employee4.gender">Nam</span>
-                          <span *ngIf="!employee4.gender">Nữ</span>
-                        </td>
-                      <td>{{ employee4.username }}</td>
-                      <td>{{ employee4.email }}</td>
-                      <td>{{ employee4.phone }}</td>
-                      <td>{{ employee4.identity_card }}</td>
-                      <td >
-                        <i class="btn glyphicon glyphicon-pencil" [routerLink]="['/profile_emloyee/', employee4.username]"></i>
-                        <i class="btn glyphicon glyphicon-trash" (click)="getUsername(employee4.username,4)" data-toggle="modal" data-target="#confirmModal"></i>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-          </nav>
-    </div>
-    
-    <div class="row">
-        <div class="iwt">
             <button class="circle-btn" type="button"  data-toggle="collapse" data-target="#menu2"  aria-expanded="false"  aria-controls="menu2" (click)="getAllEmployees(3)">
                 <span class="menu__icon menu__icon--open"> <i class="glyphicon glyphicon-plus"></i></span> 
                 <span class="menu__icon menu__icon--close"> <i class="glyphicon glyphicon-minus"></i> </span>
@@ -216,7 +174,6 @@
             <option value = "1">Nhân viên phục vụ</option>
             <option value = "2">Nhân viên thu ngân</option>
             <option value = "3">Nhân viên bếp</option>
-            <option value = "4">Nhân viên quản lý</option>
           </select>
       </div>
   

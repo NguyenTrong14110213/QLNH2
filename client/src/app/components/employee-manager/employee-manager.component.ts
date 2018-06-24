@@ -212,9 +212,7 @@ getAllEmployees(type_account) {
   if(type_account==3){
     this.employees3= data.employees;
   }
-  if(type_account==4){
-    this.employees4= data.employees;
-  }
+
   });
 }   
 getUsername(username, type_account){

@@ -27,7 +27,6 @@ module.exports =(router,io)=>{
                                     id: req.body.id,
                                     name: req.body.name,
                                     category_id: req.body.category_id,
-                                    category_name: req.body.category_name,
                                     description: req.body.description,
                                     inventory:req.body.inventory,
                                     discount: req.body.discount,                                    
@@ -191,11 +190,10 @@ module.exports =(router,io)=>{
                 food.name = req.body.name; // Save latest blog title
                 food.category_id= req.body.category_id;
                 food.description= req.body.description;
-                food.discount= req.body.discount;                              
+                food.discount= req.body.discount;          
+                food.inventory= req.body.inventory;                        
                 food.price_unit= req.body.price_unit;
                 food.unit= req.body.unit;
-                food.inventory = req.body.inventory;
-                food.category_name =req.body.category_name;
 
                 food.save((err) => {
                           if (err) {

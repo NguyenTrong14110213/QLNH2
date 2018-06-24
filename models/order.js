@@ -1,5 +1,3 @@
-import { type } from 'os';
-
 /* ===================
    Import Node Modules
 =================== */
@@ -43,52 +41,37 @@ const idValidators = [
     message: 'Mã bàn không chứa ký tự đặt biệt!'
   }
 ];
-
-
-let descriptionLengthChecker = (description) => {
-    // Check if username exists
-    if (!description) {
-      return false; // Return error
-    } else {
-      // Check length of username string
-      if (description.length >200) {
-        return false; // Return error if does not meet length requirement
-      } else {
-        return true; // Return as valid username
-      }
-    }
-  };
-  
-  const descriptionValidators = [
-    {
-      validator:nameLengthChecker,
-      message:'Mô tả món có tối đa là 200 ký tự!'
-    }
     
-  ];
+
 
 const orderSchema = new Schema({
   id: { type: String,unique: true, required: true , validate:idValidators },
-  customer_name: { type: String, required: true },
+  customer_username: { type: String },
+  customer_fullname: { type: String },
   waiter_username : { type: String, required: true },
   waiter_fullname : { type: String, required: true },
   cashier_username : { type: String },
   cashier_fullname : { type: String },
   flag_status: { type: Number , required: true },
-  time_creadted: { type: Date, default: Date.now() ,required: true },
+  time_created: { type: Date, default: Date.now() ,required: true },
+  flag_set_table:{ type: Boolean, required: true},
+  time_set_table:{ type: Date},
   paid_cost:{type: Number},
-  final_cost:{type: Number, required: true},
-  description:{type: String, required: true, validate:descriptionValidators},
-  detail_orders:[{
-    food_id:{type: String, required:true },
-    food_name:{type: String, required:true },
-    price_unit:{type: String, required:true},
-    discount:{type: String, required:true },
-    count:{type: String, required:true },
-    status:{type: String, required:true}
-  }],
+  final_cost:{type: Number},
+  description:{type: String },
+  detail_orders:{type:Array},
+  // detail_orders:[{
+  //   food_id:{type: String},
+  //   food_name:{type: String},
+  //   price_unit:{type: String},
+  //   discount:{type: String},
+  //   count:{type: String},
+  // }],
+  number_customer:{type: Number, required:true},
+  region_id:{type:String},
+  region_name:{type:String},
   tables:{ type: Array }
 });
 
 // Export Module/Schema
-module.exports = mongoose.model('Orders', tableSchema);
+module.exports = mongoose.model('Orders', orderSchema);

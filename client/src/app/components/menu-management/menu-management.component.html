@@ -220,6 +220,15 @@
                         </ul>
                     </div>
                 </div>
+                <div class="form-group">
+                    <div [ngClass]="{'has-error': (form.controls.inventory.errors && form.controls.inventory.dirty) , 'has-success': !form.controls.inventory.errors}">
+                        <input class="form-control" type="text" name="inventory" formControlName="inventory"  placeholder="*Tồn kho" />
+                        <ul class="help-block">
+                                <li *ngIf="form.controls.inventory.errors?.required && form.controls.inventory.dirty">Nội dung bắt buộc!</li>
+                            <li *ngIf="form.controls.inventory.errors?.validateNumber  && form.controls.inventory.dirty">Chỉ nhập số.</li>
+                        </ul>
+                    </div>
+                </div>
             <div class="form-group">
                 <div [ngClass]="{'has-error': (form.controls.unit.errors && form.controls.unit.dirty) , 'has-success': !form.controls.unit.errors}">
                     <input class="form-control" type="text" name="unit" formControlName="unit" placeholder="*Đơn vị"/>

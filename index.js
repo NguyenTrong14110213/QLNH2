@@ -18,6 +18,7 @@ const categoryFood = require('./routes/categoryFood')(router,io);
 const foods = require('./routes/foods')(router,io);
 const region = require('./routes/region')(router,io);
 const table = require('./routes/table')(router,io);
+const order = require('./routes/order')(router,io);
 const bodyParser =require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
@@ -48,6 +49,7 @@ app.use('/foods', foods);
 app.use('/categoryFood',categoryFood);
 app.use('/region',region);
 app.use('/table',table);
+app.use('/order',order)
 app.get('*',(req, res)=>{
     res.sendFile(path.join(__dirname+'/client/dist/index.html'));
 });

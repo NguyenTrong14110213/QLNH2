@@ -119,6 +119,10 @@ export class MenuManagementComponent implements OnInit {
         Validators.required,
         this.validateNumber
       ])],
+      inventory: ['', Validators.compose([
+        Validators.required,
+        this.validateNumber
+      ])],
       // trường đơn giá
       price_unit: ['', Validators.compose([
         Validators.required,
@@ -257,9 +261,9 @@ export class MenuManagementComponent implements OnInit {
           id: this.form.get('id').value,
           name: this.form.get('name').value,
           category_id:this.form.get('category_id').value,
-          category_name:'name',
           description: this.form.get('description').value,
           discount: this.form.get('discount').value,
+          inventory:this.form.get('inventory').value,
           price_unit: this.form.get('price_unit').value,
           unit: this.form.get('unit').value,
           url_image: filenames

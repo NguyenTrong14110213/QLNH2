@@ -28,9 +28,11 @@ export class FoodsComponent implements OnInit {
   category_id;
   description;
   discount;
+  inventory;
   price_unit;
   unit;
   checkChange = false;
+  private imageName;
 
   images: Array<String> = [];
   constructor(
@@ -87,6 +89,10 @@ export class FoodsComponent implements OnInit {
         Validators.required,
         this.validateNumber
       ])],
+      inventory: ['', Validators.compose([
+        Validators.required,
+        this.validateNumber
+      ])],
       // trường đơn vị
       unit: ['', Validators.compose([
         Validators.required,
@@ -101,23 +107,27 @@ export class FoodsComponent implements OnInit {
       this.categoryFoods = data.categoryfoods; // Assign array to use in HTML
     });
   }
-  deleteImage(id, url_image) {
-    console.log(id + " " + url_image);
-    // this.foodService.deleteImage(id, url_image).subscribe(data => {
-    //   if (!data.success) {
-    //     this.messageClass = 'alert alert-danger';
-    //     this.message = data.message;
-    //   } else {
-    //     this.messageClass = 'alert alert-success';
-    //     this.message = data.message;
-    //     setTimeout(() => {
-    //       //  this.form.reset(); // Reset all form fields
-    //       this.messageClass = false; // Erase error/success message
-    //       this.message = '';
-    //     }, 2000);
-    //   }
+  getImageName(imageName){
+    this.imageName =imageName;
+    console.log(this.imageName);
+  }
+  deleteImage(id) {
+    console.log(id + " " + this.imageName);
+    this.foodService.deleteImage(id, this.imageName).subscribe(data => {
+      if (!data.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = data.message;
+      } else {
+        this.messageClass = 'alert alert-success';
+        this.message = data.message;
+        setTimeout(() => {
+          //  this.form.reset(); // Reset all form fields
+          this.messageClass = false; // Erase error/success message
+          this.message = '';
+        }, 2000);
+      }
 
-    // });
+    });
   }
   changeName() {
     this.name = this.form.get('name').value;
@@ -140,24 +150,28 @@ export class FoodsComponent implements OnInit {
     this.discount = this.form.get('discount').value;
     this.checkChange = true;
   }
+  changeInventory() {
+    this.inventory = this.form.get('inventory').value;
+    this.checkChange = true;
+  }
   changeUnit() {
     this.unit = this.form.get('unit').value;
     this.checkChange = true;
   }
 
+
   getValue(data) {
     this.food = data.food;
     this.images = data.food.url_image;
     this.selectedState = data.food.category_id;
-
+   
     this.name = this.food.name;
     this.category_id = this.food.category_id;
     this.description = this.food.description;
     this.discount = this.food.discount;
+    this.inventory =this.food.inventory;
     this.price_unit = this.food.price_unit;
     this.unit = this.food.unit
-
-    
   }
   editFood() {
     const food = {
@@ -166,6 +180,7 @@ export class FoodsComponent implements OnInit {
       category_id: this.category_id,
       description: this.description,
       discount: this.discount,
+      inventory: this.inventory,
       price_unit: this.price_unit,
       unit: this.unit,
     }

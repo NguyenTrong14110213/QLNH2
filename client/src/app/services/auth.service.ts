@@ -115,19 +115,16 @@ export class AuthService {
   }
   accountCook(){
     if(this.loggedIn()){
+      console.log(JSON.parse(localStorage.getItem('user')).type_account);
       if(JSON.parse(localStorage.getItem('user')).type_account == 3) return true;
       else return false;
     }  else return false;
   }
-  accountManager(){
-    if(this.loggedIn()){
-      if(JSON.parse(localStorage.getItem('user')).type_account == 4) return true;
-      else return false;
-    }  else return false;
-  }
+
   accountAdmin(){
     if(this.loggedIn()){
-      if(JSON.parse(localStorage.getItem('user')).type_account == 5) return true;
+      console.log(JSON.parse(localStorage.getItem('user')).type_account);
+      if(JSON.parse(localStorage.getItem('user')).type_account == 4) return true;
       else return false;
     }  else return false;
   }

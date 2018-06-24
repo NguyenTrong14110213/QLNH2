@@ -1,13 +1,15 @@
 <div class="row container">
+    <div class="row show-hide-message">
+        <div [ngClass]="messageClass">
+            {{ message }}
+        </div>
+    </div>
   <div class="col-sm-6 ">
     <div class="iwt">
-      <a id="circle" class="pay alignleft"></a>
-      <select class="form-control slt">
-        <option value="1">Khu vực 1</option>
-        <option value="2">Khu vực 2</option>
-        <option value="3" class="pay">Khu vực 3</option>
-        <option value="4">khu vực 4</option>
+      <select class="form-control slt" (change)="changeCategory($event.target)">
+        <option *ngFor="let region of regions" value="{{ region.id }}" >{{ region.name }}</option>
       </select>
+      <button (click)="createOrder()">Tạo hóa đơn(tao hoa don mau)</button>
     </div>
     <div class="well well-left">
         <table class="table table-hover">
@@ -18,24 +20,11 @@
                 <th>Tổng tiền</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>MB101; MB102 ; MB102; MB102; MB102</td>
-                <td>Nguyễn văn a</td>
-                <td>100000 đ</td>
-                <td>
-                  <div id="circle" class="pay"></div>
-                </td>
-              </tr>
-              <tr>
-                <td>MB101</td>
-                <td>nguyễn văn b</td>
-                <td>100000 đ</td>
-              </tr>
-              <tr>
-                <td>MB101</td>
-                <td>nguyễn văn c</td>
-                <td>100000 đ</td>
+            <tbody *ngFor="let order of orders">
+              <tr (click)="getDetailOrder(order.id)">
+                <td>{{ order.tables}}</td>
+                <td>{{ order.customer_fullname }}</td>
+                <td>{{ order.final_cost }}</td>
               </tr>
             </tbody>
           </table>
@@ -49,23 +38,23 @@
         <div class="row inf">
             <div class="col-sm-4">
                 <i class="glyphicon glyphicon-calendar"></i>
-                <label id="time_order" for="disabled">Thời gian</label>
+                <label id="time_order" for="disabled">{{ order.time_created }}</label>
             </div>
         </div>
         <div class="row inf">
           <div class="col-sm-4">
               <i class="glyphicon glyphicon-map-marker"></i>
-              <label id="region_order" for="disabled">Khu vực</label>
+              <label id="region_order">{{ order.region_name }}</label>
           </div>
           <div class="col-sm-4">
               <i class="glyphicon glyphicon-cutlery"></i>
-              <label id="table_order" for="disabled">Số bàn </label>
+              <label id="table_order" for="disabled">{{ order.tables }}</label>
           </div>
         </div>
         <div class="row inf">
             <div class="col-sm-4">
           <i class="glyphicon glyphicon-user"></i>
-          <label id="customer_order" for="disabled">Tên khách hàng</label>
+          <label id="customer_order" for="disabled">{{ order.customer_fullname }}</label>
           </div>
         </div>
         <table class="table table-hover">
@@ -79,46 +68,75 @@
             </tr>
           </thead>
           <tbody id="body_order">
-            <tr>
-              <td>MB101</td>
-              <td>Cá hấp nhỏ</td>
-              <td> 2</td>
-              <td>100000 đ</td>
-              <td>0</td>
+            <tr *ngFor="let detail of detail_order">
+              <td>{{ detail.food_id }}</td>
+              <td>{{ detail.food_name }}</td>
+              <td> {{ detail.count }}</td>
+              <td>{{ detail.price_unit }}</td>
+              <td>{{ detail.discount }}</td>
             </tr>
-            <tr>
-              <td>MB101</td>
-              <td>Cá hấp nhỏ</td>
-              <td>2</td>
-              <td>100000 đ</td>
-              <td>0</td>
-            </tr>
-            <tr>
-              <td>MB101</td>
-              <td>Cá hấp nhỏ</td>
-              <td>2</td>
-              <td>100000 đ</td>
-              <td>0</td>
-            </tr>
-            <tr>
-              <td>MB101</td>
-              <td>Cá hấp nhỏ</td>
-              <td>2</td>
-              <td>100000 đ</td>
-              <td>0</td>
-            </tr>
-    
           </tbody>
         </table>
     </div>
     <div class="row alignright">
       <button class="circle-btn">
-          <i class="glyphicon glyphicon-usd"></i>
+          <i class="glyphicon glyphicon-usd" data-toggle="modal" data-target="#calculate"></i>
       </button>
       <button>
           <i class="glyphicon glyphicon-print" (click)="print()"></i>
       </button>
     </div>
+          <!-- Modal -->
+          <div class="modal fade" id="calculate" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <div class="modal-title center">
+            <h4>Tính tiến</h4>
+                  </div>
+                </div>
+                <div class="modal-body">
+                  <div class="row inf">
+                      <div class="col-sm-4">
+                          <Label>Tiền khách đưa: </Label>
+                      </div>
+                      <div class="col-sm-8">    
+                          <input  class="form-control" type="number"  placeholder="0" (keyup)="onKey($event.target)"/>
+                      </div>
+                  </div>
+                  <div class="row inf">
+                    <div class="col-sm-4">
+                      <Label>Tiền đặt cọc: </Label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input  disabled class="form-control" type="number"  value="{{ order.paid_cost }}">
+                    </div>
+                </div>
+                  <div class="row inf">
+                      <div class="col-sm-4">
+                        <Label>Tổng tiền: </Label>
+                      </div>
+                      <div class="col-sm-8">
+                          <input  disabled class="form-control" type="number"  value="{{ order.final_cost }}">
+                      </div>
+                  </div>
+                  <div class="row inf">
+                      <div class="col-sm-4">
+                        <Label>Tiền thừa: </Label>
+                      </div>
+                      <div class="col-sm-8">
+                          <input disabled class="form-control" type="text"  value="{{ excess_cash }}">
+                      </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="form-control" type="button" class="btn-success" data-dismiss="modal" (click)="editStatusOrder()">Lưu lại</button>
+                    <button class="form-control" type="button" class="btn-default" data-dismiss="modal">Lưu và in</button>
+                </div>
+              </div>
+            </div>
+          </div>  
   
   </div>
 </div>

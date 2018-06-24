@@ -3,7 +3,7 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot} from 
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
-export class ManagerGuard implements CanActivate {
+export class EmployeeGuard implements CanActivate {
     redirectUrl;
     constructor(
         private authService: AuthService,
@@ -17,12 +17,12 @@ export class ManagerGuard implements CanActivate {
       state: RouterStateSnapshot
 
   ) {
-        if(this.authService.accountManager()){
-            return true;
-        }else{
-            this.redirectUrl = state.url;
-            this.router.navigate(['/login']);
-            return false;
+        if(this.authService.accountAdmin())return true;
+        else{
+                this.redirectUrl = state.url;
+                this.router.navigate(['/login']);
+                return false;
+            }
+          
         }
   }
-}
