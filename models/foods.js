@@ -107,16 +107,18 @@ const unitValidators = [
     message:'Đơn vị có tối đa 30 ký tự!'
   }
 ];
+
+
 const foodsSchema = new Schema({
   id: { type: String,unique: true, required: true ,validate:idValidators},
   name: { type: String,unique: true, required: true, validate:nameValidators },
   actived: { type: Boolean , default: false},
-  date_created: { type: Date, default: Date.now() ,required: true},
+  date_created: { type: String ,default: new Date() , required: true},
   category_id: { type: String, required: true},
   description: {type: String , validate:descriptionValidators },
   discount: { type: String },
   inventory: { type :String},
-  price_unit: { type: String},
+  price_unit: { type: String, required: true},
   unit: {type:String,required:true, validate:unitValidators},
   url_image:{type: Array }
 });

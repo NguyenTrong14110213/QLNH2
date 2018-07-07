@@ -1,6 +1,7 @@
 const User =require('../models/user');
 const jwt = require('jsonwebtoken');
 const config =require('../config/database');
+const fs = require('fs');
 
 module.exports=(router,io)=>{
     router.post('/register', (req,res)=>{
@@ -168,16 +169,33 @@ module.exports=(router,io)=>{
                         res.json({success:false,message: err});
                     }else{
                         if(!user){
-                            res.json({success:false, message:'Không tìm thấy tài khoảng.'})
+                            res.json({success:false, message:'Không tìm thấy tài khoản.'})
                         }else{
-                            const validPassword =user.comparePassword(req.body.password);
-                            if(!validPassword){
-                                res.json({success:false, message:'Sai mật khẩu.'});
+                            if(!user.actived){
+                                res.json({success:false, message:'Tài khoản chưa được kích hoạt!.'})
                             }else{
-                                const token = jwt.sign({ userId: user._id }, config.secret);
-                                res.json({success:true, message:'Đăng nhập thành công!', token:token,
-                                 user:{username: user.username, type_account: user.type_account}});
+                                if(user.is_logining){
+                                    res.json({success:false, message:'Tài khoản đang đăng nhập ở máy khác!.'})
+                                }else{
+                                const validPassword =user.comparePassword(req.body.password);
+                                if(!validPassword){
+                                    res.json({success:false, message:'Sai mật khẩu.'});
+                                }else{
+                                    user.is_logining = true;
+                                    user.save((err)=>{
+                                        if(err){
+                                            res.json({success: false, message:err})
+                                        }else{
+                                            const token = jwt.sign({ userId: user._id }, config.secret);
+                                            res.json({success:true, message:'Đăng nhập thành công!', token:token,
+                                             user:{username: user.username, type_account: user.type_account}});
+                                        }
+                                    })
+                                    
+                                }
                             }
+                            }
+                          
                         }
                     }
                 });
@@ -209,6 +227,50 @@ module.exports=(router,io)=>{
                 })
               }
       });
+      router.put('/updateProfile', (req, res) => {
+        if (!req.body.username) {
+          res.json({ success: false, message: 'Chưa cung cấp username' }); 
+        } else {
+          User.findOne({ username: req.body.username }, (err, user) => {
+            if (err) {
+              res.json({ success: false, message: err }); // Return error message
+            } else {
+              if (!user) {
+                res.json({ success: false, message: 'Không tìm thấy profile.' }); // Return error message
+              } else {
+                user.email = req.body.email; // Save latest blog title
+                user.phone=req.body.phone;
+                user.address =req.body.address;
+                user.save((err) => {
+                          if (err) {
+                            if (err.errors) {
+                                if(err.errors.email){
+                                    res.json({success:false, message: err.errors.email.message});
+                                    }else{
+                                        if(err.errors.address){
+                                            res.json({success:false, message: err.errors.address.message});
+                                        }else{
+                                            if(err.errors.phone){
+                                                res.json({success:false, message: err.errors.phone.message});
+                                            }else{
+                                    
+                                                    res.json({success:false, message:err});
+                                                }        
+                                            }
+                                        }
+                            } else {
+                              res.json({ success: false, message: err }); // Return error message
+                            }
+                          } else {
+                            res.json({ success: true, message: 'Thông tin đã được cập nhật!'}); // Return success message
+                            io.sockets.emit("server-update-profile", {user:user});
+                        }
+                    });
+                }
+              }
+          });
+        }
+      });
       router.put('/updateEmployee', (req, res) => {
         if (!req.body.username) {
           res.json({ success: false, message: 'Chưa cung cấp username' }); 
@@ -229,7 +291,6 @@ module.exports=(router,io)=>{
                 user.address =req.body.address;
                 user.type_account =req.body.type_account;
                 user.birthdate =req.body.birthdate;
-                user.address =req.body.address;
                 user.save((err) => {
                           if (err) {
                             if (err.errors) {
@@ -277,19 +338,24 @@ module.exports=(router,io)=>{
               if (!user) {
                 res.json({ success: false, message: 'Không tìm thấy nhân viên.' }); // Return error message
               } else {
-                user.password = req.body.password; 
-                user.save((err) => {
-                          if (err) {
-                            if (err.errors) {
-                              res.json({ success: false, message: 'Thông tin cần chính xác.' });
-                            } else {
-                              res.json({ success: false, message: err }); // Return error message
+                if(!user.actived){
+                    res.json({success: false, message:'Tài khoản đã ngưng hoạt động!'})
+                }else{
+                    user.password = req.body.password; 
+                    user.save((err) => {
+                              if (err) {
+                                if (err.errors) {
+                                  res.json({ success: false, message: 'Thông tin cần chính xác.' });
+                                } else {
+                                  res.json({ success: false, message: err }); // Return error message
+                                }
+                              } else {
+                                res.json({ success: true, message: 'Mật khẩu đã được cập nhật!' }); // Return success message
+                                io.sockets.emit("server-update-password",{user:user});
                             }
-                          } else {
-                            res.json({ success: true, message: 'Mật khẩu đã được cập nhật!' }); // Return success message
-                            io.sockets.emit("server-update-password",{user:user});
-                        }
-                    });
+                        });
+                }
+ 
                 }
               }
           });
@@ -324,6 +390,38 @@ module.exports=(router,io)=>{
           });
         }
       });
+      router.put('/updateAvatar', (req, res) => {
+        if (!req.body.username) {
+          res.json({ success: false, message: 'Chưa cung cấp username' }); 
+        } else {
+          User.findOne({ username: req.body.username }, (err, user) => {
+            if (err) {
+              res.json({ success: false, message: err }); // Return error message
+            } else {
+              if (!user) {
+                res.json({ success: false, message: 'Không tìm thấy nhân viên.' }); // Return error message
+              } else {
+                user.url_profile = req.body.url_profile; 
+                user.save((err) => {
+                          if (err) {
+                            if (err.errors) {
+                                res.json({ success: false, message: err });
+                            } else {
+                              res.json({ success: false, message: err }); // Return error message
+                            }
+                          } else {
+                            fs.unlink('public/avatar/'+ req.body.usl_profile_old, (err) => {
+                                if (err) throw err;
+                            });
+                            res.json({ success: true, message: 'Ảnh đại diện đã được cập nhật!' }); // Return success message
+                            io.sockets.emit("server-update-avatar-employee",{user:user});
+                        }
+                    });
+                }
+              }
+          });
+        }
+      });
     router.use((req, res, next)=>{
        const token= req.headers['authorization'];
         if(!token){
@@ -340,7 +438,7 @@ module.exports=(router,io)=>{
         }
     });
     router.get('/profile', (req, res)=>{
-        User.findOne({ _id: req.decoded.userId}).select('username email').exec((err, user)=>{
+        User.findOne({ _id: req.decoded.userId},(err, user)=>{
             if(err){
                 res.json({success:false, message:err});
             }else{
@@ -383,6 +481,76 @@ module.exports=(router,io)=>{
         }).sort({'_id':-1});
         
     });
+    router.post('/verify',(req, res)=>{
+        console.log("verify account")
+        if(!req.body.username){
+            res.json({success:false, message:'Chưa nhập tên đăng nhập!'});
+        }else{
+            if(!req.body.password){
+                res.json({success:false, message:'Chưa nhập mật khẩu!'});
+            }else{
+                User.findOne({username: req.body.username.toLowerCase()},(err, user)=>{
+                    if(err){
+                        res.json({success:false,message: err});
+                    }else{
+                        if(!user){
+                            res.json({success:false, message:'Không tìm thấy tài khoản.'})
+                        }else{
+                            if(!user.actived){
+                                res.json({success: false, message:'Tài khoản đã ngưng hoạt động!'})
+                            }else{
+                                const validPassword =user.comparePassword(req.body.password);
+                                if(!validPassword){
+                                    res.json({success:false, message:'Sai mật khẩu.'});
+                                }else{
+                                    res.json({success:true, message:'Xác thực thành công!'});
+                                }
+                            }
+                           
+                        }
+                    }
+                });
+            }
+        }
+    });
+    
+    router.put('/logout',(req, res)=>{
+        if(!req.body.username){
+            res.json({success:false, message:'Chưa nhập tên đăng nhập!'});
+        }
+        else{
+            User.findOne({username: req.body.username.toLowerCase()},(err, user)=>{
+                if(err){
+                    res.json({success:false,message: err});
+                }else{
+                    if(!user){
+                        res.json({success:false, message:'Không tìm thấy tài khoản.'})
+                    }else{
+                        if(!user.actived){
+                            res.json({success:false, message:'Tài khoản không hoạt động.'})
+                        }
+                        else{
+                            if(user.is_logining){
+                                user.is_logining = false
+                                user.save((err)=>{
+                                    if(err){
+                                        res.json({success:false, message:'Lỗi thao tác trên server. Có thể thử lại.', error:err})
+                                    }else{
+                                        res.json({success:true, message:'Đăng xuất thành công'})
+                                    }
+                                })
+                            }
+                            else{
+
+                                res.json({success:false, message:'Tài khoản này đã đăng xuất'})
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+
 
     return router;
 }

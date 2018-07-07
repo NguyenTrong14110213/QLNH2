@@ -16,6 +16,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { NotAuthGuard } from './guards/notAuth.guard';
 import { MenuManagementComponent } from './components/menu-management/menu-management.component';
 import { CategoryFoodService } from './services/category-food.service';
+import { CategoryMaterialsService } from './services/category-materials.service';
 import { FoodService } from './services/food.service';
 import { TableManagementComponent } from './components/table-management/table-management.component';
 import { RegionService } from './services/region.service';
@@ -30,6 +31,11 @@ import { OrderService } from './services/order.service';
 import { EmployeeGuard } from './guards/employee.guard';
 import { FoodGuard } from './guards/food.guard';
 import { TableGuard } from './guards/table.guard';
+import { Warehouse } from './guards/warehouse.guard';
+import { WarehouseManagementComponent } from './components/warehouse-management/warehouse-management.component';
+import { MaterialsService } from './services/materials.service';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +49,8 @@ import { TableGuard } from './guards/table.guard';
     TableManagementComponent,
     EmployeeManagerComponent,
     ProfileEmployeeComponent,
-    PayComponent
+    PayComponent,
+    WarehouseManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +59,7 @@ import { TableGuard } from './guards/table.guard';
     AppRoutingModule,
     FlashMessagesModule
   ],
-  providers: [AuthService, AuthGuard, NotAuthGuard,EmployeeGuard,CashierGuard,FoodGuard,TableGuard, CategoryFoodService, FoodService, RegionService, TableService,OrderService],
+  providers: [AuthService, AuthGuard, NotAuthGuard,EmployeeGuard,CashierGuard,FoodGuard,TableGuard, Warehouse,CategoryFoodService, FoodService, RegionService, TableService,OrderService,CategoryMaterialsService, MaterialsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

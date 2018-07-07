@@ -223,9 +223,7 @@ module.exports =(router,io)=>{
                       if(!food){
                           res.json({success:false, message:'Không tìm thấy món'});
                       }else{
-                          if(!food.url_image.includes(req.body.url_image)){
-                            res.json({success:false, message:'Không tìm thấy ảnh'});
-                          }else{
+                        
                             
                             const arrayIndex = food.url_image.indexOf(req.body.url_image); 
                             food.url_image.splice(arrayIndex, 1); // Remove 
@@ -236,7 +234,6 @@ module.exports =(router,io)=>{
                                 } else {
                                     fs.unlink('public/foods/'+ req.body.url_image, (err) => {
                                         if (err) throw err;
-                                        console.log('path/file.txt was deleted');
                                     });
                                   res.json({ success: true, message: 'Xóa ảnh thành công!' }); // Return success message
                                   io.sockets.emit("server-delete-image-food",  {food: food});
@@ -245,7 +242,7 @@ module.exports =(router,io)=>{
 
                           }
                       }
-                  }
+                  
               })
           }
       });
@@ -308,5 +305,73 @@ module.exports =(router,io)=>{
         }
       });
 
+      router.get('/findFood/:keyWord', (req,res)=>{
+        Food.find({name: { $regex: req.params.keyWord, $options : 'i'} }, (err, food)=>{
+            if(err){
+                res.json({success:false, message:err});
+            }else{
+                if(!food){
+                    res.json({success:false, message:'Không tìm thấy món ăn nào.'});
+                }else{
+                    res.json({success:true, food:food});
+                }
+            }
+        }).sort({'_id':-1});
+        
+        });
+        // đặt món cho order
+    // body cung cấp mã món, số lượng tồn kho lưu trong client (để đối chiếu với db), 
+    // số lượng đặt phát sinh
+    router.put('/orderFood', (req, res) => {
+        if (!req.body.foodID) {
+          res.json({ success: false, message: 'Chưa cung cấp mã món' }); 
+        } else {
+          Food.findOne({ id: req.body.foodID }, (err, food) => {
+            if (err) {
+              res.json({ success: false, message:err }); // Return error message
+            } else {
+              if (!food) {
+                res.json({ success: false, message: 'Không tìm thấy món.' }); // Return error message
+              } else {
+                if(!food.actived){
+                    res.json({ success: false, message: 'Món không hoạt động.' });
+                }else{
+                    if(food.inventory != req.body.inventory){
+                        res.json({ success: false, message: 'Thông tin lượng tồn kho sai lệch' }); // Return error message
+                    }else{
+                        const oldCount = req.body.oldCount;
+                        const newCount = req.body.newCount;
+                        const extra = newCount - oldCount;
+                        if(food.inventory - extra < 0){
+                            res.json({ success: false, message: 'Số lượng đặt vượt quá lượng tồn kho' });
+                        }else{
+                            if(newCount < 0){
+                                res.json({ success: false, message: 'Số lượng đặt món không thể âm' });
+                            }else{
+                                food.inventory = food.inventory - extra;
+                                
+                                food.save((err) => {
+                                    if (err) {
+                                      if (err.errors) {
+                                        res.json({ success: false, message: 'Lưu thông tin thất bại. Thông tin cần chính xác.', error:err.errors});
+                                      } else {
+                                        res.json({ success: false, message: "Lỗi lưu thông tin trên server", error:err }); // Return error message
+                                      }
+                                    } else {
+                                    //   res.json({ success: true, message: 'Đặt món thành công!', 
+                                    //   order_id:req.body.orderID, new_count:newCount, food:food});
+                                      res.json({ success: true, message: 'Đặt món thành công!', food:food});
+                                      io.sockets.emit("server-order-food",  {order_id: req.body.order_id, food: food});
+                                    }
+                              });
+                            }
+                        }
+                    }
+                }
+              }
+              }
+            });
+        }
+    });
     return router;
 };

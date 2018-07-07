@@ -26,8 +26,15 @@ export class ProfileEmployeeComponent implements OnInit {
   address;
   birthdate;
   type_account;
+  identity_cardValid;
+  identity_cardMessage;
+  phoneMessage;
+  phoneValid;
   actived;
+  url_profile;
   checkChange =false;
+  checkChangePassword =false;
+  fileAvatar;
   constructor(
     private authService:AuthService,
     private formBuilder: FormBuilder,
@@ -83,6 +90,28 @@ export class ProfileEmployeeComponent implements OnInit {
     }, { validator: this.matchingPasswords('password', 'confirm')})
   }
 
+  checkIdentity_card(){
+    this.authService.checkIdentity_card(this.form.get('identity_card').value).subscribe(data=>{
+      if(!data.success){
+       this.identity_cardValid = false;
+       this.identity_cardMessage = data.message;
+      }else{
+       this.identity_cardValid = true;
+       this.identity_cardMessage = data.message;
+      }
+    });
+  }
+  checkPhone(){
+    this.authService.checkPhone(this.form.get('phone').value).subscribe(data=>{
+      if(!data.success){
+       this.phoneValid = false;
+       this.phoneMessage = data.message;
+      }else{
+       this.phoneValid = true;
+       this.phoneMessage = data.message;
+      }
+    });
+  }
   validateEmail(controls){
     const regExp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
     if(regExp.test(controls.value)){
@@ -153,7 +182,7 @@ export class ProfileEmployeeComponent implements OnInit {
     this.checkChange =true;
   }
   changePassword(){
-    this.checkChange =true;
+    this.checkChangePassword =true;
   }
   editEmployee(){
       const employee = {  
@@ -227,7 +256,7 @@ export class ProfileEmployeeComponent implements OnInit {
             } else {
               this.messageClass = 'alert alert-success';
               this.message = data.message;
-              this.checkChange = false;
+              this.checkChangePassword = false;
               // Clear form data after two seconds
               setTimeout(() => {
               //  this.form.reset(); // Reset all form fields
@@ -236,6 +265,40 @@ export class ProfileEmployeeComponent implements OnInit {
               }, 2000);
             }
           });
+      }
+      fileChangeEvent(fileInput: any) {
+        const file: File = fileInput.target.files;
+        const filename=Date.now() +'-'+ file[0]['name'];
+        const formData:any = new FormData();
+        formData.append("imgAvatar", file[0], filename)
+        const user={
+          username:  this.employee.username,
+          url_profile: filename,
+          usl_profile_old: this.url_profile
+        }
+        console.log(user);
+        this.authService.uploadAvatar(formData).subscribe(data=>{
+          if (!data.success) {
+            this.messageClass = 'alert alert-danger';
+            this.message = data.message;
+          } else {
+            this.messageClass = 'alert alert-success';
+    
+            this.authService.editAvatar(user).subscribe(data=>{
+                if(!data.success){
+                  this.message = data.message;
+                }else{
+                  this.message = data.message;
+                  setTimeout(() => {
+                    //  this.form.reset(); // Reset all form fields
+                      this.messageClass = false; // Erase error/success message
+                      this.message='';
+                    }, 2000);
+                }
+            })
+          }
+        })
+      
       }
       getValue(){
           this.fullname =this.employee.fullname;
@@ -246,10 +309,13 @@ export class ProfileEmployeeComponent implements OnInit {
           this.gender =this.employee.gender;
           this.address= this.employee.address;
           this.birthdate =this.employee.birthdate;
+          this.url_profile =this.employee.url_profile;
+          console.log("name image:" +this.url_profile);
       }
   ngOnInit() {
     this.currentUrl =this.activatedRouter.snapshot.params;
-    this.authService.socket.on("server-update-employee", data=>{
+    this.authService.socket.on("server-update-avatar-employee", data=>{
+      this.url_profile = data.user.url_profile;
       console.log(data.user.username);
     })
     this.authService.getEmployee(this.currentUrl.username).subscribe(data=>{

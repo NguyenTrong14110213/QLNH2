@@ -12,6 +12,7 @@ export class AuthService {
    user;
    options;
   socket = io.connect(this.domain);
+
   constructor(
     private http: Http
   ) { }
@@ -48,18 +49,19 @@ export class AuthService {
   login(user){
     return this.http.post(this.domain + 'authentication/login', user).map(res=>res.json());
   }
-  logout(){
-    this.authToken =null;
-    this.user =null;
-    localStorage.clear();
-  }
+
   storeUserData(token, user){
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
     
-    this.authToken= token;
+    this.authToken= token;  
     this.user =user;
-
+  }
+  logout(user){
+    this.authToken =null;
+    this.user =null;
+    localStorage.clear();
+     return this.http.put(this.domain + 'authentication/logout',user, this.options).map(res=>res.json());
   }
   getProfile(){
     this.createAuthenticationHeaders();
@@ -81,6 +83,10 @@ export class AuthService {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.put(this.domain + 'authentication/updateEmployee/', employee, this.options).map(res => res.json());
   }
+  editProfile(user){
+    this.createAuthenticationHeaders();
+    return this.http.put(this.domain + 'authentication/updateProfile/', user, this.options).map(res =>res.json());
+  }
   editPassword(employee) {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.put(this.domain + 'authentication/updatePassword/', employee, this.options).map(res => res.json());
@@ -88,6 +94,13 @@ export class AuthService {
   editActivedEmployee(employee) {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.put(this.domain + 'authentication/updateActivedEmployee/', employee, this.options).map(res => res.json());
+  }
+  uploadAvatar(formData){  // upload to server
+    return this.http.post(this.domain + 'uploadAvatar', formData).map(res =>res.json());
+  }
+  editAvatar(user){ // edit image name in database
+    this.createAuthenticationHeaders();
+    return this.http.put(this.domain+ 'authentication/updateAvatar',user).map(res =>res.json());
   }
   loggedIn(){
     return tokenNotExpired();
@@ -115,15 +128,12 @@ export class AuthService {
   }
   accountCook(){
     if(this.loggedIn()){
-      console.log(JSON.parse(localStorage.getItem('user')).type_account);
       if(JSON.parse(localStorage.getItem('user')).type_account == 3) return true;
       else return false;
     }  else return false;
   }
-
   accountAdmin(){
     if(this.loggedIn()){
-      console.log(JSON.parse(localStorage.getItem('user')).type_account);
       if(JSON.parse(localStorage.getItem('user')).type_account == 4) return true;
       else return false;
     }  else return false;

@@ -8,9 +8,10 @@
 <div class="col-sm-3 ">
 <div class="well well-left">
     <span class="title"><i class="glyphicon glyphicon-map-marker"></i> Khu vực</span>
+    <li (click)="getRegionId(0)" [ngClass]="{'colorSelected': region_id == 0}">Tất cả</li>
   <div *ngFor="let region of regions">
     <div class="dropdown">
-    <li (click)="getRegionId(region.id)" [ngClass]="{'list-group-item-info': region_id == region.id}">{{ region.name }}</li>
+    <li (click)="getRegionId(region.id)" [ngClass]="{'colorSelected': region_id == region.id}">{{ region.name }}</li>
     <div class="dropdown-content dropdown-menu">
         <a (click)="getRegion(region.id,region.name)" data-toggle="modal" data-target="#editModal">Sửa</a>
         <a (click)="getRegionId2(region.id)" data-toggle="modal" data-target="#confirmModal">Xóa</a>
@@ -131,14 +132,27 @@
 
 <div class="col-sm-9 ">
   <div class="row well well-right">
-    <div class="col-sm-3 col-md-3">
-        <div type="button" class="thumbnail btn btn-info btn-lg" data-toggle="modal" data-target="#tablesModal" > 
-          <img src="http://localhost:8080/icon/plus.png" alt="Generic placeholder image" width="130" height="130">
-          <div class=caption>
-            <h3> <font color="white">Thêm bàn</font></h3>
+      <div class="row">
+          <div class="col-sm-6">
+              <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#tablesModal">
+                  <span class="glyphicon glyphicon-plus"></span> Thêm bàn
+              </button>
           </div>
-        </div>
-    </div>
+          <div class="col-sm-6">
+              <div id="custom-search-input">
+                  <div class="input-group col-md-12">
+                      <input type="text" class="form-control input-ms" (keyup)="getKeyWord($event.target)" placeholder="Tìm kiếm" />
+                      <span class="input-group-btn">
+                          <button class="btn btn-info btn-lg" type="button">
+                              <i (click)="findTable()" class="glyphicon glyphicon-search"></i>
+                          </button>
+                      </span>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+
     <!-- Modal -->
    <div class="modal fade" id="tablesModal" role="dialog">
       <div class="modal-dialog">

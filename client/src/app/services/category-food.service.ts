@@ -31,6 +31,7 @@ export class CategoryFoodService {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.get(this.domain + 'categoryFood/allCategoryFoods', this.options).map(res => res.json());
   }
+
   checkNameCategory(name){
     this.createAuthenticationHeaders(); // Create headers
     return this.http.get(this.domain + 'categoryFood/checkNameCategory/' + name ,this.options).map(res=>res.json());

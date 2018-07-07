@@ -34,10 +34,14 @@ export class TableService {
   }
   editActivedTable(table) {
     this.createAuthenticationHeaders(); // Create headers
-    return this.http.put(this.domain + 'authentication/updateActivedTable/', table, this.options).map(res => res.json());
+    return this.http.put(this.domain + 'table/updateActivedTable/', table, this.options).map(res => res.json());
   }
   deleteTable(id) {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.delete(this.domain + 'table/deleteTable/' + id, this.options).map(res => res.json());
+  }
+  findTable(keyWord){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'table/findTable/' + keyWord, this.options).map(res => res.json());
   }
 }

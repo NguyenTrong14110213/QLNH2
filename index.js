@@ -5,15 +5,19 @@ const config = require('./config/database');
 const path = require('path');
 const router= express.Router();
 
+
 const server = app.listen(8080,()=>{
     console.log('Listening on port 8080');
 })
+
 
 
 const socket = require("socket.io");
 const io = socket(server);
 
 const authentication = require('./routes/authentication')(router,io);
+const categoryMaterials= require('./routes/categoryMaterials')(router,io);
+const materials= require('./routes/materials')(router,io);
 const categoryFood = require('./routes/categoryFood')(router,io);
 const foods = require('./routes/foods')(router,io);
 const region = require('./routes/region')(router,io);
@@ -45,6 +49,8 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use(express.static(__dirname+'/client/dist'));
 app.use('/authentication', authentication);
+app.use('/categoryMaterials', categoryMaterials);
+app.use('/materials',materials);
 app.use('/foods', foods); 
 app.use('/categoryFood',categoryFood);
 app.use('/region',region);
@@ -64,7 +70,18 @@ const storage = multer.diskStorage({
     //cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
   });
+  const storageAvatar = multer.diskStorage({
+    // destination
+    destination: function (req, file, cb) {
+      cb(null, './public/avatar')
+    },
+    filename: function (req, file, cb) {
+       cb(null, file.originalname);
+    //cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+  });
   const upload = multer({ storage: storage }).array('imgfood',10);
+  const uploadAvatar =multer({ storage:storageAvatar }).array('imgAvatar',1);
 
 app.post("/uploadImageFood",(req, res) => {
     upload(req, res, (err)=>{
@@ -75,8 +92,15 @@ app.post("/uploadImageFood",(req, res) => {
         }
     });
 });
-
-
+app.post("/uploadAvatar",(req, res) => {
+    uploadAvatar(req, res, (err)=>{
+        if(err) {
+            res.json({success :false, message:err});
+        }else{
+            res.json({success: true, message: 'Đã lưu hình ảnh!'});
+        }
+    });
+});
 
 io.on("connection", function(socket){
      console.log("co nguoi ket noi " + socket.id);
@@ -103,4 +127,3 @@ io.on("connection", function(socket){
     // })
 });
 
-module.exports =io;

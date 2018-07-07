@@ -30,11 +30,8 @@ module.exports =(router,io)=>{
                                     if(err.errors.name){
                                         res.json({success: false, message: err.errors.name.message});
                                     }else{
-                                        if(err.errors.actived){
-                                            res.json({success: false, message: err.errors.actived.message});
-                                        }else{
                                             res.json({success :false, message:err.errmsg});
-                                        }
+                                        
                                     }
                                 }
                             }else{
@@ -144,15 +141,15 @@ module.exports =(router,io)=>{
         if (!req.body.id) {
           res.json({ success: false, message: 'Chưa cung cấp mã danh mục' }); 
         } else {
-          CategoryFood.findOne({ id: req.body.id }, (err, ctegoryFood) => {
+          CategoryFood.findOne({ id: req.body.id }, (err, categoryFood) => {
             if (err) {
               res.json({ success: false, message: 'Không đúng mã danh mục' }); // Return error message
             } else {
-              if (!ctegoryFood) {
+              if (!categoryFood) {
                 res.json({ success: false, message: 'Không tìm thấy danh mục.' }); // Return error message
               } else {
-                ctegoryFood.name = req.body.name; // Save latest blog title
-                ctegoryFood.save((err) => {
+                categoryFood.name = req.body.name; // Save latest blog title
+                categoryFood.save((err) => {
                           if (err) {
                             if (err.errors) {
                               res.json({ success: false, message: 'Thông tin cần chính xác.' });

@@ -88,8 +88,7 @@ const nameValidators = [
 const regionSchema = new Schema({
   id: { type: String,unique: true, required: true , validate:idValidators},
   name: { type: String,unique: true, required: true, validate:nameValidators},
-  description: {type: String , validate:descriptionValidators },
-  actived: { type: Boolean , default: true,required: true}
+  description: {type: String , validate:descriptionValidators }
 });
 
 // Export Module/Schema

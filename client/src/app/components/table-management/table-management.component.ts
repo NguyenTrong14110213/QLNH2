@@ -27,14 +27,14 @@ export class TableManagementComponent implements OnInit {
   idTableMessage;
   idTableValid;
   nameRegionValid;
-  region_id;
+  region_id= 0;
   region_id2;
   idRegion;
   nameRegion;
   table_id;
   regions;
   tables;
-
+  keyWord;
   constructor( 
     private formBuilder: FormBuilder,
     private regionService: RegionService,
@@ -291,13 +291,21 @@ export class TableManagementComponent implements OnInit {
       this.tables =data.tables;
     })
   }
+  getKeyWord(keyWord){
+    this.keyWord =keyWord.value
+  }
+  findTable(){
+    this.tableService.findTable(this.keyWord).subscribe(data=>{
+      this.tables = data.table;
+    })
+  }
   ngOnInit() {
     this.getAllRegion();
     this.getAllTable(0);
     this.authService.socket.on("server-add-table", (data)=>{
       this.getAllTable(this.region_id);
     });
-    this.authService.socket.on("server-update_active-table", (data)=>{
+    this.authService.socket.on("server-update-active-table", (data)=>{
       this.getAllTable(this.region_id);
     });
     this.authService.socket.on("server-delete-table", (data)=>{

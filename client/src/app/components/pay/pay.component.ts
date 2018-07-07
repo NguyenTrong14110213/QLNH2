@@ -18,6 +18,8 @@ export class PayComponent implements OnInit {
   private regions;
   private region_id;
   private excess_cash=0;
+  btnPay = false;
+  keyWord;
   constructor(
     private authService: AuthService,
     private orderService: OrderService,
@@ -29,38 +31,38 @@ export class PayComponent implements OnInit {
     tables22.push("1");
     tables22.push("2");
     const detail_orders1=[{
-      "food_id":"1",
-      "food_name":"1",
-      "price_unit":"1",
-      "discount":"1",
+      "food_id":"M01",
+      "food_name":"Cá quả hấp",
+      "price_unit":"10000",
+      "discount":"0",
       "count":"1",
       "status":"1"
     },{
-      "food_id":"1",
-      "food_name":"1",
-      "price_unit":"1",
-      "discount":"1",
+      "food_id":"M02",
+      "food_name":"Thịt luộc",
+      "price_unit":"20000",
+      "discount":"0",
       "count":"1",
       "status":"1"
     }]
     console.log(detail_orders1);
     const order={
-      id: "4",
+      id: "12",
       customer_username:"1",
-      customer_fullname:  "1",
-      waiter_username :  "1",
-      waiter_fullname :  "1",
-      cashier_username :  "1",
-      cashier_fullname :  "1",
+      customer_fullname:  "Nguyễn Văn F",
+      waiter_username :  "KH01",
+      waiter_fullname :  "Nguyễn Văn C",
+      cashier_username :  "",
+      cashier_fullname :  "",
       flag_status:  "1",
       flag_set_table: "true",
       paid_cost: "5000",
-      final_cost: "7000",
-      description: "1",
+      final_cost: "30000",
+      description: "",
       detail_orders:detail_orders1,
-      number_customer:"1",
-      tables:["2","3"],
-      region_id:"MKV01",
+      number_customer:"3",
+      tables:["2","8"],
+      region_id:"KV02",
       region_name:"Khu vưc 1"
     }
     this.orderService.createOrder(order).subscribe(data=>{
@@ -68,14 +70,13 @@ export class PayComponent implements OnInit {
     })
   }
   changeCategory(region_id){
-    console.log(region_id.value)
-    this.getAllOrders(region_id.value);
+     this.getAllOrders(region_id.value);
   }
   
   getAllOrders(region_id){
     this.orderService.getAllOrders(region_id).subscribe(data=>{
       this.orders =data.order;
-      console.log("danh sách order: "+this.orders);
+      console.log("danh sách order: "+region_id);
     })
   }
   getAllRegion(){
@@ -88,13 +89,17 @@ export class PayComponent implements OnInit {
   this.orderService.getOrder(id).subscribe(data=>{
     this.order =data.order;
     this.detail_order = data.order.detail_orders;
+    if(this.order.flag_status == 5 ){
+      this.btnPay = true;
+    }else this.btnPay = false;
+    console.log(this.btnPay);
     console.log("chi tiết:"+ this.detail_order)
   })
   }
   editStatusOrder(){
     const order = {
       id:  this.id,
-      flag_status: 3
+      flag_status: 6
     }
     if(this.id){
       console.log("mã hóa đơn:"+ this.id);
@@ -116,8 +121,22 @@ export class PayComponent implements OnInit {
 
   }
   
+  getKeyWord(keyWord){
+    this.keyWord =keyWord.value
+  }
+  findOrder(){
+    console.log("keyword:"+ this.keyWord)
+    this.orderService.findOrder(this.keyWord).subscribe(data=>{
+      this.orders =data.order;
+      console.log(data);
+    })
+  }
   onKey(guest_money){
-    var result = parseInt(guest_money.value) + parseInt(this.order.paid_cost) - parseInt(this.order.final_cost);  
+    console.log(guest_money.value);
+    var paid_cost = this.order.paid_cost
+    if(!paid_cost) paid_cost =0;
+    
+    var result = parseInt(guest_money.value) + parseInt(paid_cost) - parseInt(this.order.final_cost);  
     if(result) this.excess_cash =result;
     else this.excess_cash =0;
   }
@@ -142,7 +161,12 @@ export class PayComponent implements OnInit {
     popupWin.document.close();
   }
   ngOnInit() {
+    this.authService.socket.on("server-update-status-order",(data)=>{
+      this.getAllOrders(0);
+    });
+    
     this.getAllRegion();
+    this.getAllOrders(0);
   }
 
 }

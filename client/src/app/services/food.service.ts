@@ -64,6 +64,10 @@ export class FoodService {
   }
   editActivedFood(food) {
     this.createAuthenticationHeaders(); // Create headers
-    return this.http.put(this.domain + 'authentication/updateActivedFood/', food, this.options).map(res => res.json());
+    return this.http.put(this.domain + 'foods/updateActivedFood/', food, this.options).map(res => res.json());
+  }
+  findFood(keyWord){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'foods/findFood/' + keyWord, this.options).map(res => res.json());
   }
 }

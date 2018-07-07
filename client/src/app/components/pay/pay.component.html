@@ -5,18 +5,36 @@
         </div>
     </div>
   <div class="col-sm-6 ">
-    <div class="iwt">
-      <select class="form-control slt" (change)="changeCategory($event.target)">
-        <option *ngFor="let region of regions" value="{{ region.id }}" >{{ region.name }}</option>
-      </select>
-      <button (click)="createOrder()">Tạo hóa đơn(tao hoa don mau)</button>
+    <div class="row">
+        <div class="col-sm-6 ">
+          
+                <select class="form-control" (change)="changeCategory($event.target)">
+                  <option value="0" >Tất cả</option>
+                  <option *ngFor="let region of regions" value="{{ region.id }}" >{{ region.name }}</option>
+                </select>
+                <button (click)="createOrder()">Tạo hóa đơn(tao hoa don mau)</button>
+        </div>
+        <div class="col-sm-6 ">
+            <div id="custom-search-input">
+                <div class="input-group col-md-12">
+                    <input type="text" class="form-control input-ms" (keyup)="getKeyWord($event.target)" placeholder="Tìm kiếm" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-info btn-lg" type="button">
+                            <i (click)="findOrder()" class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+          </div>
     </div>
+  
     <div class="well well-left">
         <table class="table table-hover">
             <thead>
               <tr>
                 <th>Mã bàn</th>
                 <th>Khách hàng</th>
+                <th>Phục vụ</th>
                 <th>Tổng tiền</th>
               </tr>
             </thead>
@@ -24,7 +42,9 @@
               <tr (click)="getDetailOrder(order.id)">
                 <td>{{ order.tables}}</td>
                 <td>{{ order.customer_fullname }}</td>
+                <td>{{ order.waiter_fullname }}</td>
                 <td>{{ order.final_cost }}</td>
+                <td> <div id="circle" [ngClass]="{'pay': order.flag_status == 5 }"></div></td>
               </tr>
             </tbody>
           </table>
@@ -38,7 +58,7 @@
         <div class="row inf">
             <div class="col-sm-4">
                 <i class="glyphicon glyphicon-calendar"></i>
-                <label id="time_order" for="disabled">{{ order.time_created }}</label>
+                <label id="time_order" for="disabled">{{ order.time_created | date:'HH:mm yyyy-MM-dd'  }}</label>
             </div>
         </div>
         <div class="row inf">
@@ -78,7 +98,7 @@
           </tbody>
         </table>
     </div>
-    <div class="row alignright">
+    <div id="btnPay" class="row alignright">
       <button class="circle-btn">
           <i class="glyphicon glyphicon-usd" data-toggle="modal" data-target="#calculate"></i>
       </button>

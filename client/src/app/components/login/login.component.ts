@@ -40,6 +40,17 @@ export class LoginComponent implements OnInit {
   onLoginSubmit(){
     this.processing =true;
     this.disableForm();
+    if(!this.authService.socket.connected){
+    this.messageClass= 'alert alert-danger';
+    this.message="Không có kết nối với server";
+    setTimeout(() => {
+      //  this.form.reset(); // Reset all form fields
+        this.messageClass = false; // Erase error/success message
+        this.message='';
+        this.enableForm();
+        this.processing= false;
+      }, 3000);
+    }
     const user ={
       username: this.form.get('username').value,
       password: this.form.get('password').value
@@ -54,7 +65,7 @@ export class LoginComponent implements OnInit {
         this.messageClass = 'alert alert-success';
         this.message= data.message;
         this.authService.storeUserData(data.token, data.user);
-     
+        
           if(this.previousUrl){
             this.router.navigate([this.previousUrl]);
           }else{
@@ -72,6 +83,14 @@ export class LoginComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
+    this.authService.socket.on('disconnect', () => {
+      this.messageClass= 'alert alert-danger';
+      this.message="Đã ngắt kết nối với server";
+      this.authService.authToken =null;
+      this.authService.user =null;
+      localStorage.clear();
+      this.router.navigate(['/']);
+  });
   }
 
 }

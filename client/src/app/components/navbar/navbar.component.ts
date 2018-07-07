@@ -16,9 +16,18 @@ export class NavbarComponent implements OnInit {
   ) { }
 
   onLogoutClick(){
-    this.authService.logout();
+    const user={
+      username: JSON.parse(localStorage.getItem('user')).username
+    }
+    this.authService.logout(user).subscribe(data=>{
+      if(!data.success){
+        console.log(data.messages)
+       }else{
+        this.router.navigate(['/']);
+       }
+    });
     //this.flashMessagesService.show('Đăng xuất thành công!', {cssClass: 'alert-info'});   
-    this.router.navigate(['/']);
+;
   }
   ngOnInit() {
   }

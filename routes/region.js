@@ -31,11 +31,9 @@ module.exports =(router,io)=>{
                                     if(err.errors.name){
                                         res.json({success: false, message: err.errors.name.message});
                                     }else{
-                                        if(err.errors.actived){
-                                            res.json({success: false, message: err.errors.actived.message});
-                                        }else{
+                                        
                                             res.json({success :false, message:err.errmsg});
-                                        }
+                                    
                                     }
                                 }
                             }else{

@@ -34,9 +34,14 @@ export class MenuManagementComponent implements OnInit {
   nameCategoryMessage;
   idCategoryFood;
   nameCategoryFood;
-  category_id='';
+  category_id= 0;
   category_id2;
   filesToUpload: Array<File> = [];
+
+  discount =0
+  inventory =0;
+  keyWord;
+
 
   constructor(
     private authService: AuthService,
@@ -115,18 +120,11 @@ export class MenuManagementComponent implements OnInit {
         Validators.required,
         Validators.maxLength(200)
       ])],
-      discount: ['', Validators.compose([
-        Validators.required,
-        this.validateNumber
-      ])],
-      inventory: ['', Validators.compose([
-        Validators.required,
-        this.validateNumber
-      ])],
+      discount: [''],
+      inventory: [''],
       // trường đơn giá
       price_unit: ['', Validators.compose([
-        Validators.required,
-        this.validateNumber
+        Validators.required
       ])],
       // trường đơn vị
       unit: ['', Validators.compose([
@@ -241,13 +239,21 @@ export class MenuManagementComponent implements OnInit {
     }
   }
 
+  changeDiscount(){
+      this.discount = this.form.get('discount').value;
+      if(!this.discount) this.discount=0;
+  }
+  changeInventory(){
+    this.inventory = this.form.get('inventory').value;
+    if(!this.inventory) this.inventory=0;
+  }
   onFoodSubmit() {
     const files: Array<File> = this.filesToUpload;
     const filenames: Array<String> = [];
     const formData:any = new FormData();
     for(let i =0; i < files.length; i++){
      const filename=Date.now() +'-'+ files[i]['name'];
-     filenames.push(filename);
+     filenames.push(this.authService.domain + 'foods/' + filename);
         formData.append("imgfood", files[i], filename);
     }
     this.foodService.uploadImageFood(formData).subscribe(data => {
@@ -262,8 +268,8 @@ export class MenuManagementComponent implements OnInit {
           name: this.form.get('name').value,
           category_id:this.form.get('category_id').value,
           description: this.form.get('description').value,
-          discount: this.form.get('discount').value,
-          inventory:this.form.get('inventory').value,
+          discount: this.discount,
+          inventory:this.inventory,
           price_unit: this.form.get('price_unit').value,
           unit: this.form.get('unit').value,
           url_image: filenames
@@ -327,6 +333,16 @@ export class MenuManagementComponent implements OnInit {
           this.message='';
         }, 2000);
       }
+    })
+  }
+  getKeyWord(keyWord){
+    this.keyWord =keyWord.value
+  }
+  findFood(){
+    console.log("keyword:"+ this.keyWord)
+    this.foodService.findFood(this.keyWord).subscribe(data=>{
+      this.foods = data.food; // Assign array to use in HTML
+      console.log(data);
     })
   }
   ngOnInit() {

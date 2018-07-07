@@ -16,12 +16,17 @@ import { EmployeeGuard } from './guards/employee.guard';
 import { CashierGuard } from './guards/cashier.guard';
 import { TableGuard } from './guards/table.guard';
 import { FoodGuard } from './guards/food.guard';
+import { Warehouse } from './guards/warehouse.guard';
+import { WarehouseManagementComponent } from './components/warehouse-management/warehouse-management.component';
+
 
 
 const appRoutes:Routes=[
-    { path:'', component: HomeComponent },
+
+     { path:'', component: LoginComponent, canActivate:[NotAuthGuard]},
+     { path:'home', component: HomeComponent},
     { path:'food/:id', component:FoodsComponent, canActivate:[FoodGuard]},
-    { path:'register', component: RegisterComponent, canActivate:[NotAuthGuard]},
+    // { path:'register', component: RegisterComponent, canActivate:[NotAuthGuard]},
     { path:'login', component:LoginComponent, canActivate:[NotAuthGuard]},
     { path:'profile', component:ProfileComponent, canActivate:[AuthGuard]},
     { path:'menu_management', component:MenuManagementComponent, canActivate:[FoodGuard]},
@@ -29,7 +34,7 @@ const appRoutes:Routes=[
     { path:'emloyee_management', component:EmployeeManagerComponent, canActivate:[EmployeeGuard]},
     { path:'profile_emloyee/:username', component:ProfileEmployeeComponent, canActivate:[EmployeeGuard]},
     { path:'pay', component:PayComponent, canActivate:[CashierGuard]},
-    { path:'**', component:HomeComponent}
+    { path:'warehouse_management', component:WarehouseManagementComponent, canActivate:[Warehouse]},
 
 ];
 

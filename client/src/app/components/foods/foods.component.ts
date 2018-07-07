@@ -81,18 +81,11 @@ export class FoodsComponent implements OnInit {
       ])],
       // trường đơn giá
       price_unit: ['', Validators.compose([
-        Validators.required,
-        this.validateNumber
+        Validators.required
       ])],
       // trường đơn giá
-      discount: ['', Validators.compose([
-        Validators.required,
-        this.validateNumber
-      ])],
-      inventory: ['', Validators.compose([
-        Validators.required,
-        this.validateNumber
-      ])],
+      discount: [''],
+      inventory: [''],
       // trường đơn vị
       unit: ['', Validators.compose([
         Validators.required,
@@ -113,6 +106,9 @@ export class FoodsComponent implements OnInit {
   }
   deleteImage(id) {
     console.log(id + " " + this.imageName);
+    var url = this.authService.domain + 'foods/'
+    this.imageName = this.imageName.substring(url.length);
+    console.log(this.imageName)
     this.foodService.deleteImage(id, this.imageName).subscribe(data => {
       if (!data.success) {
         this.messageClass = 'alert alert-danger';
@@ -146,12 +142,15 @@ export class FoodsComponent implements OnInit {
 
     this.checkChange = true;
   }
+  
   changeDiscount() {
     this.discount = this.form.get('discount').value;
+    if(!this.discount) this.discount =0;
     this.checkChange = true;
   }
   changeInventory() {
     this.inventory = this.form.get('inventory').value;
+    if(!this.inventory) this.inventory =0;
     this.checkChange = true;
   }
   changeUnit() {
@@ -216,7 +215,8 @@ export class FoodsComponent implements OnInit {
     const formData: any = new FormData();
     for (let i = 0; i < files.length; i++) {
       const filename = Date.now() + '-' + files[i]['name'];
-      filenames.push(filename);
+    //  filenames.push(this.authService.domain + 'foods/' + filename);
+    filenames.push(this.authService.domain + 'foods/' + filename);
       formData.append("imgfood", files[i], filename);
     }
     this.foodService.uploadImageFood(formData).subscribe(data => {
@@ -228,7 +228,7 @@ export class FoodsComponent implements OnInit {
         this.message = data.message;
         const food = {
           id: this.food.id,
-          url_image: filenames
+          url_image: filenames 
         }
         this.foodService.addImage(food).subscribe(data => {
           if (!data.success) {

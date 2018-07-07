@@ -67,8 +67,7 @@ const nameValidators = [
 
 const categoryFoodSchema = new Schema({
   id: { type: String,unique: true, required: true , validate:idValidators},
-  name: { type: String,unique: true, required: true, validate:nameValidators},
-  actived: { type: Boolean , default: true,required: true}
+  name: { type: String,unique: true, required: true, validate:nameValidators}
 });
 
 // Export Module/Schema

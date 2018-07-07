@@ -35,7 +35,10 @@ export class OrderService {
   }
   editStatusOrder(order) {
     this.createAuthenticationHeaders(); // Create headers
-    return this.http.put(this.domain + 'authentication/updateStatusOrder/', order, this.options).map(res => res.json());
+    return this.http.put(this.domain + 'order/updateStatusOrder/', order, this.options).map(res => res.json());
   }
-  
+  findOrder(keyWord){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'order/findOrder/' + keyWord, this.options).map(res => res.json());
+  }
 }
