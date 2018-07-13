@@ -363,6 +363,7 @@ export class WarehouseManagementComponent implements OnInit {
   }
  changeTime(){
   this.time = this.form4.get('time').value;
+  console.log(this.time);
   this.checkChange =true;
  }
  
@@ -379,10 +380,12 @@ export class WarehouseManagementComponent implements OnInit {
       count: this.count
     }
     this.materialsService.editMaterials(materials).subscribe(data =>{
+      this.checkChange =false;
       if (!data.success) {
         this.messageClass2 = 'alert alert-danger';
         this.message2 = data.message;
       } else {
+    
         this.messageClass2 = 'alert alert-success';
         this.message2 = data.message;
         // Clear form data after two seconds

@@ -107,13 +107,31 @@ const unitValidators = [
     message:'Đơn vị có tối đa 30 ký tự!'
   }
 ];
+// 2018-07-09T15:23:15.669Z
+
+  let getTime = (date_created) => {
+    datenow = new Date();
+    yyyy = datenow.getFullYear();
+    MM = datenow.getMonth()+1;
+    if(MM<10)MM = '0' + MM;
+    dd =datenow.getDate();
+    if(dd<10) dd ='0' +dd;
+    hh = datenow.getHours();
+    if(hh<10) hh ='0' +hh;
+    mm = datenow.getMinutes();
+    if(mm<10) mm ='0' +mm;
+    time =  yyyy+'-'+MM+'-'+dd+'T'+hh+':'+mm+':00.000Z'; 
+    return time;
+  };
+
+
 
 
 const foodsSchema = new Schema({
   id: { type: String,unique: true, required: true ,validate:idValidators},
   name: { type: String,unique: true, required: true, validate:nameValidators },
   actived: { type: Boolean , default: false},
-  date_created: { type: String ,default: new Date() , required: true},
+  date_created: { type: Date ,default: getTime , required: true},
   category_id: { type: String, required: true},
   description: {type: String , validate:descriptionValidators },
   discount: { type: String },

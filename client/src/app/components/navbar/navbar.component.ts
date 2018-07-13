@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { FlashMessagesService } from 'angular2-flash-messages';
 //import { FlashMessagesService } from 'angular2-flash-messages';
 @Component({  
   selector: 'app-navbar',
@@ -12,7 +13,6 @@ export class NavbarComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router
-    //private flashMessagesService: FlashMessagesService
   ) { }
 
   onLogoutClick(){
@@ -30,6 +30,13 @@ export class NavbarComponent implements OnInit {
 ;
   }
   ngOnInit() {
+    this.authService.socket.on('disconnect', () => {
+      //this.flashMessagesService.show('Đã ngắt kết nối đến s!', {cssClass: 'alert-info'});   
+      this.authService.authToken =null;
+      this.authService.user =null;
+      localStorage.clear();
+      this.router.navigate(['/']);
+  });
   }
 
 }

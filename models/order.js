@@ -6,6 +6,22 @@ mongoose.Promise = global.Promise; // Configure Mongoose Promises
 const Schema = mongoose.Schema; // Import Schema from Mongoose
 
 
+let getTime = (time_created) => {
+  datenow = new Date();
+  yyyy = datenow.getFullYear();
+  MM = datenow.getMonth()+1;
+  if(MM<10)MM = '0' + MM;
+  dd =datenow.getDate();
+  if(dd<10) dd ='0' +dd;
+  hh = datenow.getHours();
+  if(hh<10) hh ='0' +hh;
+  mm = datenow.getMinutes();
+  if(mm<10) mm ='0' +mm;
+  time =  yyyy+'-'+MM+'-'+dd+'T'+hh+':'+mm+':00.000Z'; 
+  return time;
+};
+
+
 const orderSchema = new Schema({
   id: { type: String,unique: true, required: true },
   customer_username: { type: String },
@@ -15,7 +31,7 @@ const orderSchema = new Schema({
   cashier_username : { type: String },
   cashier_fullname : { type: String },
   flag_status: { type: Number , required: true },
-  time_created: { type: String, default: new Date() ,required: true }, //"Sun Jul 01 2018 23:44:52 GMT+0700 (SE Asia Standard Time)"
+  time_created: { type: Date, default: getTime ,required: true }, 
   flag_set_table:{ type: Boolean, required: true},
   time_set_table:{ type: Date},
   paid_cost:{type: Number},
@@ -30,9 +46,9 @@ const orderSchema = new Schema({
   //   count:{type: String},
   // }],
   number_customer:{type: Number, required:true},
-  region_id:{type:String},
-  region_name:{type:String},
-  tables:{ type: Array }
+  region_id:{type: String},
+  tables:{ type: Array },
+  delegacy: {type:Array}    
 });
 
 // Export Module/Schema

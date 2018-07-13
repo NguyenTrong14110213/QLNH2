@@ -34,6 +34,9 @@ import { TableGuard } from './guards/table.guard';
 import { Warehouse } from './guards/warehouse.guard';
 import { WarehouseManagementComponent } from './components/warehouse-management/warehouse-management.component';
 import { MaterialsService } from './services/materials.service';
+import { RevenueManagementComponent } from './components/revenue-management/revenue-management.component';
+import { ChartsModule } from 'ng2-charts';
+
 
 
 @NgModule({
@@ -50,14 +53,16 @@ import { MaterialsService } from './services/materials.service';
     EmployeeManagerComponent,
     ProfileEmployeeComponent,
     PayComponent,
-    WarehouseManagementComponent
+    WarehouseManagementComponent,
+    RevenueManagementComponent
   ],
   imports: [
     BrowserModule,
     HttpModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    FlashMessagesModule
+    FlashMessagesModule,
+    ChartsModule
   ],
   providers: [AuthService, AuthGuard, NotAuthGuard,EmployeeGuard,CashierGuard,FoodGuard,TableGuard, Warehouse,CategoryFoodService, FoodService, RegionService, TableService,OrderService,CategoryMaterialsService, MaterialsService],
   bootstrap: [AppComponent]

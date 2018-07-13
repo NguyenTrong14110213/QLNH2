@@ -1,0 +1,159 @@
+<div class="register">
+  <div class="row show-hide-message">
+    <div [ngClass]="messageClass0">
+      {{ message0 }}
+    </div>
+  </div>
+  <div class="row well well-left">
+    <div class="col-sm-4">
+      <div>
+        <div class="row well well-inf">
+          <div class="col-sm-5">
+            <div class="lbl">
+              <label>Thời gian:</label>
+            </div>
+            <div class="lbl">
+              <label>Doanh thu:</label>
+            </div>
+            <div class="lbl">
+              <label>Chi tiêu:</label>
+            </div>
+            <div class="lbl">
+              <label>Lợi nhuận:</label>
+            </div>
+            <div class="lbl">
+              <label>Lượng khách:</label>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="lbl">
+              <label>{{ time }}</label>
+            </div>
+            <div class="lbl">
+              <label>{{ revenue }}</label>
+            </div>
+            <div class="lbl">
+              <label>{{ expenditure }}</label>
+            </div>
+            <div class="lbl">
+              <label>{{ profitChart }}</label>
+            </div>
+            <div class="lbl">
+              <label>{{ amountCustomers }}</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="lbl">
+            <label>Danh sách bán hàng:</label>
+          </div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Mã món</th>
+                <th>Tên món</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+              </tr>
+            </thead>
+            <tbody id="body_order">
+              <tr *ngFor="let food of foods">
+                <td>{{ food._id.food_id }}</td>
+                <td>{{ food._id.food_name }}</td>
+                <td>{{ food._id.price_unit }}</td>
+                <td>{{ food.total }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          <div class="lbl">
+            <label>Danh sách nhập nguyên liệu:</label>
+          </div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Mã NL</th>
+                <th>Tên NL</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let material of materials">
+                <td>{{ material._id.id }}</td>
+                <td>{{ material._id.name }}</td>
+                <td>{{ material._id.price_unit }}</td>
+                <td>{{ material.total }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-8">
+      <div class="row">
+        <div style="display: block">
+          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend"
+            [chartType]="barChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+          </canvas>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-sm-7">
+          <div class="col-sm-4">
+            <select class="form-control" (change)="changeView($event.target)">
+              <option value="0">Tháng</option>
+              <option value="1">Năm</option>
+            </select>
+          </div>
+          <div *ngIf="viewOfMonth" class="col-sm-3">
+            <form [formGroup]="form2">
+              <div class="form-group">
+                <select [(ngModel)]="MM" formControlName="month" (change)="changeMonth($event.target)">
+                  <option value="1">Tháng 1</option>
+                  <option value="2">Tháng 2</option>
+                  <option value="3">Tháng 3</option>
+                  <option value="4">Tháng 4</option>
+                  <option value="5">Tháng 5</option>
+                  <option value="6">Tháng 6</option>
+                  <option value="7">Tháng 7</option>
+                  <option value="8">Tháng 8</option>
+                  <option value="9">Tháng 9</option>
+                  <option value="10">Tháng 10</option>
+                  <option value="11">Tháng 11</option>
+                  <option value="12">Tháng 12</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="col-sm-2">
+            <form [formGroup]="form">
+              <div class="form-group">
+                <select [(ngModel)]="yyyy" formControlName="year" (change)="changeYear($event.target)">
+                  <option *ngFor="let year of listYear" value="{{ year }}">{{ year }}</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="col-sm-1">
+            <button class="btn" (click)="showChart()" [ngClass]="{'btn-info': changeOption == true}">Xem</button>
+          </div>
+        </div>
+        <div class="col-sm-5">
+          <div class="col-sm-5">
+            <label>Lợi nhuận:</label>
+          </div>
+          <div class="col-sm-7">
+            <div class="form-group">
+              <input type="text" class="form-control" disabled value="{{ profit }} VNĐ">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -92,8 +92,6 @@ export class PayComponent implements OnInit {
     if(this.order.flag_status == 5 ){
       this.btnPay = true;
     }else this.btnPay = false;
-    console.log(this.btnPay);
-    console.log("chi tiết:"+ this.detail_order)
   })
   }
   editStatusOrder(){

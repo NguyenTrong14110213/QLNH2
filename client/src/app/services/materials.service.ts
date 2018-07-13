@@ -48,6 +48,26 @@ export class MaterialsService {
      this.createAuthenticationHeaders(); // Create headers
      return this.http.delete(this.domain + 'materials/deleteMaterials/' + _id, this.options).map(res => res.json());
    }
+   getExpenditureMonth(MM,yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'materials/getExpenditureMonth/' + MM +'/'+ yyyy, this.options).map(res => res.json());
+  }
+  getExpenditureYear(yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'materials/getExpenditureYear/' + yyyy, this.options).map(res => res.json());
+  }
+  getExpenditureMinYear(){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'materials/getExpenditureMinYear' , this.options).map(res => res.json());
+  }
+  getMaterialsOfMonth(MM,yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'materials/getMaterialsOfMonth/' + MM +'/'+ yyyy, this.options).map(res => res.json());
+  }
+  getMaterialsOfDay(dd,MM,yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'materials/getMaterialsOfDay/'+dd+ '/' + MM +'/'+ yyyy, this.options).map(res => res.json());
+  }
    
  }
  

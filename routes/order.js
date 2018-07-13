@@ -108,7 +108,7 @@ module.exports = (router, io) => {
                     res.json({ success: false, message: err });
                 } else {
                     if (!order) {
-                        res.json({ success: false, message: 'Không tìm thấy món ăn.' });
+                        res.json({ success: false, message: 'Không tìm thấy hóa đơn.' });
                     } else {
                         res.json({ success: true, order: order });
                     }
@@ -117,9 +117,9 @@ module.exports = (router, io) => {
         }
     });
 
-
     router.get('/findOrder/:keyWord', (req, res) => {
-        Order.find({ $or: [{ id: { $regex: req.params.keyWord, $options: 'i' } }, { customer_username: { $regex: req.params.keyWord, $options: 'i' } }, { customer_fullname: { $regex: req.params.keyWord, $options: 'i' } }, { waiter_username: { $regex: req.params.keyWord, $options: 'i' } }, { waiter_fullname: { $regex: req.params.keyWord, $options: 'i' } }, { tables: { $regex: req.params.keyWord, $options: 'i' } }] }, (err, order) => {
+        var datenow = new Date();
+        Order.aggregate([{ $match: { time_created: { $gte: new Date(datenow.getFullYear(), datenow.getMonth(), datenow.getDate()) } } }, { $match: { $or: [{ customer_username: { $regex: req.params.keyWord, $options: 'i' } }, { customer_fullname: { $regex: req.params.keyWord, $options: 'i' } }, { waiter_username: { $regex: req.params.keyWord, $options: 'i' } }, { waiter_fullname: { $regex: req.params.keyWord, $options: 'i' } }, { tables: { $regex: req.params.keyWord, $options: 'i' } }] } }], (err, order) => {
             if (err) {
                 res.json({ success: false, message: err });
             } else {
@@ -133,9 +133,106 @@ module.exports = (router, io) => {
 
     });
 
+    router.get('/getRevenueOfMonth/:MM/:yyyy', (req, res) => {
+        //{$project : { month : {$month : "$time_created"},  year : {$year :  "$time_created"}}},
+        Order.aggregate([{ $match: { flag_status: C.COMPLETE_FLAG } }, { $match: { time_created: { $gte: new Date(req.params.yyyy, req.params.MM - 1), $lt: new Date(req.params.yyyy, req.params.MM) } } }, { $group: { _id: { day: { $dayOfMonth: "$time_created" }, month: { $month: "$time_created" }, year: { $year: "$time_created" } }, total: { $sum: "$final_cost" } } }], (err, order) => {
+            if (err) {
+                res.json({ success: false, message: err });
+            } else {
+                if (!order) {
+                    res.json({ success: false, message: 'Không tìm thấy hóa đơn nào.' });
+                } else {
+                    res.json({ success: true, order: order });
+                }
+            }
+        }).sort({ '_id': -1 });
+    });
+    router.get('/getRevenueOfYear/:yyyy', (req, res) => {
+        //{$project : { month : {$month : "$time_created"},  year : {$year :  "$time_created"}}},
+        Order.aggregate([{ $match: { flag_status: C.COMPLETE_FLAG } }, { $match: { time_created: { $gte: new Date(req.params.yyyy, 0), $lt: new Date(req.params.yyyy, 12) } } }, { $group: { _id: { month: { $month: "$time_created" }, year: { $year: "$time_created" } }, total: { $sum: "$final_cost" } } }], (err, order) => {
+            if (err) {
+                res.json({ success: false, message: err });
+            } else {
+                if (!order) {
+                    res.json({ success: false, message: 'Không tìm thấy hóa đơn nào.' });
+                } else {
+                    res.json({ success: true, order: order });
+                }
+            }
+        }).sort({ '_id': -1 });
+    });
+
+    router.get('/getFoodOfMonth/:MM/:yyyy', (req, res) => {
+        //{$project : { month : {$month : "$time_created"},  year : {$year :  "$time_created"}}},
+        Order.aggregate([{ $match: { flag_status: C.COMPLETE_FLAG } }, { $match: { time_created: { $gte: new Date(req.params.yyyy, req.params.MM - 1), $lt: new Date(req.params.yyyy, req.params.MM) } } }, { $unwind: "$detail_orders" }, { $group: { _id: {food_id: "$detail_orders.food_id", food_name: "$detail_orders.food_name" ,price_unit: "$detail_orders.price_unit"}, total: { $sum: "$detail_orders.count" } } }], (err, order) => {
+            if (err) {
+                res.json({ success: false, message: err });
+            } else {
+                if (!order) {
+                    res.json({ success: false, message: 'Không tìm thấy hóa đơn nào.' });
+                } else {
+                    res.json({ success: true, order: order });
+                }
+            }
+        }).sort({ '_id': -1 });
+    });
+    router.get('/getFoodOfDay/:dd/:MM/:yyyy', (req, res) => {
+        Order.aggregate([{ $match: { flag_status: C.COMPLETE_FLAG } }, { $match: { time_created: { $gte: new Date(req.params.yyyy, req.params.MM - 1,req.params.dd,0), $lt: new Date(req.params.yyyy, req.params.MM - 1,req.params.dd,24)} } }, { $unwind: "$detail_orders" }, { $group: { _id: { food_id: "$detail_orders.food_id", food_name: "$detail_orders.food_name",price_unit: "$detail_orders.price_unit" }, total: { $sum: "$detail_orders.count" } } }], (err, order) => {
+            if (err) {
+                res.json({ success: false, message: err });
+            } else {
+                if (!order) {
+                    res.json({ success: false, message: 'Không tìm thấy hóa đơn nào.' });
+                } else {
+                    res.json({ success: true, order: order });
+                }
+            }
+        }).sort({ '_id': -1 });
+    });
+    router.get('/getAmountCustomersOfMonth/:MM/:yyyy', (req, res) => {
+        Order.aggregate([{ $match: { flag_status: C.COMPLETE_FLAG } }, { $match: { time_created: { $gte: new Date(req.params.yyyy, req.params.MM - 1), $lt: new Date(req.params.yyyy, req.params.MM)} } }, { $group: { _id: null, total: { $sum: "$number_customer" } } }], (err, order) => {
+            if (err) {
+                res.json({ success: false, message: err });
+            } else {
+                if (!order) {
+                    res.json({ success: false, message: 'Không tìm thấy hóa đơn nào.' });
+                } else {
+                    res.json({ success: true, order: order });
+                }
+            }
+        }).sort({ '_id': -1 });
+    });
+    router.get('/getAmountCustomersOfDay/:dd/:MM/:yyyy', (req, res) => {
+        Order.aggregate([{ $match: { flag_status: C.COMPLETE_FLAG } }, { $match: { time_created: { $gte: new Date(req.params.yyyy, req.params.MM - 1,req.params.dd,0), $lt: new Date(req.params.yyyy, req.params.MM - 1,req.params.dd,24)} } }, { $group: { _id: null, total: { $sum: "$number_customer" } } }], (err, order) => {
+            if (err) {
+                res.json({ success: false, message: err });
+            } else {
+                if (!order) {
+                    res.json({ success: false, message: 'Không tìm thấy hóa đơn nào.' });
+                } else {
+                    res.json({ success: true, order: order });
+                }
+            }
+        }).sort({ '_id': -1 });
+    });
+
+    router.get('/getRevenueMinYear', (req, res) => {
+        Order.aggregate([{ $group: { _id: { $min: { $year: "$time_created" } } } }, { $limit: 1 }], (err, order) => {
+            if (err) {
+                res.json({ success: false, message: err });
+            } else {
+                if (!order) {
+                    res.json({ success: false, message: 'Không tìm thấy hóa đơn nào.' });
+                } else {
+                    res.json({ success: true, order: order });
+                }
+            }
+        }).sort({ '_id': -1 });
+    });
+
 
     router.put('/updateStatusOrder', (req, res) => {
-        console.log("updateStatusOrder():request:" + JSON.stringify(req.body))
+        // console.log("updateStatusOrder():request:"+JSON.stringify(req.body))
         if (!req.body.id) {
             res.json({ success: false, message: 'Chưa cung cấp mã món' });
         } else {
@@ -195,28 +292,8 @@ module.exports = (router, io) => {
                                         res.json({ success: false, message: err }); // Return error message
                                     }
                                 } else {
-                                    console.log("updateStatusOrder():update success:" + JSON.stringify(failedTables))
                                     res.json({ success: true, message: 'Trạng thái hóa đơn đã được thanh toán!', old_status: oldStatus, order: order });
-                                    var failedTables = [];
-
-                                    // tìm tất cả các bàn đã được order
-                                    Table.find({ order_id: order.id }, (err, tables) => {
-                                        if (err) {
-                                            available = false;
-                                        } else {
-                                            for (var _table of tables) {
-                                                _table.order_id = ""
-                                                _table.save((err) => {
-                                                    if (err) {
-                                                        available = false;
-                                                        failedTables.push(_table.id)
-                                                    }
-                                                })
-                                            }
-                                        }
-                                    })
                                     io.sockets.emit("server-update-status-order", { old_status: oldStatus, order: order });
-
                                 }
                             });
                         }
@@ -225,6 +302,7 @@ module.exports = (router, io) => {
             });
         }
     });
+
 
     // cập nhật detail order theo orderID và foođID
     router.put('/updateOrCreateDetailOrder', (req, res) => {
@@ -540,6 +618,10 @@ module.exports = (router, io) => {
                     } else {
                         // console.log("order:"+JSON.stringify(order))
                         // console.log("removeOrder:validate success:tables:"+order.tables+":details:"+order.detail_orders)
+
+                        // cờ xác định đã chọn bàn hoặc món chưa
+                        var hasSelectedAnyItem = (order.tables && order.tables.length > 0) || (order.detail_orders && order.detail_orders.length > 0)
+
                         var isSuccess = true;
                         var failedTables = [];
                         var failedFoods = [];
@@ -591,23 +673,28 @@ module.exports = (router, io) => {
                             })
                         }
 
-                        order.remove((err) => {
-                            if (err) {
-                                isSuccess = false;
-                                console.log("Order đã xóa thất bại:error:" + err)
-                            } else {
-                                // console.log("Order đã được xóa.")
-                                io.sockets.emit("server-remove-order", { order_id: order.id })
-                            }
-                        });
+                        // nếu khôi phục bàn và món thành công (nếu có) 
+                        // mới có thể hủy hóa đơn
+                        if (isSuccess) {
+                            order.remove((err) => {
+                                if (err) {
+                                    isSuccess = false;
+                                    console.log("Remove order thất bại:error:" + err)
+                                } else {
+                                    // console.log("Order đã được xóa.")
+                                    io.sockets.emit("server-remove-order", { order_id: order.id })
+                                }
+                            });
+                        }
 
                         if (isSuccess) {
                             // console.log("Khôi phục dữ liệu thành công")
-                            res.json({ success: true, message: "Khôi phục dữ liệu thành công" });
+                            var message = hasSelectedAnyItem ? "Khôi phục các item đã chọn và xóa hóa đơn thành công" : "Xóa hóa đơn thành công"
+                            res.json({ success: true, message: message });
                         } else {
                             if (failedTables.length > 0) {
                                 console.log("số bàn không khôi phục được:" + failedTables.length)
-                                var message = message + "\nCác bàn không khôi phục được: ";
+                                var message = "\nCác bàn không khôi phục được: ";
                                 failedTables.array.forEach(_table => {
                                     message += _table + ", "
                                 });
@@ -622,7 +709,8 @@ module.exports = (router, io) => {
                                 message.replaceAt(message.length - 2, ",", ".")
                             }
 
-                            res.json({ success: false, message: "Khôi phục dữ liệu thất bại." + message });
+                            res.json({ success: false, message: "Khôi phục dữ liệu thất bại. Xóa hóa đơn thất bại" + message });
+                            io.sockets.emit("server-update-order", { order })
                         }
                     }
                 }
@@ -631,14 +719,15 @@ module.exports = (router, io) => {
     })
 
 
+
     // Load tất cả order cho phục vụ
     router.get('/getOrdersForWaiter', (req, res) => {
         Order.find({ flag_status: { $gt: C.CREATING_FLAG, $lt: C.COMPLETE_FLAG } }, (err, orders) => {
             if (err) {
-                res.json({ success: false, message: err });
+                res.json({ success: false, message: "Lỗi xử lý tìm kiếm trên server", error: err });
             } else {
                 if (!orders) {
-                    res.json({ success: false, message: 'Không tìm thấy hóa đơn đang chờ hay hoạt động.' });
+                    res.json({ success: false, message: 'Không có hóa đơn' });
                 } else {
                     // console.log("getOrdersWaiting():count:"+orders.length)
                     res.json({ success: true, orders: orders });
@@ -647,14 +736,15 @@ module.exports = (router, io) => {
         });
     });
 
+
     // Load tất cả order cho bếp
     router.get('/getOrdersForChef', (req, res) => {
         Order.find({ flag_status: { $gt: C.CREATING_FLAG, $lt: C.EATING_FLAG } }, (err, orders) => {
             if (err) {
-                res.json({ success: false, message: err });
+                res.json({ success: false, message: "Lỗi xử lý tìm kiếm trên server", error: err });
             } else {
                 if (!orders) {
-                    res.json({ success: false, message: 'Không tìm thấy hóa đơn cho bếp.' });
+                    res.json({ success: false, message: 'Không có hóa đơn' });
                 } else {
                     // console.log("getOrdersWaiting():count:"+orders.length)
                     res.json({ success: true, orders: orders });
@@ -662,6 +752,287 @@ module.exports = (router, io) => {
             }
         });
     });
+    // phục vụ A đề xuất bàn giao hóa đơn chưa xử lý xong cho phục vụ B khi hết ca
+    router.put('/suggestDelegacy', (req, res) => {
+        if (!req.body.handover_username) {
+            res.json({ success: false, message: "Không có tên đăng nhập" });
+        } else {
+
+            if (!req.body.delegacy_username) {
+                res.json({ success: false, message: "Không có tên đăng nhập của người được bàn giao" });
+            } else {
+                var handover_username = req.body.handover_username.toLowerCase()
+                var delegacy_username = req.body.delegacy_username.toLowerCase()
+
+                User.findOne({ username: handover_username }, (err, handover) => {
+                    if (err) {
+                        res.json({ success: false, message: "Không tìm được tài khoản của bạn do lỗi", error: err });
+                    }
+                    else {
+                        if (!handover) {
+                            res.json({ success: false, message: 'Không tìm thấy tài khoản của bạn' })
+                        }
+                        else {
+                            if (!handover.actived) {
+                                res.json({ success: false, message: 'Tài khoản của bạn đã ngưng hoạt động' })
+                            }
+                            else {
+                                User.findOne({ username: delegacy_username }, (err, delegacy) => {
+                                    if (err) {
+                                        res.json({ success: false, message: "Không tìm được tài khoản người được bàn giao do lỗi", error: err });
+                                    }
+                                    else {
+                                        if (!delegacy) {
+                                            res.json({ success: false, message: 'Không tìm thấy tài khoản của người được bàn giao' })
+                                        }
+                                        else {
+                                            if (!delegacy.actived) {
+                                                res.json({ success: false, message: 'Tài khoản của người được bàn giao đã ngưng hoạt động' })
+                                            }
+                                            else {
+                                                if (delegacy.type_account !== C.ACCOUNT_WAITER) {
+                                                    res.json({ success: false, message: 'Người được bàn giao không phải là nhân viên phục vụ' })
+                                                }
+                                                else {
+                                                    res.json({ success: true, message: 'Đã gửi yêu cầu bàn giao. Vui lòng chờ hồi đáp' })
+
+                                                    var data = {
+                                                        delegacy_username: delegacy.username,
+                                                        handover_username: handover.username,
+                                                        handover_fullname: handover.fullname
+                                                    }
+
+                                                    io.sockets.emit("server-request-delegacy-waiter", data)
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    })
+
+    // phục vụ B đồng ý đề xuất bàn giao của phục vụ A
+    router.put('/agreeBecomeDelegacy', (req, res) => {
+        var data = {};
+        if (!req.body.username) {
+            res.json({ success: false, message: "Không có tên đăng nhập" });
+        } else {
+            if (!req.body.handover_username) {
+                res.json({ success: false, message: "Không có tên đăng nhập của người bàn giao" });
+            } else {
+
+                var delegacy_username = req.body.username.toLowerCase()
+                var handover_username = req.body.handover_username.toLowerCase()
+
+                // tìm tài khoản người được bàn giao
+                User.findOne({ username: delegacy_username }, (err, delegacy) => {
+                    if (err) {
+                        res.json({ success: false, message: "Không tìm được tài khoản của bạn do lỗi", error: err });
+                    }
+                    else {
+                        if (!delegacy) {
+                            res.json({ success: false, message: 'Không tìm thấy tài khoản của bạn' })
+                        }
+                        else {
+                            if (!delegacy.actived) {
+                                res.json({ success: false, message: 'Tài khoản của bạn đã ngừng hoạt động' })
+
+                                data = {
+                                    is_ok: false,
+                                    message: "Tài khoản người được bàn giao đã ngừng hoạt động",
+                                    handover_username: handover.username,
+                                    delegacy_username: delegacy_username,
+                                    delegacy_fullname: delegacy.fullname
+                                }
+
+                                io.sockets.emit("server-response-delegacy-waiter", data)
+                            }
+                            else {
+                                // tìm tài khoản người bàn giao
+                                User.findOne({ username: handover_username }, (err, handover) => {
+                                    if (err) {
+                                        res.json({ success: false, message: "Không tìm được tài khoản của người bàn giao do lỗi", error: err });
+                                    } else {
+                                        if (!handover) {
+                                            res.json({ success: false, message: 'Không tìm thấy tài khoản của người bàn giao' })
+                                        } else {
+                                            if (!handover.actived) {
+                                                res.json({ success: true, message: 'Tài khoản của người bàn giao đã ngừng hoạt động' })
+                                            }
+                                            else {
+                                                // chứng thực thành công tài khoản của người bàn giao và được bàn giao
+                                                // load danh sách các hóa đơn được tạo bởi người bàn giao và vẫn chưa được thanh toán
+                                                // cờ status vẫn chưa là COMPLETE
+                                                console.log("handover username:" + handover_username)
+                                                var query = {
+                                                    waiter_username: handover_username,
+                                                    flag_status: { $gt: C.CREATING_FLAG, $lt: C.COMPLETE_FLAG }
+                                                }
+                                                console.log("query orders:" + JSON.stringify(query))
+
+                                                var failedOrders = "";
+
+                                                Order.find(query, (err, orders) => {
+                                                    if (err) {
+                                                        res.json({
+                                                            success: false,
+                                                            message: 'Không tìm thấy danh sách hóa đơn được tạo ra từ người bàn giao mà bạn có thể phục vụ do lỗi',
+                                                            error: err
+                                                        })
+                                                    }
+                                                    else {
+                                                        // console.log("count of orders:"+orders.length)
+                                                        for (var order of orders) {
+                                                            var delegacies = order.delegacy
+                                                            var lastDelegacy = ""
+                                                            if (delegacies && delegacies.length > 0) {
+                                                                lastDelegacy = delegacies[delegacies.length - 1]
+                                                            }
+
+                                                            // console.log("delegacies:"+delegacies)
+                                                            // console.log("lastDelegacy:"+lastDelegacy)
+                                                            // console.log("lastDelegacy != delegacy_username:"+(lastDelegacy != delegacy_username))
+
+                                                            // nếu người được ủy nhiệm cuối cùng trong hóa đơn không phải người được bàn giao hiện tại
+                                                            if (lastDelegacy != delegacy_username) {
+                                                                console.log("agree delegacy:different usernames")
+                                                                order.delegacy.push(delegacy_username)
+                                                                order.save((err) => {
+                                                                    if (err) {
+                                                                        if (failedOrders === "") {
+                                                                            failedOrders = order.id
+                                                                        } else {
+                                                                            failedOrders += ", " + order.id
+                                                                        }
+                                                                        console.log("delegacy order failed:id:" + order.id + ":error:" + err)
+                                                                    }
+                                                                })
+                                                            }
+                                                        }
+
+                                                        // nên làm chức năng lưu trữ các hóa đơn failed trong client để hiển thị khi cần
+                                                        if (failedOrders && failedOrders.length > 0) {
+                                                            res.json({
+                                                                success: false,
+                                                                message: 'Bàn giao không hoàn toàn. Các hóa đơn chưa được bàn giao : ' + failedOrders
+                                                            })
+
+                                                            data = {
+                                                                is_ok: true,
+                                                                message: 'Bàn giao không hoàn toàn',
+                                                                fails: failedOrders,
+                                                                delegacy_username: delegacy.username,
+                                                                delegacy_fullname: delegacy.fullname,
+                                                                handover_username: handover.username
+                                                            }
+                                                        }
+                                                        else {
+                                                            res.json({ success: true, message: 'Bàn giao thành công' })
+                                                            // console.log("delegacy username:"+delegacy.username)
+                                                            data = {
+                                                                is_ok: true,
+                                                                message: "Đồng ý bàn giao",
+                                                                fails: "",
+                                                                delegacy_username: delegacy.username,
+                                                                delegacy_fullname: delegacy.fullname,
+                                                                handover_username: handover.username
+                                                            }
+                                                        }
+
+                                                        io.sockets.emit("server-response-delegacy-waiter", data)
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    })
+
+    router.put('/disagreeBecomeDelegacy', (req, res) => {
+        var data = {};
+        if (!req.body.username) {
+            res.json({ success: false, message: "Không có tên đăng nhập" });
+        }
+        else {
+            if (!req.body.handover_username) {
+                res.json({ success: false, message: "Không có tên đăng nhập của người bàn giao" });
+            }
+            else {
+
+                var username = req.body.username.toLowerCase()
+                var handover_username = req.body.handover_username.toLowerCase()
+
+                // tìm tài khoản của người được bàn giao
+                User.findOne({ username: username }, (err, delegacy) => {
+                    if (err) {
+                        res.json({ success: false, message: "Không tìm được tài khoản của bạn do lỗi", error: err });
+                    }
+                    else {
+                        if (!delegacy) {
+                            res.json({ success: false, message: 'Không tìm thấy tài khoản của bạn' })
+                        }
+                        else {
+                            if (!delegacy.actived) {
+                                res.json({ success: false, message: 'Tài khoản của bạn đã bị ngưng hoạt động' })
+
+                                data = {
+                                    is_ok: false,
+                                    message: "Tài khoản người được bàn giao đã ngưng hoạt động",
+                                    handover_username: handover_username,
+                                    delegacy_username: username,
+                                    delegacy_fullname: delegacy.fullname
+                                }
+                                io.sockets.emit("server-response-delegacy-waiter", data)
+                            }
+                            else {
+                                // tìm tài khoản của người bàn giao
+                                User.findOne({ username: handover_username }, (err, handover) => {
+                                    if (err) {
+                                        res.json({ success: false, message: "Không tìm được tài khoản của người bàn giao do lỗi", error: err });
+                                    }
+                                    else {
+                                        if (!handover) {
+                                            res.json({ success: false, message: 'Không tìm thấy tài khoản của người bàn giao' })
+                                        }
+                                        else {
+                                            if (!handover.actived) {
+                                                res.json({ success: true, message: 'Tài khoản của người bàn giao đã bị ngưng hoạt động' })
+                                            }
+                                            else {
+                                                res.json({ success: true, message: 'Đã gửi lời từ chối bàn giao' })
+
+                                                data = {
+                                                    is_ok: false,
+                                                    message: "Từ chối bàn giao",
+                                                    handover_username: handover_username,
+                                                    delegacy_username: delegacy.username,
+                                                    delegacy_fullname: delegacy.fullname
+                                                }
+
+                                                io.sockets.emit("server-response-delegacy-waiter", data)
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    })
+
     return router;
 };
 

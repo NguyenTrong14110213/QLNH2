@@ -69,10 +69,10 @@ const materialsSchema = new Schema({
   id: { type: String, required: true , validate:idValidators},
   name: { type: String, required: true, validate:nameValidators},
   category_id: { type: String, required:true },
-  count:{ type: String, required:true },
-  price_unit:{ type: String, required:true },
+  count:{ type: Number, required:true },
+  price_unit:{ type: Number, required:true },
   unit:{type: String, required:true },
-  time:{ type: String, required: true}
+  time:{ type: Date, required: true}
 });
 
 // Export Module/Schema

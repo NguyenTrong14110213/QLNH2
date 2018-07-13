@@ -18,6 +18,7 @@ import { TableGuard } from './guards/table.guard';
 import { FoodGuard } from './guards/food.guard';
 import { Warehouse } from './guards/warehouse.guard';
 import { WarehouseManagementComponent } from './components/warehouse-management/warehouse-management.component';
+import { RevenueManagementComponent } from './components/revenue-management/revenue-management.component';
 
 
 
@@ -35,7 +36,7 @@ const appRoutes:Routes=[
     { path:'profile_emloyee/:username', component:ProfileEmployeeComponent, canActivate:[EmployeeGuard]},
     { path:'pay', component:PayComponent, canActivate:[CashierGuard]},
     { path:'warehouse_management', component:WarehouseManagementComponent, canActivate:[Warehouse]},
-
+    { path:'revenue_management', component:RevenueManagementComponent, canActivate:[Warehouse]}
 ];
 
 @NgModule({

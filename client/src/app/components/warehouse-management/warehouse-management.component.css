@@ -90,6 +90,9 @@ li:hover {
 .colorSelected{
     color: #5BC0DE;
 }
+.row{
+    margin-bottom: 20px;
+}
     .inactive{
         background:rgb(223, 219, 219);
     }

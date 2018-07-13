@@ -102,6 +102,11 @@ app.post("/uploadAvatar",(req, res) => {
     });
 });
 
+const Processor = require('./help/processData')
+Processor.resetUserDatabase()
+Processor.cleanOrderDatabase()
+
+
 io.on("connection", function(socket){
      console.log("co nguoi ket noi " + socket.id);
     

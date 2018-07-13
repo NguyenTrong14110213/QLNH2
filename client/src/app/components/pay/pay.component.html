@@ -12,7 +12,7 @@
                   <option value="0" >Tất cả</option>
                   <option *ngFor="let region of regions" value="{{ region.id }}" >{{ region.name }}</option>
                 </select>
-                <button (click)="createOrder()">Tạo hóa đơn(tao hoa don mau)</button>
+                <!-- <button (click)="createOrder()">Tạo hóa đơn(tao hoa don mau)</button> -->
         </div>
         <div class="col-sm-6 ">
             <div id="custom-search-input">
@@ -98,8 +98,8 @@
           </tbody>
         </table>
     </div>
-    <div id="btnPay" class="row alignright">
-      <button class="circle-btn">
+    <div class="row alignright" >
+      <button  *ngIf="btnPay" class="circle-btn">
           <i class="glyphicon glyphicon-usd" data-toggle="modal" data-target="#calculate"></i>
       </button>
       <button>

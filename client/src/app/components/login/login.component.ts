@@ -83,14 +83,6 @@ export class LoginComponent implements OnInit {
       this.previousUrl = this.authGuard.redirectUrl;
       this.authGuard.redirectUrl = undefined;
     }
-    this.authService.socket.on('disconnect', () => {
-      this.messageClass= 'alert alert-danger';
-      this.message="Đã ngắt kết nối với server";
-      this.authService.authToken =null;
-      this.authService.user =null;
-      localStorage.clear();
-      this.router.navigate(['/']);
-  });
   }
 
 }

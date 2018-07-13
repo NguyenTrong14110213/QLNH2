@@ -41,4 +41,32 @@ export class OrderService {
     this.createAuthenticationHeaders(); // Create headers
     return this.http.get(this.domain + 'order/findOrder/' + keyWord, this.options).map(res => res.json());
   }
+  getRevenueOfMonth(MM,yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'order/getRevenueOfMonth/' + MM +'/'+ yyyy, this.options).map(res => res.json());
+  }
+  getRevenueOfYear(yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'order/getRevenueOfYear/' + yyyy, this.options).map(res => res.json());
+  }
+  getRevenueMinYear(){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'order/getRevenueMinYear' , this.options).map(res => res.json()); 
+  }
+  getFoodOfMonth(MM,yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'order/getFoodOfMonth/' + MM +'/'+ yyyy, this.options).map(res => res.json());
+  }
+  getFoodOfDay(dd,MM,yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'order/getFoodOfDay/'+dd+ '/' + MM +'/'+ yyyy, this.options).map(res => res.json());
+  }
+  getAmountCustomersOfMonth(MM,yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'order/getAmountCustomersOfMonth/' + MM +'/'+ yyyy, this.options).map(res => res.json());
+  }
+  getAmountCustomersOfDay(dd,MM,yyyy){
+    this.createAuthenticationHeaders(); // Create headers
+    return this.http.get(this.domain + 'order/getAmountCustomersOfDay/'+dd+ '/' + MM +'/'+ yyyy, this.options).map(res => res.json());
+  }
 }

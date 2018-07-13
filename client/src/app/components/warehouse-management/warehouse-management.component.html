@@ -368,7 +368,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <input type="date" name="time" class="form-control" autocomplete="off" formControlName="time" value="{{ materials2.time }}"
+                            <input type="date" name="time" class="form-control" autocomplete="off" formControlName="time" value="{{ materials2.time | date:'yyyy-MM-dd'  }}"
                                 (change)="changeTime()">
                         </div>
                     </div>
