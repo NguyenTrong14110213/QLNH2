@@ -103,8 +103,7 @@ app.post("/uploadAvatar",(req, res) => {
 });
 
 const Processor = require('./help/processData')
-Processor.resetUserDatabase()
-Processor.cleanOrderDatabase()
+Processor.cleanDatabase()
 
 
 io.on("connection", function(socket){

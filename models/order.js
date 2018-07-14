@@ -46,7 +46,7 @@ const orderSchema = new Schema({
   //   count:{type: String},
   // }],
   number_customer:{type: Number, required:true},
-  region_id:{type: String},
+  region_id:{type: Array},
   tables:{ type: Array },
   delegacy: {type:Array}    
 });

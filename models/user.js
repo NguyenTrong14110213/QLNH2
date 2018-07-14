@@ -180,7 +180,7 @@ const userSchema = new Schema({
   address:{ type: String, required: true, validate:addressValidators},
   url_profile: { type: String ,required: true},
   type_account: { type:Number,required: true },
-  actived: { type: Boolean , default: false, required: true},
+  actived: { type: Boolean , default: true, required: true},
   is_logining : { type: Boolean , default: false}
 });
 

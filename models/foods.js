@@ -130,7 +130,7 @@ const unitValidators = [
 const foodsSchema = new Schema({
   id: { type: String,unique: true, required: true ,validate:idValidators},
   name: { type: String,unique: true, required: true, validate:nameValidators },
-  actived: { type: Boolean , default: false},
+  actived: { type: Boolean , default: true},
   date_created: { type: Date ,default: getTime , required: true},
   category_id: { type: String, required: true},
   description: {type: String , validate:descriptionValidators },

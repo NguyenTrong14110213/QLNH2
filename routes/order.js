@@ -4,14 +4,50 @@ const C = require('../config/globalVariables');
 const Order = require('../models/order');
 const Table = require('../models/tables');
 const Food = require('../models/foods');
-
+const User =require('../models/user');
+var count =1;
 
 module.exports = (router, io) => {
-
-    router.post('/createOrder', (req, res) => {
+    // chuyển hóa đơn đã tạo ở route "createOrder" sang trạng thái PENDING và tạo created_time
+    router.post('/makeOrder', (req, res)=>{
         if (!req.body.id) {
-            res.json({ success: false, message: 'Chưa nhập mã order!' });
-        } else if (!req.body.waiter_username) {
+            res.json({ success: false, message: 'Chưa có mã hóa đơn !' })
+        }else{
+            Order.findOne({id:req.body.id}, (err,order)=>{
+                if(err){
+                    res.json({ success: false, message: 'Lỗi tìm kiếm hóa đơn trên server !', error : err })
+                }else{
+                    var oldStatus = order.flag_status
+
+                    datenow = new Date();
+                    yyyy = datenow.getFullYear();
+                    MM = datenow.getMonth()+1;
+                    if(MM<10)MM = '0' + MM;
+                    dd =datenow.getDate();
+                    if(dd<10) dd ='0' +dd;
+                    hh = datenow.getHours();
+                    if(hh<10) hh ='0' +hh;
+                    mm = datenow.getMinutes();
+                    if(mm<10) mm ='0' +mm;
+                    time =  yyyy+'-'+MM+'-'+dd+'T'+hh+':'+mm+':00.000Z'; 
+                    
+                    order.time_created = time
+                    order.flag_status = C.PENDING_FLAG
+                    order.save((err)=>{
+                        if(err){
+                            res.json({ success: false, message: 'Lỗi lưu hóa đơn trên server !', error : err })
+                        }else{
+                            res.json({ success: true, message: 'Tạo hóa đơn thành công !' })
+                            io.sockets.emit("server-update-status-order",  {old_status: oldStatus, order: order});
+                        }
+                    })
+                }
+            })
+        }
+    })
+    router.post('/createOrder', (req, res) => {
+        // console.log("create new order:request:"+JSON.stringify(req.body))
+        if (!req.body.waiter_username) {
             res.json({ success: false, message: 'Chưa nhập tài khoản nhân viên phục vụ!' });
         } else if (!req.body.waiter_fullname) {
             res.json({ success: false, message: 'Chưa nhập tên nhân viên phục vụ!' });
@@ -22,47 +58,60 @@ module.exports = (router, io) => {
         } else if (!req.body.number_customer) {
             res.json({ success: false, message: 'Chưa nhập số lượng khách!' });
         } else {
+            // tạo id cho hóa đơn
+            var isoString = new Date(Date.now()).toISOString()
+            var dateTime = isoString.replace(/T/, ' ').replace(/\..+/, '').replace(/:/g, ' ')
+            .replace(/-/g, ' ')
+            // console.log("dateTime:"+dateTime)
+            var _count = count.toString()
+            while(_count.length < 5){
+                _count = "0" + _count
+            }
+            var _id = dateTime + " " + _count
+
+            count++;
+
             const order = new Order({
-                id: req.body.id,
+                id: _id,
                 customer_username: req.body.customer_username,
-                customer_fullname: req.body.customer_fullname,
-                waiter_username: req.body.waiter_username,
-                waiter_fullname: req.body.waiter_fullname,
-                cashier_username: req.body.cashier_username,
-                cashier_fullname: req.body.cashier_fullname,
-                flag_status: req.body.flag_status,
+                customer_fullname:  req.body.customer_fullname,
+                waiter_username :  req.body.waiter_username,
+                waiter_fullname :  req.body.waiter_fullname,
+                cashier_username :  req.body.cashier_username,
+                cashier_fullname :  req.body.cashier_fullname,
+                flag_status:  req.body.flag_status,
                 flag_set_table: req.body.flag_set_table,
-                time_set_table: req.body.time_set_table,
+                time_set_table: req.body.time_set_table,    
                 paid_cost: req.body.paid_cost,
                 final_cost: req.body.final_cost,
                 description: req.body.description,
                 tables: req.body.tables,
                 region_id: req.body.region_id,
-                region_name: req.body.region_name,
                 detail_orders: req.body.detail_orders,
-                number_customer: req.body.number_customer,
-
+                number_customer:req.body.number_customer,
+               
             });
             order.save((err) => {
                 if (err) {
+                    console.log("create order failed:"+err)
                     if (err.code === 11000) {
                         res.json({ success: false, message: 'Mã hóa đơn bị trùng!' });
                     } else {
                         if (err.errors) {
-                            console.log("createOrder:save failed:not error code 11000:" + err)
+                            console.log("createOrder:save failed:not error code 11000:"+err)
                             res.json({ success: false, message: err });
                         }
                     }
-
+            
                 } else {
-                    Order.findOne({ id: order.id }, (err, _order) => {
-                        if (err) {
-                            res.json({ success: false, message: 'Đã lưu hóa đơn nhưng không trả về được!', order: order });
-                        } else {
-                            res.json({ success: true, message: 'Hóa đơn mới được tạo!', order: _order });
+                    Order.findOne({id:order.id}, (err, _order)=>{
+                        if(err){
+                            res.json({ success: false, message: 'Tạo hóa đơn thành công nhưng không có giá trị trả về', error:err});
+                        }else{
+                            res.json({ success: true, message: 'Tạo hóa đơn thành công!', order:_order});
                         }
                     })
-                    io.sockets.emit("server-create-order", { order: order });
+                   io.sockets.emit("server-create-order", { order: order });
                 }
             })
         }
@@ -252,22 +301,24 @@ module.exports = (router, io) => {
                         // nếu là muốn chuyển hóa đơn sang trạng thái sẵn sàng thanh toán
                         if (flag == C.PAYING_FLAG) {
                             // khôi phục lại các bàn trong order
-
                             var failedTables = [];
 
                             // tìm tất cả các bàn đã được order
                             Table.find({ order_id: order.id }, (err, tables) => {
-                                if (err) {
+                                if(err){
                                     available = false;
-                                } else {
-                                    for (var _table of tables) {
-                                        _table.order_id = ""
-                                        _table.save((err) => {
-                                            if (err) {
-                                                available = false;
-                                                failedTables.push(_table.id)
+                                }else{
+                                    for(var _table of tables){
+                                        var process = function(__table){
+                                            return function(err){
+                                                if(err){
+                                                    available = false;
+                                                    failedTables.push(__table.id)
+                                                }
                                             }
-                                        })
+                                        }
+                                        _table.order_id = ""
+                                        _table.save(process(_table))
                                     }
                                 }
                             })
@@ -289,7 +340,7 @@ module.exports = (router, io) => {
                                     if (err.errors) {
                                         res.json({ success: false, message: err });
                                     } else {
-                                        res.json({ success: false, message: err }); // Return error message
+                                        res.json({ success: false, message: err }); 
                                     }
                                 } else {
                                     res.json({ success: true, message: 'Trạng thái hóa đơn đã được thanh toán!', old_status: oldStatus, order: order });
@@ -336,16 +387,16 @@ module.exports = (router, io) => {
                             } else {
 
                                 var newDetail = {
-                                    food_id: foodID,
-                                    food_name: req.body.foodName,
-                                    price_unit: req.body.priceUnit,
-                                    discount: req.body.discount,
-                                    count: req.body.newCount
+                                    food_id : foodID,
+                                    food_name : req.body.foodName,
+                                    price_unit : parseInt(req.body.priceUnit),
+                                    discount : req.body.discount,
+                                    count : parseInt(req.body.newCount)
                                 }
                                 order.detail_orders.push(newDetail)
-                                order.final_cost = parseInt(order.final_cost)
-                                    + parseInt(newDetail.count) * (parseInt(newDetail.price_unit) - parseInt(newDetail.discount))
-
+                                order.final_cost = parseInt(order.final_cost) 
+                                                    + parseInt(newDetail.count) * (parseInt(newDetail.price_unit) - parseInt(newDetail.discount))
+    
                                 order.save((err) => {
                                     if (err) {
                                         // console.log("updateOrCreateDetailOrder:create new detail failed:"+ err)
@@ -377,14 +428,25 @@ module.exports = (router, io) => {
                             }
                             // cập nhật số lượng được đặt (nếu nó lớn hơn 0)
                             else {
-                                var oldCount = parseInt(order.detail_orders[i].count)
-                                var unitPrice = parseInt(order.detail_orders[i].price_unit)
-                                var discount = parseInt(order.detail_orders[i].discount)
-                                var extra = (unitPrice - discount) * (newCount - oldCount)
+                                var detail = order.detail_orders[i]
 
+                                var newPriceUnit = req.body.priceUnit
+                                var newDiscount = req.body.discount
+                                var newPrice = (parseInt(newPriceUnit) - parseInt(newDiscount)) * parseInt(newCount)
+
+                                var oldCount = parseInt(detail.count)
+                                var unitPrice = parseInt(detail.price_unit)
+                                var discount = parseInt(detail.discount)
+
+                                var oldPrice = (parseInt(unitPrice) - parseInt(discount)) * parseInt(oldCount)
                                 // cập nhật lại tổng tiền trong order và số lượng đặt món trong chi tiết hóa đơn
-                                order.final_cost = parseInt(order.final_cost) + extra
-                                order.detail_orders[i].count = newCount
+                                order.final_cost = parseInt(order.final_cost) - parseInt(oldPrice) + parseInt(newPrice)
+
+                                detail.price_unit = newPriceUnit
+                                detail.discount = newDiscount
+                                detail.count = newCount
+                                
+                                order.detail_orders.set(i, detail)
                             }
 
                             order.save((err) => {
@@ -456,13 +518,21 @@ module.exports = (router, io) => {
                                                     if (index >= 0) {
                                                         res.json({ success: false, message: 'Bàn này đã có trong hóa đơn' });
                                                     } else {
+                                                        var region_id = table.region_id
+                                                        var _regionIndex = order.region_id.indexOf(region_id)
+
+                                                        // khu vực này chưa có trong hóa đơn
+                                                        if(_regionIndex < 0){
+                                                            order.region_id.push(region_id)
+                                                        }
+
                                                         order.tables.push(req.body.tableID)
                                                         order.save((err) => {
-                                                            if (err) {
-                                                                res.json({ success: false, message: 'Thêm bàn vào order thất bại:', error: err });
-                                                            } else {
-                                                                res.json({ success: true, message: 'Thêm bàn thành công', table: table });
-                                                                io.sockets.emit("server-add-table-to-order", { order_id: order.id, table: table });
+                                                            if(err){
+                                                                res.json({ success: false, message: 'Thêm bàn vào order thất bại:', error:err });
+                                                            }else{
+                                                                res.json({ success: true, message: 'Thêm bàn thành công', table:table});
+                                                                io.sockets.emit("server-add-table-to-order",  {order_id: order.id, table: table});
                                                             }
                                                         })
                                                     }
@@ -478,73 +548,113 @@ module.exports = (router, io) => {
             }
         }
     })
-
     router.put('/removeOrderTable', (req, res) => {
-
-        if (!req.body.orderID) {
-            res.json({ success: false, message: "Không có mã order" });
-        } else {
-            if (!req.body.tableID) {
-                res.json({ success: false, message: "Không có mã bàn" });
-            } else {
-                Table.findOne({ id: req.body.tableID }, (err, table) => {
-                    if (err) {
-                        // error tồn tại nghĩa là lỗi khi thao tác trên server
-                        res.json({ success: false, message: "Xóa bàn ra khỏi order thất bại", error: err }); // Return error message
+        
+                if (!req.body.orderID) {
+                    res.json({ success: false, message: "Không có mã order" });
+                } else {
+                    if (!req.body.tableID) {
+                        res.json({ success: false, message: "Không có mã bàn" });
                     } else {
-                        if (!table) {
-                            res.json({ success: false, message: 'Không tìm thấy bàn.' }); // Return error message
-                        } else {
-                            // bàn không có order hoặc thuộc order khác
-                            if (table.order_id == null || table.order_id != req.body.orderID) {
-                                res.json({ success: false, message: 'Bàn này không thuộc order xác định.' });
+                        Table.findOne({ id: req.body.tableID }, (err, table) => {
+                            if (err) {
+                                // error tồn tại nghĩa là lỗi khi thao tác trên server
+                                res.json({ success: false, message: "Xóa bàn ra khỏi order thất bại", error: err }); // Return error message
                             } else {
-                                table.order_id = "";
-                                table.save((err) => {
-                                    if (err) {
-                                        if (err.errors) {
-                                            res.json({ success: false, message: "Xóa bàn ra khỏi order thất bại", error: err.errors });
-                                        } else {
-                                            res.json({ success: false, message: "Xóa bàn ra khỏi order thất bại", error: err }); // Return error message
-                                        }
+                                if (!table) {
+                                    res.json({ success: false, message: 'Không tìm thấy bàn.' }); // Return error message
+                                } else {
+                                    // bàn không có order hoặc thuộc order khác
+                                    if (table.order_id == null || table.order_id != req.body.orderID) {
+                                        res.json({ success: false, message: 'Bàn này không thuộc order xác định.' });
                                     } else {
-
-                                        // remove table ra khỏi order
-                                        Order.findOne({ id: req.body.orderID }, (err, order) => {
+                                        table.order_id = "";
+                                        table.save((err) => {
                                             if (err) {
-                                                res.json({ success: false, message: "Tìm kiếm hóa đơn thất bại", error: err }); // Return error message
-                                            } else {
-                                                if (!order) {
-                                                    res.json({ success: false, message: 'Không tìm thấy hóa đơn.' }); // Return error message
+                                                if (err.errors) {
+                                                    res.json({ success: false, message: "Xóa bàn ra khỏi order thất bại", error: err.errors });
                                                 } else {
-                                                    var index = order.tables.indexOf(req.body.tableID)
-
-                                                    if (index >= 0) {
-                                                        order.tables.splice(index, 1)
-                                                        order.save((err) => {
-                                                            if (err) {
-                                                                res.json({ success: false, message: 'Hủy bàn ra khỏi order thất bại', error: err });
+                                                    res.json({ success: false, message: "Xóa bàn ra khỏi order thất bại", error: err }); // Return error message
+                                                }
+                                            } else {
+        
+                                                // remove table ra khỏi order
+                                                Order.findOne({ id: req.body.orderID }, (err, order) => {
+                                                    if (err) {
+                                                        res.json({ success: false, message: "Tìm kiếm hóa đơn thất bại", error: err }); // Return error message
+                                                    } else {
+                                                        if (!order) {
+                                                            res.json({ success: false, message: 'Không tìm thấy hóa đơn.' }); // Return error message
+                                                        } else {
+                                                            var index = order.tables.indexOf(req.body.tableID)
+        
+                                                            if (index >= 0) {
+                                                                // xóa bàn khỏi hóa đơn
+                                                                order.tables.splice(index,1)
+                                                                    
+                                                                // xóa region_id nếu không còn table nào nằm trong khu vực đó ở trong hóa đơn
+                                                                var regionID = table.region_id.trim().toLowerCase()
+                                                                
+                                                                var promises = order.tables.map((_tableID)=>{
+                                                                    return new Promise((resolve, reject)=>{
+                                                                        Table.findOne({id: _tableID}, (err, _table)=>{
+                                                                            console.log("tableID:"+_tableID)
+                                                                            if(err){
+                                                                                console.log("remove table from order: find table:"+_tableID
+                                                                                    + ":error:"+err)
+                                                                                    reject(err)
+                                                                            }else{
+                                                                                var _regionID = _table.region_id.trim().toLowerCase()
+                                                                                if(regionID === _regionID){
+                                                                                    console.log("remove table from order: not deletable region id")
+                                                                                    resolve(false)
+                                                                                }else{
+                                                                                    resolve()
+                                                                                }
+                                                                            }
+                                                                        })
+                                                                    })
+                                                                })
+        
+                                                                Promise.all(promises)
+                                                                .then((value)=>{
+                                                                    var strValue = JSON.stringify(value)
+                                                                    var check = strValue.indexOf("false")
+                                                                    
+                                                                    if(check<0){
+                                                                        var regionIndex = order.region_id.indexOf(table.region_id)
+                                                                        // console.log("remove table from order: deleting region id: region id:"+regionIndex)
+                                                                        if(regionIndex > -1){
+                                                                            order.region_id.splice(regionIndex,1)
+                                                                        }
+                                                                    }
+        
+                                                                    order.save((err) => {
+                                                                        if(err){
+                                                                            res.json({ success: false, message: 'Hủy bàn ra khỏi order thất bại', error:err });
+                                                                        }
+                                                                        else{
+                                                                            res.json({ success: true, message: 'Hủy bàn thành công', table:table});
+                                                                            io.sockets.emit("server-remove-table-from-order",  {order_id: order.id, table: table});
+                                                                        }
+                                                                    })
+                                                                })
                                                             } else {
-                                                                res.json({ success: true, message: 'Hủy bàn thành công', table: table });
+                                                                res.json({ success: true, message: 'Bàn này không có trong order', table: table });
                                                                 io.sockets.emit("server-remove-table-from-order", { order_id: order.id, table: table });
                                                             }
-                                                        })
-                                                    } else {
-                                                        res.json({ success: true, message: 'Bàn này không có trong order', table: table });
-                                                        io.sockets.emit("server-remove-table-from-order", { order_id: order.id, table: table });
+                                                        }
                                                     }
-                                                }
+                                                })
                                             }
-                                        })
+                                        });
                                     }
-                                });
+                                }
                             }
-                        }
+                        });
                     }
-                });
-            }
-        }
-    })
+                }
+            })
 
     router.put('/updateNumberCustomer', (req, res) => {
         if (!req.body.order_id) {
@@ -627,49 +737,57 @@ module.exports = (router, io) => {
                         var failedFoods = [];
                         for (var _table of order.tables) {
                             // console.log("Khôi phục bàn")
-                            Table.findOne({ id: _table }, (err, table) => {
-                                if (err) {
-                                    console.log("Khôi phục bàn thất bại:" + _table.id)
-                                    failedTables.push(table.id);
-                                    isSuccess = false;
-                                } else {
-                                    if (table) {
-                                        table.order_id = ""
-                                        table.save((err) => {
-                                            if (err) {
-                                                failedTables.push(table.id)
-                                                isSuccess = false;
-                                            } else {
-                                                // console.log("restore table "+ table.id+" success")
-                                            }
-                                        })
+                            var process = function(_table){
+                                return function(err, __table){
+                                    if(err){
+                                        console.log("Khôi phục bàn thất bại:"+_table)
+                                        failedTables.push(_table);
+                                        isSuccess = false;
+                                    }else{
+                                        if(__table){
+                                            __table.order_id = ""
+                                            __table.save((err)=>{
+                                                if(err){
+                                                    failedTables.push(__table.id)
+                                                    isSuccess = false;
+                                                }else{
+                                                    // console.log("restore table "+ table.id+" success")
+                                                }
+                                            })
+                                        }
                                     }
                                 }
-                            })
+                            }
+                            Table.findOne({id: _table}, process(_table))
                         }
 
                         for (var _detail of order.detail_orders) {
                             Food.findOne({ id: _detail.food_id }, (err, food) => {
-                                if (err) {
-                                    console.log("Khôi phục món thất bại:" + _detail.food_id)
-                                    failedFoods.push(food.id);
-                                    isSuccess = false;
-                                } else {
-                                    if (food) {
-                                        // console.log("food:"+JSON.stringify(food))
-                                        // console.log("_detail:"+JSON.stringify(_detail))
-                                        food.inventory = parseInt(food.inventory) + parseInt(_detail.count)
-                                        food.save((err) => {
-                                            if (err) {
-                                                failedFoods.push(food.id)
-                                                isSuccess = false;
-                                            } else {
-                                                // console.log("restore food "+ food.id+" success")
-
+                                var process = function(__detail){
+                                    return function(err,_food){
+                                        if(err){
+                                            console.log("Khôi phục món thất bại:"+__detail.food_id)
+                                            failedFoods.push(__detail.food_id);
+                                            isSuccess = false;
+                                        }else{
+                                            if(_food){
+                                                // console.log("food:"+JSON.stringify(food))
+                                                // console.log("_detail:"+JSON.stringify(_detail))
+                                                _food.inventory = parseInt(_food.inventory) + parseInt(__detail.count)
+                                                _food.save((err)=>{
+                                                    if(err){
+                                                        failedFoods.push(_food.id)
+                                                        isSuccess = false;
+                                                    }else{
+                                                        // console.log("restore food "+ food.id+" success")
+                                                        
+                                                    }
+                                                })
                                             }
-                                        })
+                                        }
                                     }
                                 }
+                                Food.findOne({id:_detail.food_id}, process(_detail))
                             })
                         }
 
@@ -717,7 +835,6 @@ module.exports = (router, io) => {
             })
         }
     })
-
 
 
     // Load tất cả order cho phục vụ

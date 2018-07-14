@@ -25,6 +25,7 @@ export class ProfileComponent implements OnInit {
   checkChangePassword =false;
   phoneMessage;
   phoneValid;
+  url_profile;
   
   constructor(
     private authService: AuthService,
@@ -203,6 +204,7 @@ export class ProfileComponent implements OnInit {
       this.address=profile.user.address;
       this.type_account =profile.user.type_account;
       this.birthdate =profile.user.birthdate;
+      this.url_profile =profile.user.url_profile;
     });
   }
 

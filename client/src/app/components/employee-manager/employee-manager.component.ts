@@ -125,6 +125,7 @@ export class EmployeeManagerComponent implements OnInit {
   }
 
  onRegisterSubmit(){
+  
    const user ={
      email: this.form.get('email').value,
      username: this.form.get('username').value,
@@ -136,7 +137,7 @@ export class EmployeeManagerComponent implements OnInit {
      address: this.form.get('address').value,
      birthdate: this.form.get('birthdate').value,
      type_account: this.form.get('type_account').value,
-     url_profile: 'default.png'
+     url_profile: this.authService.domain + 'avatar/default.png'
    }
    this.authService.registerUser(user).subscribe(data =>{
     if(!data.success){

@@ -6,7 +6,7 @@
     </div>
     <div class="col-sm-4 ">
         <div class="custom-image ">
-            <img class="foods" src="http://localhost:8080/avatar/{{ url_profile }}" width="300" height="300">
+            <img src="{{ url_profile }}" width="300" height="300">
         </div>
         <input type="file" name="file" id="file" (change)="fileChangeEvent($event)" class="inputfile" />
         <label for="file"><i class="glyphicon glyphicon-camera" ></i> Cập nhật ảnh đại diện</label>

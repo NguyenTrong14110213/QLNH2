@@ -1,6 +1,7 @@
 const User =require('../models/user');
 const jwt = require('jsonwebtoken');
 const config =require('../config/database');
+const C = require('../config/globalVariables');
 const fs = require('fs');
 
 module.exports=(router,io)=>{
@@ -411,9 +412,12 @@ module.exports=(router,io)=>{
                               res.json({ success: false, message: err }); // Return error message
                             }
                           } else {
-                            fs.unlink('public/avatar/'+ req.body.usl_profile_old, (err) => {
-                                if (err) throw err;
-                            });
+                              if(req.body.usl_profile_old != 'default.png'){
+                                fs.unlink('public/avatar/'+ req.body.usl_profile_old, (err) => {
+                                    if (err) throw err;
+                                });
+                              }
+                            
                             res.json({ success: true, message: 'Ảnh đại diện đã được cập nhật!' }); // Return success message
                             io.sockets.emit("server-update-avatar-employee",{user:user});
                         }
@@ -551,6 +555,58 @@ module.exports=(router,io)=>{
             });
         }
     });
+
+    router.post('/findAccount',(req, res)=>{
+        
+        if(!req.body.username){
+            res.json({success:false, message:'Chưa có tên đăng nhập'});
+        }
+        else{
+            var type_account = req.body.type_account
+
+            if(type_account < -1 || type_account > C.ACCOUNT_ADMIN){
+                res.json({success:false, message:'Loại tài khoản không hợp lệ'})
+            }
+            else{
+                var username = req.body.username.toLowerCase()
+                var query = {}
+    
+                // tìm trên tất cả các loại tài khoản
+                if (type_account == -1){
+                    query = {username: username}
+                }
+                else if (type_account <= C.ACCOUNT_ADMIN){
+                    query = {username : username, type_account : type_account}
+                }
+
+                User.findOne(query, (err, user)=>{
+                    
+                    if(err){
+                        res.json({success:false, message: "Lỗi khi tìm kiếm tài khoản", error:err});
+                    }
+                    else{
+                        if(!user){
+                            res.json({success:false, message:'Không tìm thấy tài khoản.'})
+                        }
+                        else{
+                            var data = {
+                                success:true, 
+                                message:'Tìm thấy tài khoản!', 
+                                username: user.username,
+                                fullname: user.fullname,
+                                birthdate : user.birthdate,
+                                gender : user.gender,
+                                url_profile: user.url_profile
+                            }
+
+                            res.json(data);
+                        }
+                    }
+                });
+            }
+        }
+    });
+
 
 
     return router;

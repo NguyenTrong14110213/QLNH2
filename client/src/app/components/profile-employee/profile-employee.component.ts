@@ -271,9 +271,12 @@ export class ProfileEmployeeComponent implements OnInit {
         const filename=Date.now() +'-'+ file[0]['name'];
         const formData:any = new FormData();
         formData.append("imgAvatar", file[0], filename)
+
+        var url = this.authService.domain + 'avatar/'
+        this.url_profile = this.url_profile.substring(url.length);
         const user={
           username:  this.employee.username,
-          url_profile: filename,
+          url_profile: this.authService.domain + 'avatar/' + filename,
           usl_profile_old: this.url_profile
         }
         console.log(user);

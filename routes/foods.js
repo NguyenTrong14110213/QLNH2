@@ -361,7 +361,7 @@ module.exports =(router,io)=>{
                                     //   res.json({ success: true, message: 'Đặt món thành công!', 
                                     //   order_id:req.body.orderID, new_count:newCount, food:food});
                                       res.json({ success: true, message: 'Đặt món thành công!', food:food});
-                                      io.sockets.emit("server-order-food",  {order_id: req.body.order_id, food: food});
+                                      io.sockets.emit("server-order-food",  {food: food});
                                     }
                               });
                             }
@@ -373,5 +373,68 @@ module.exports =(router,io)=>{
             });
         }
     });
+    
+    // remove món khỏi hóa đơn
+    router.post('/removeFoodFromOrder', (req, res) => {
+        // console.log("removeFoodFromOrder:"+JSON.stringify(req.body))
+        if(!req.body.orderID){
+            res.json({ success: false, message: 'Chưa cung cấp mã hóa đơn !' }); 
+        }
+        else if (!req.body.foodID) {
+          res.json({ success: false, message: 'Chưa cung cấp mã món !' }); 
+        } 
+        else if (!req.body.count) {
+          res.json({ success: false, message: 'Chưa cung cấp số lượng đã đặt !' }); 
+        }else {
+          var foodID = req.body.foodID
+          var orderID = req.body.orderID
+          Food.findOne({ id: foodID }, (err, food) => {
+            if (err) {
+                // console.log("remove food from order failed:find failed:"+err)
+              // error tồn tại nghĩa là lỗi khi thao tác trên server
+              res.json({ success: false, message:"Không tìm được món", error:err }); 
+            } else {
+              if (!food) {
+                res.json({ success: false, message: 'Không tìm thấy món.' });
+              } else {
+                food.inventory = parseInt(food.inventory) + parseInt(req.body.count)
+                food.save((err)=>{
+                    if (err) {
+                        console.log("remove food from order failed:error:"+err)
+                        // error tồn tại nghĩa là lỗi khi thao tác trên server
+                        res.json({ success: false, message:"Lỗi xử lý trên server", error:err }); 
+                      } else {
+                        Order.findOne({id : orderID}, (err,order)=>{
+                            if(err){
+                                res.json({ success: false, message: 'Tìm hóa đơn gặp lỗi', error: err })
+                            }else{
+                                var i = 0
+                                var length = order.detail_orders.length
+
+                                while(i<length){
+                                    if(order.detail_orders[i].food_id == foodID){
+                                        console.log("remove food from order : find detail order")
+                                        order.detail_orders.splice(i,1)
+                                        break
+                                    }
+                                    i++
+                                }
+                                order.save((err)=>{
+                                    if(err){
+                                        res.json({ success: true, message:"Hủy món thất bại do lỗi trên server", error: err});
+                                    }else{
+                                        console.log("remove food from order success")
+                                        res.json({ success: true, message:"Hủy món thành công"});
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+              }
+            }
+          });
+        }
+      });
     return router;
 };
