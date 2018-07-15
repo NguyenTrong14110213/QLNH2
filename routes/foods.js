@@ -3,7 +3,7 @@ const jwt =require('jsonwebtoken'); // Các phương tiện đại diện cho c�
 const Food =require('../models/foods');// Import Blog Model Schema
 const config =require('../config/database');// Import cấu hình database 
 const fs = require('fs');
-
+const Order = require('../models/order');
 module.exports =(router,io)=>{
 
     // tạo một Category_food  mới 

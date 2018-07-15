@@ -9,7 +9,7 @@ import { FlashMessagesService } from 'angular2-flash-messages';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-
+ // position =6;
   constructor(
     private authService: AuthService,
     private router: Router
@@ -27,8 +27,10 @@ export class NavbarComponent implements OnInit {
        }
     });
     //this.flashMessagesService.show('Đăng xuất thành công!', {cssClass: 'alert-info'});   
-;
   }
+  // getPosition(position){
+  //   this.position = position;
+  // }
   ngOnInit() {
     this.authService.socket.on('disconnect', () => {
       //this.flashMessagesService.show('Đã ngắt kết nối đến s!', {cssClass: 'alert-info'});   

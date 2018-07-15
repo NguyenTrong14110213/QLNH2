@@ -3,11 +3,11 @@
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-         <span class="sr-only">Toggle navigation</span>
-         <span class="icon-bar"></span>
-         <span class="icon-bar"></span>
-         <span class="icon-bar"></span>
-       </button>
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
       <a class="navbar-brand">Quán ăn</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
@@ -16,16 +16,15 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
 
-        <!-- <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/pay">Thanh Toán</a></li>
-        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/table_management">Quản lý bàn</a></li>
-        <li *ngIf="authService.loggedIn() " [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/emloyee_management">Quản lý Nhân viên</a></li>
-        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/profile">Trang cá nhân</a></li>
-        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/menu_management">Quản lý món</a></li>
-        <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/login">Đăng nhập</a></li>
-        <li *ngIf="authService.loggedIn()"><a href="#" (click)="onLogoutClick()">Đăng xuất</a></li>
-        <li *ngIf="!authService.loggedIn()"[routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/register">Đăng ký</a></li>
-       -->
-
+       <!-- <li (click)="getPosition(0)" [ngClass]="{'colorSelected': position == 0}" *ngIf="authService.accountCashier() || authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/pay">Thanh Toán</a></li>
+       <li (click)="getPosition(1)" [ngClass]="{'colorSelected': position == 1}" *ngIf="authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/table_management">Quản lý bàn</a></li>
+       <li (click)="getPosition(2)" [ngClass]="{'colorSelected': position == 2}" *ngIf="authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/emloyee_management">Quản lý nhân viên</a></li>
+       <li (click)="getPosition(3)" [ngClass]="{'colorSelected': position == 3}" *ngIf="authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/warehouse_management">Quản lý kho</a></li>
+       <li (click)="getPosition(4)" [ngClass]="{'colorSelected': position == 4}" *ngIf="authService.accountCook() || authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/menu_management">Quản lý món</a></li>
+       <li (click)="getPosition(5)" [ngClass]="{'colorSelected': position == 5}" *ngIf="authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/revenue_management">Quản lý doanh thu</a></li>
+       <li (click)="getPosition(6)" [ngClass]="{'colorSelected': position == 6}" *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/profile">Trang cá nhân</a></li>
+       <li *ngIf="authService.loggedIn()"><a (click)="onLogoutClick()">Đăng xuất</a></li> -->
+       
        <li *ngIf="authService.accountCashier() || authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/pay">Thanh Toán</a></li>
        <li *ngIf="authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/table_management">Quản lý bàn</a></li>
        <li *ngIf="authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/emloyee_management">Quản lý nhân viên</a></li>
@@ -34,6 +33,7 @@
        <li *ngIf="authService.accountAdmin()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/revenue_management">Quản lý doanh thu</a></li>
        <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/profile">Trang cá nhân</a></li>
        <li *ngIf="authService.loggedIn()"><a (click)="onLogoutClick()">Đăng xuất</a></li>
+
        <!-- <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/login">Đăng nhập</a></li> -->
        <!-- <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/register">Đăng ký</a></li> -->
      

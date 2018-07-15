@@ -2,5 +2,8 @@ nav{
     background:#F57C00;
 }
 a {
-    color: white;
+    color: black;
+}
+.colorSelected{
+    background: gray;
 }

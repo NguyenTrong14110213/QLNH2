@@ -182,7 +182,7 @@ module.exports=(router,io)=>{
                                 if(!validPassword){
                                     res.json({success:false, message:'Sai mật khẩu.'});
                                 }else{
-                                    user.is_logining = true;
+                                    //user.is_logining = false;
                                     user.save((err)=>{
                                         if(err){
                                             res.json({success: false, message:'Lỗi thao tác trên server', error:"Không thay đổi được dữ liệu trên server"})

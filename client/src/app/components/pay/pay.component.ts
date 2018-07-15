@@ -109,6 +109,7 @@ export class PayComponent implements OnInit {
           this.messageClass = 'alert alert-success'; // Return bootstrap success class
           this.message = data.message; // Return success message
           // After two second timeout, route to blog page
+          this.btnPay =false;
         }
         setTimeout(() => {
           this.messageClass = false; // Erase error/success message

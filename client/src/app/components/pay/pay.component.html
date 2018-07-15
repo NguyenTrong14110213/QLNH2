@@ -58,7 +58,7 @@
         <div class="row inf">
             <div class="col-sm-4">
                 <i class="glyphicon glyphicon-calendar"></i>
-                <label id="time_order" for="disabled">{{ order.time_created | date:'HH:mm yyyy-MM-dd'  }}</label>
+                <label id="time_order" for="disabled">{{ order.time_created | date:'HH:mm dd-MM-yyyy'  }}</label>
             </div>
         </div>
         <div class="row inf">
@@ -152,7 +152,6 @@
                 </div>
                 <div class="modal-footer">
                     <button class="form-control" type="button" class="btn-success" data-dismiss="modal" (click)="editStatusOrder()">Lưu lại</button>
-                    <button class="form-control" type="button" class="btn-default" data-dismiss="modal">Lưu và in</button>
                 </div>
               </div>
             </div>

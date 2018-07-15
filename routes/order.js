@@ -133,7 +133,7 @@ module.exports = (router, io) => {
                 }
             }).sort({ '_id': -1 });
         } else {
-            Order.find({ region_id: req.params.region_id, flag_status: C.COOKING_FLAG }, (err, order) => {
+            Order.find({ region_id: req.params.region_id, $or: [{ flag_status: C.COOKING_FLAG }, { flag_status: C.PREPARE_FLAG }, { flag_status: C.EATING_FLAG }, { flag_status: C.PAYING_FLAG }]  }, (err, order) => {
                 if (err) {
                     res.json({ success: false, message: err });
                 } else {
@@ -343,7 +343,7 @@ module.exports = (router, io) => {
                                         res.json({ success: false, message: err }); 
                                     }
                                 } else {
-                                    res.json({ success: true, message: 'Trạng thái hóa đơn đã được thanh toán!', old_status: oldStatus, order: order });
+                                    res.json({ success: true, message: 'Hóa đơn đã được thanh toán!', old_status: oldStatus, order: order });
                                     io.sockets.emit("server-update-status-order", { old_status: oldStatus, order: order });
                                 }
                             });
