@@ -18,9 +18,9 @@ export class MenuManagementComponent implements OnInit {
   messageClass2;
   message2;
   message3;
-  form: FormGroup;
-  form2: FormGroup;
-  form3: FormGroup;
+  form;
+  form2;
+  form3;
   selectedImage = false;
   categoryFoods;
   foods;

@@ -70,14 +70,13 @@
                     </div>
                     <!-- Username Input -->
                     <div class="form-group">
-                        <div [ngClass]="{'has-error': (form.controls.username.errors && form.controls.username.dirty)|| (!usernameValid && form.controls.username.dirty), 'has-success': !form.controls.username.errors && usernameValid}">
+                        <div [ngClass]="{'has-error': form.controls.username.errors && form.controls.username.dirty, 'has-success': !form.controls.username.errors }">
                             <input type="text" name="username" class="form-control" autocomplete="off" value="{{ employee.username }}" formControlName="username"
-                                disabled (blur)="checkUsername()" />
+                                disabled/>
                             <ul class="help-block">
                                 <li *ngIf="form.controls.username.errors?.required && form.controls.username.dirty">Nội dung bắt buộc!</li>
                                 <li *ngIf="form.controls.username.errors?.maxlength && form.controls.username.dirty">Tối đa 30 ký tự!</li>
                                 <li *ngIf="form.controls.username.errors?.validateUsername && form.controls.username.dirty">Viết liền không dấu, không ký tự đặt biệt</li>
-                                <li *ngIf="usernameMessage">{{ usernameMessage }}</li>
                             </ul>
                         </div>
                     </div>
@@ -131,14 +130,13 @@
 
                     <!-- Email Input -->
                     <div class="form-group">
-                        <div [ngClass]="{'has-error': (form.controls.email.errors && form.controls.email.dirty) || (!emailValid && form.controls.email.dirty), 'has-success': !form.controls.email.errors && emailValid}">
+                        <div [ngClass]="{'has-error': form.controls.email.errors && form.controls.email.dirty, 'has-success': !form.controls.email.errors }">
                             <input type="text" name="email" class="form-control" autocomplete="off" value="{{ employee.email }}" formControlName="email"
-                                (blur)="checkEmail()" (change)="changeEmail()" />
+                               (change)="changeEmail()" />
                             <ul class="help-block">
                                 <li *ngIf="form.controls.email.errors?.required && form.controls.email.dirty">Nội dung bắt buộc!</li>
                                 <li *ngIf="form.controls.email.errors?.maxlength && form.controls.email.dirty">Tối đa 254 ký tự!</li>
                                 <li *ngIf="form.controls.email.errors?.validateEmail && form.controls.email.dirty">Phải đúng định dạng Email</li>
-                                <li *ngIf="emailMessage">{{ emailMessage }}</li>
                             </ul>
                         </div>
                     </div>

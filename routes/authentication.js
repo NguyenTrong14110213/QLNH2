@@ -5,6 +5,69 @@ const C = require('../config/globalVariables');
 const fs = require('fs');
 
 module.exports=(router,io)=>{
+   
+    router.post('/login',(req, res)=>{
+        if(!req.body.username){
+            res.json({success:false, message:'Chưa nhập tên đăng nhập!'});
+        }else{
+            if(!req.body.password){
+                res.json({success:false, message:'Chưa nhập mật khẩu!'});
+            }else{
+                User.findOne({username: req.body.username.toLowerCase()},(err, user)=>{
+                    if(err){
+                        res.json({success:false,message: err});
+                    }else{
+                        if(!user){
+                            res.json({success:false, message:'Không tìm thấy tài khoản.'})
+                        }else{
+                            if(!user.actived){
+                                res.json({success:false, message:'Tài khoản chưa được kích hoạt!.'})
+                            }else{
+                                if(user.is_logining){
+                                    res.json({success:false, message:'Tài khoản đang đăng nhập ở máy khác!.'})
+                                }else{
+                                const validPassword =user.comparePassword(req.body.password);
+                                if(!validPassword){
+                                    res.json({success:false, message:'Sai mật khẩu.'});
+                                }else{
+                                    //user.is_logining = false;
+                                    user.save((err)=>{
+                                        if(err){
+                                            res.json({success: false, message:'Lỗi thao tác trên server', error:"Không thay đổi được dữ liệu trên server"})
+                                        }else{
+                                            const token = jwt.sign({ userId: user._id }, config.secret);
+                                            res.json({success:true, message:'Đăng nhập thành công!', token:token,
+                                             user:{username: user.username, type_account: user.type_account}});
+                                        }
+                                    })
+                                    
+                                }
+                            }
+                            }
+                          
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+   
+    router.use((req, res, next)=>{
+       const token= req.headers['authorization'];
+        if(!token){
+            res.json({success:false, message:'No token provided'});
+        }else{
+            jwt.verify(token, config.secret, (err, decoded)=>{
+                if(err){
+                    res.json({success: false, message:'Token invalid: '+ err});
+                }else{
+                    req.decoded= decoded;
+                    next();
+                }
+            });
+        }
+    });
     router.post('/register', (req,res)=>{
         if(!req.body.email){
             res.json({success:false, message:'Bạn phải nhập e-mail'});
@@ -158,52 +221,7 @@ module.exports=(router,io)=>{
             });
         }
     });
-    router.post('/login',(req, res)=>{
-        if(!req.body.username){
-            res.json({success:false, message:'Chưa nhập tên đăng nhập!'});
-        }else{
-            if(!req.body.password){
-                res.json({success:false, message:'Chưa nhập mật khẩu!'});
-            }else{
-                User.findOne({username: req.body.username.toLowerCase()},(err, user)=>{
-                    if(err){
-                        res.json({success:false,message: err});
-                    }else{
-                        if(!user){
-                            res.json({success:false, message:'Không tìm thấy tài khoản.'})
-                        }else{
-                            if(!user.actived){
-                                res.json({success:false, message:'Tài khoản chưa được kích hoạt!.'})
-                            }else{
-                                if(user.is_logining){
-                                    res.json({success:false, message:'Tài khoản đang đăng nhập ở máy khác!.'})
-                                }else{
-                                const validPassword =user.comparePassword(req.body.password);
-                                if(!validPassword){
-                                    res.json({success:false, message:'Sai mật khẩu.'});
-                                }else{
-                                    //user.is_logining = false;
-                                    user.save((err)=>{
-                                        if(err){
-                                            res.json({success: false, message:'Lỗi thao tác trên server', error:"Không thay đổi được dữ liệu trên server"})
-                                        }else{
-                                            const token = jwt.sign({ userId: user._id }, config.secret);
-                                            res.json({success:true, message:'Đăng nhập thành công!', token:token,
-                                             user:{username: user.username, type_account: user.type_account}});
-                                        }
-                                    })
-                                    
-                                }
-                            }
-                            }
-                          
-                        }
-                    }
-                });
-            }
-        }
-    });
-
+    
     router.delete('/deleteEmployee/:username', (req, res) => {
         if (!req.params.username) {
           res.json({ success: false, message: 'Chưa cung cấp username' }); 
@@ -427,21 +445,6 @@ module.exports=(router,io)=>{
           });
         }
       });
-    router.use((req, res, next)=>{
-       const token= req.headers['authorization'];
-        if(!token){
-            res.json({success:false, message:'No token provided'});
-        }else{
-            jwt.verify(token, config.secret, (err, decoded)=>{
-                if(err){
-                    res.json({success: false, message:'Token invalid: '+ err});
-                }else{
-                    req.decoded= decoded;
-                    next();
-                }
-            });
-        }
-    });
     router.get('/profile', (req, res)=>{
         User.findOne({ _id: req.decoded.userId},(err, user)=>{
             if(err){

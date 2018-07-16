@@ -49,8 +49,8 @@ export class RevenueManagementComponent implements OnInit {
   labelYear = ['tháng 1', 'tháng 2', 'tháng 3', 'tháng 4', 'tháng 5', 'tháng 6', 'tháng 7', 'tháng 8', 'tháng 9', 'tháng 10', 'tháng 11', 'tháng 12'];
   labelMonth =[];
 
-  form: FormGroup;
-  form2: FormGroup;
+  form;
+  form2;
   
   constructor(
     private materialsService: MaterialsService,

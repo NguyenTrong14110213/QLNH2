@@ -11,7 +11,7 @@ import { FlashMessagesService } from 'angular2-flash-messages';
 export class NavbarComponent implements OnInit {
  // position =6;
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router
   ) { }
 
@@ -19,13 +19,9 @@ export class NavbarComponent implements OnInit {
     const user={
       username: JSON.parse(localStorage.getItem('user')).username
     }
-    this.authService.logout(user).subscribe(data=>{
-      if(!data.success){
-        console.log(data.messages)
-       }else{
-        this.router.navigate(['/']);
-       }
-    });
+    this.authService.logout(user)
+    this.router.navigate(['/']);
+       
     //this.flashMessagesService.show('Đăng xuất thành công!', {cssClass: 'alert-info'});   
   }
   // getPosition(position){

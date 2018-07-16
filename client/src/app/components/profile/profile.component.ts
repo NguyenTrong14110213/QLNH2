@@ -9,7 +9,7 @@ import { FormControl } from '@angular/forms/src/model';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  form: FormGroup;
+  form;
   email;
   fullname;
   gender;

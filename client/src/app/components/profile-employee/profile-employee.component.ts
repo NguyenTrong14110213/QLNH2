@@ -11,8 +11,8 @@ import { FormControl } from '@angular/forms/src/model';
 })
 export class ProfileEmployeeComponent implements OnInit {
   currentUrl;
-  form: FormGroup;
-  form1: FormGroup;
+  form;
+  form1;
   employee;
   selectedType;
   selectedGender;

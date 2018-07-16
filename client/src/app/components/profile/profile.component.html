@@ -53,7 +53,7 @@
               <form [formGroup]="form" (submit)="editProfile()">
                   <!-- Category -->
                   <div class="form-group">
-                      <select formControlName="type_account" class="form-control" [(ngModel)]="type_account" disabled (change)="changeType_account()">
+                      <select formControlName="type_account" class="form-control" [(ngModel)]="type_account" disabled>
                           <option disabled selected value="-1">-- chọn quyền hạn --</option>
                           <option value="1">Nhân viên phục vụ</option>
                           <option value="2">Nhân viên thu ngân</option>
@@ -63,14 +63,13 @@
                   </div>
                   <!-- Username Input -->
                   <div class="form-group">
-                      <div [ngClass]="{'has-error': (form.controls.username.errors && form.controls.username.dirty)|| (!usernameValid && form.controls.username.dirty), 'has-success': !form.controls.username.errors && usernameValid}">
+                      <div [ngClass]="{'has-error': form.controls.username.errors && form.controls.username.dirty, 'has-success': !form.controls.username.errors}">
                           <input type="text" name="username" class="form-control" autocomplete="off" value="{{ username }}" formControlName="username"
-                              disabled (blur)="checkUsername()" />
+                              disabled  />
                           <ul class="help-block">
                               <li *ngIf="form.controls.username.errors?.required && form.controls.username.dirty">Nội dung bắt buộc!</li>
                               <li *ngIf="form.controls.username.errors?.maxlength && form.controls.username.dirty">Tối đa 30 ký tự!</li>
                               <li *ngIf="form.controls.username.errors?.validateUsername && form.controls.username.dirty">Viết liền không dấu, không ký tự đặt biệt</li>
-                              <li *ngIf="usernameMessage">{{ usernameMessage }}</li>
                           </ul>
                       </div>
                   </div>
@@ -79,7 +78,7 @@
                   <div class="form-group">
                       <div [ngClass]="{'has-error': (form.controls.fullname.errors && form.controls.fullname.dirty) , 'has-success': !form.controls.fullname.errors}">
                           <input type="text" name="fullname" class="form-control" autocomplete="off" value="{{ fullname }}" disabled formControlName="fullname"
-                              (change)="changeFullname()" />
+                           />
                           <ul class="help-block">
                               <li *ngIf="form.controls.fullname.errors?.required && form.controls.fullname.dirty">Nội dung bắt buộc!</li>
                           </ul>
@@ -87,7 +86,7 @@
                   </div>
                   <!-- Gender -->
                   <div class="form-group">
-                      <select class="form-control" [(ngModel)]="gender" formControlName="gender" disabled (change)="changeGender()">
+                      <select class="form-control" [(ngModel)]="gender" formControlName="gender" disabled >
                           <option disabled selected value="-1">-- chọn giới tính --</option>
                           <option value="true">Nam</option>
                           <option value="false">Nữ</option>
@@ -95,17 +94,16 @@
                   </div>
                   <!-- Birthdate -->
                   <div class="form-group">
-                      <input type="date" name="birthdate" class="form-control" autocomplete="off" formControlName="birthdate" value="{{ birthdate | date:'yyyy-MM-dd' }}" disabled (change)="changeBirthDate()">
+                      <input type="date" name="birthdate" class="form-control" autocomplete="off" formControlName="birthdate" value="{{ birthdate | date:'yyyy-MM-dd' }}" disabled>
                   </div>
                   <!-- Identity_card Input -->
                   <div class="form-group">
-                      <div [ngClass]="{'has-error': (form.controls.identity_card.errors && form.controls.identity_card.dirty) || (!identity_cardValid && form.controls.identity_card.dirty) , 'has-success': !form.controls.identity_card.errors && identity_cardValid}">
+                      <div [ngClass]="{'has-error': form.controls.identity_card.errors && form.controls.identity_card.dirty , 'has-success': !form.controls.identity_card.errors}">
                           <input type="text" name="identity_card" class="form-control" autocomplete="off" value="{{ identity_card }}" disabled formControlName="identity_card"
-                              (blur)="checkIdentity_card()" (change)="changeIdentity_card()" />
+                          />
                           <ul class="help-block">
                               <li *ngIf="form.controls.identity_card.errors?.required && form.controls.identity_card.dirty">Nội dung bắt buộc!</li>
                               <li *ngIf="(form.controls.identity_card.errors?.minlength || form.controls.identity_card.errors?.maxlength || form.controls.identity_card.errors?.validateNumber) && form.controls.identity_card.dirty">Gồm 9 số.</li>
-                              <li *ngIf="identity_cardMessage">{{ identity_cardMessage }}</li>
                           </ul>
                       </div>
                   </div>
@@ -124,14 +122,13 @@
 
                   <!-- Email Input -->
                   <div class="form-group">
-                      <div [ngClass]="{'has-error': (form.controls.email.errors && form.controls.email.dirty) || (!emailValid && form.controls.email.dirty), 'has-success': !form.controls.email.errors && emailValid}">
+                      <div [ngClass]="{'has-error': form.controls.email.errors && form.controls.email.dirty, 'has-success': !form.controls.email.errors}">
                           <input type="text" name="email" class="form-control" autocomplete="off" value="{{ email }}" formControlName="email"
-                              (blur)="checkEmail()" (change)="changeEmail()" />
+                             (change)="changeEmail()" />
                           <ul class="help-block">
                               <li *ngIf="form.controls.email.errors?.required && form.controls.email.dirty">Nội dung bắt buộc!</li>
                               <li *ngIf="form.controls.email.errors?.maxlength && form.controls.email.dirty">Tối đa 254 ký tự!</li>
                               <li *ngIf="form.controls.email.errors?.validateEmail && form.controls.email.dirty">Phải đúng định dạng Email</li>
-                              <li *ngIf="emailMessage">{{ emailMessage }}</li>
                           </ul>
                       </div>
                   </div>

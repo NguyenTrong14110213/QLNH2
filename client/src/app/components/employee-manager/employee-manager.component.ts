@@ -10,14 +10,14 @@ import { Router } from '@angular/router';
 })
 export class EmployeeManagerComponent implements OnInit {
 
-  form: FormGroup;
+  form;
   message0;
   messageClass0;
   message;
   messageClass;
-  emailValid;
+  emailValid = false;
   emailMessage;
-  usernameValid;
+  usernameValid = false;
   usernameMessage;
   identity_cardValid;
   identity_cardMessage;

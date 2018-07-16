@@ -9,15 +9,15 @@ import { RegionService } from '../../services/region.service';
   styleUrls: ['./pay.component.css']
 })
 export class PayComponent implements OnInit {
-  private messageClass;
-  private message;
-  private orders;
-  private order;
-  private id;
-  private detail_order;
-  private regions;
-  private region_id;
-  private excess_cash=0;
+  messageClass;
+  message;
+  orders;
+  order;
+  id;
+  detail_order;
+  regions;
+  region_id;
+  excess_cash=0;
   btnPay = false;
   keyWord;
   constructor(

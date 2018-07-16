@@ -7,8 +7,8 @@ import * as io from 'socket.io-client';
 @Injectable()
 export class AuthService {
 
-  domain ="http://localhost:8080/";
-   authToken;
+  domain ="";
+  authToken;
    user;
    options;
   socket = io.connect(this.domain);
@@ -35,16 +35,20 @@ export class AuthService {
     return this.http.post(this.domain + 'authentication/register', user).map(res=>res.json());
   }
   checkUsername(username){
-    return this.http.get(this.domain + 'authentication/checkUsername/'+ username).map(res=>res.json());
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'authentication/checkUsername/'+ username, this.options).map(res=>res.json());
   }
   checkEmail(email){
-    return this.http.get(this.domain + 'authentication/checkEmail/' + email ).map(res=>res.json());
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'authentication/checkEmail/' + email , this.options).map(res=>res.json());
   }
   checkIdentity_card(identity_card){
-    return this.http.get(this.domain + 'authentication/checkIdentity_card/' + identity_card ).map(res=>res.json());
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'authentication/checkIdentity_card/' + identity_card , this.options).map(res=>res.json());
   }
   checkPhone(phone){
-    return this.http.get(this.domain + 'authentication/checkPhone/' + phone ).map(res=>res.json());
+    this.createAuthenticationHeaders();
+    return this.http.get(this.domain + 'authentication/checkPhone/' + phone, this.options).map(res=>res.json());
   }
   login(user){
     return this.http.post(this.domain + 'authentication/login', user).map(res=>res.json());
@@ -61,7 +65,7 @@ export class AuthService {
     this.authToken =null;
     this.user =null;
     localStorage.clear();
-     return this.http.put(this.domain + 'authentication/logout',user, this.options).map(res=>res.json());
+   //  return this.http.put(this.domain + 'authentication/logout',user, this.options).map(res=>res.json());
   }
   getProfile(){
     this.createAuthenticationHeaders();

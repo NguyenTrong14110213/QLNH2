@@ -4,10 +4,10 @@ const mongoose =require('mongoose');
 const config = require('./config/database');
 const path = require('path');
 const router= express.Router();
+const port =process.env.PORT || 8080;
 
-
-const server = app.listen(8080,()=>{
-    console.log('Listening on port 8080');
+const server = app.listen(port,()=>{
+    console.log('Listening on port '+ port);
 })
 
 
@@ -27,12 +27,11 @@ const bodyParser =require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
 
-// const upload = require('express-fileupload');
-
-// app.use(upload()); // configure middleware
 
 
-app.use(express.static("./public"));
+
+//app.use(express.static("./public"));
+app.use(express.static(__dirname + '/public'));
 app.use(cors({
     origin: 'http://localhost:4200'
 }));
@@ -47,7 +46,7 @@ mongoose.connect(config.uri, (err)=>{
 });
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
-app.use(express.static(__dirname+'/client/dist'));
+//app.use(express.static(__dirname+'/client/dist'));
 app.use('/authentication', authentication);
 app.use('/categoryMaterials', categoryMaterials);
 app.use('/materials',materials);
@@ -57,7 +56,7 @@ app.use('/region',region);
 app.use('/table',table);
 app.use('/order',order)
 app.get('*',(req, res)=>{
-    res.sendFile(path.join(__dirname+'/client/dist/index.html'));
+    res.sendFile(path.join(__dirname+'/public/index.html'));
 });
 
 const storage = multer.diskStorage({

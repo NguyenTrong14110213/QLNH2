@@ -11,29 +11,8 @@ import { CategoryFoodService } from '../../services/category-food.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
-  filesToUpload: Array<File> = [];
-  form: FormGroup;
-  messageClass;
-  message;
  
-  constructor(
-    private formBuilder: FormBuilder,
-    private foodService: FoodService,
-    private categoryFoodService: CategoryFoodService,
-    private http: Http
-  ) {  this.createForm() }
-
- 
-  createForm(){
-    this.form = this.formBuilder.group({
-      name: ['', Validators.required]
-    })
-  }
-
-  upload() {
-
-  }
+  constructor() {  }
   
   ngOnInit() {
   }

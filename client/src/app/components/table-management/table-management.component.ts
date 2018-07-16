@@ -12,9 +12,9 @@ import { TableService } from '../../services/table.service';
 })
 export class TableManagementComponent implements OnInit {
 
-  form: FormGroup;
-  form2: FormGroup;
-  form3: FormGroup;
+  form;
+  form2;
+  form3;
   messageClass0;
   message0;
   messageClass;

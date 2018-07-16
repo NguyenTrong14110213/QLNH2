@@ -732,104 +732,113 @@ module.exports = (router, io) => {
                         // cờ xác định đã chọn bàn hoặc món chưa
                         var hasSelectedAnyItem = (order.tables && order.tables.length > 0) || (order.detail_orders && order.detail_orders.length > 0)
 
-                        var isSuccess = true;
-                        var failedTables = [];
-                        var failedFoods = [];
-                        for (var _table of order.tables) {
-                            // console.log("Khôi phục bàn")
-                            var process = function(_table){
-                                return function(err, __table){
+                        var promises1 = order.tables.map((tableID)=>{
+                            return new Promise((resolve, reject)=>{
+                                Table.findOne({id: tableID}, (err,_table)=>{
                                     if(err){
-                                        console.log("Khôi phục bàn thất bại:"+_table)
-                                        failedTables.push(_table);
-                                        isSuccess = false;
+                                        console.log("tim ban bi loi:"+tableID)
+                                        // failedTables.push(_table);
+                                        // isSuccess = false;
+                                        var rj = {
+                                            "table" : tableID
+                                        }
+                                        reject(rj)
                                     }else{
-                                        if(__table){
-                                            __table.order_id = ""
-                                            __table.save((err)=>{
+                                        if(!_table){
+                                            console.log("khong tim thay ban:"+tableID)
+                                            var rj = {
+                                                "table" : tableID
+                                            }
+                                            reject(rj)
+                                        }
+                                        else if(_table){
+                                            // console.log("tim thay ban:"+_table.id)
+                                            _table.order_id = ""
+                                            _table.save((err)=>{
                                                 if(err){
-                                                    failedTables.push(__table.id)
-                                                    isSuccess = false;
+                                                    // failedTables.push(__table.id)
+                                                    // isSuccess = false;
+                                                    var rj = {
+                                                        "table" : tableID
+                                                    }
+                                                    reject(rj)
                                                 }else{
                                                     // console.log("restore table "+ table.id+" success")
+                                                    resolve(tableID)
                                                 }
                                             })
                                         }
                                     }
-                                }
-                            }
-                            Table.findOne({id: _table}, process(_table))
-                        }
+                                })
+                            })
+                        })
 
-                        for (var _detail of order.detail_orders) {
-                            Food.findOne({ id: _detail.food_id }, (err, food) => {
-                                var process = function(__detail){
-                                    return function(err,_food){
-                                        if(err){
-                                            console.log("Khôi phục món thất bại:"+__detail.food_id)
-                                            failedFoods.push(__detail.food_id);
-                                            isSuccess = false;
-                                        }else{
-                                            if(_food){
-                                                // console.log("food:"+JSON.stringify(food))
-                                                // console.log("_detail:"+JSON.stringify(_detail))
-                                                _food.inventory = parseInt(_food.inventory) + parseInt(__detail.count)
-                                                _food.save((err)=>{
-                                                    if(err){
-                                                        failedFoods.push(_food.id)
-                                                        isSuccess = false;
-                                                    }else{
-                                                        // console.log("restore food "+ food.id+" success")
-                                                        
-                                                    }
-                                                })
+                        var promises2 = order.detail_orders.map((_detail)=>{
+                            return new Promise((resolve,reject)=>{
+                                Food.findOne({id:_detail.food_id}, (err,_food)=>{
+                                    if(err){
+                                        console.log("Khôi phục món thất bại: không tìm thấy món: "+_detail.food_name)
+                                        // failedFoods.push(_detail.food_id);
+                                        // isSuccess = false;
+                                        var rj = {
+                                            "food" : _detail.food_id
+                                        }
+                                        reject(rj)
+                                    }else{
+                                        if(!_food){
+                                            console.log("khong tim thay mon: "+_detail.food_name)
+                                            var rj = {
+                                                "food" : _detail.food_id
                                             }
+                                            reject(rj)
+                                        }
+                                        else if(_food){
+                                            // console.log("tim thay mon:"+_food.id)
+                                            // console.log("food:"+JSON.stringify(food))
+                                            console.log("_detail:"+JSON.stringify(_detail))
+                                            _food.inventory = parseInt(_food.inventory) + parseInt(_detail.count)
+                                            _food.save((err)=>{
+                                                if(err){
+                                                    // failedFoods.push(_food.id)
+                                                    // isSuccess = false;
+                                                    var rj = {
+                                                        "food" : _detail.food_id
+                                                    }
+                                                    reject(rj)
+                                                }else{
+                                                    // console.log("restore food "+ food.id+" success")
+                                                    resolve(_food.id)
+                                                }
+                                            })
                                         }
                                     }
-                                }
-                                Food.findOne({id:_detail.food_id}, process(_detail))
+                                })
                             })
-                        }
+                        })
+                        
+                        var promises = []
+                        promises.push.apply(promises1)
+                        promises.push.apply(promises2)
 
-                        // nếu khôi phục bàn và món thành công (nếu có) 
-                        // mới có thể hủy hóa đơn
-                        if (isSuccess) {
+                        Promise.all(promises)
+                        .then((result)=>{
+                            console.log("remove order:promise then:success:"+result+":JSON:"+JSON.stringify(result))
                             order.remove((err) => {
                                 if (err) {
                                     isSuccess = false;
                                     console.log("Remove order thất bại:error:" + err)
                                 } else {
-                                    // console.log("Order đã được xóa.")
+                                    var message = hasSelectedAnyItem ? "Khôi phục các item đã chọn và xóa hóa đơn thành công" : "Xóa hóa đơn thành công"
+                                    res.json({ success: true, message: message });
                                     io.sockets.emit("server-remove-order", { order_id: order.id })
                                 }
                             });
-                        }
+                        }, (err)=>{
+                            console.log("remove order:promise then:error:"+err+":JSON:"+JSON.stringify(err))
 
-                        if (isSuccess) {
-                            // console.log("Khôi phục dữ liệu thành công")
-                            var message = hasSelectedAnyItem ? "Khôi phục các item đã chọn và xóa hóa đơn thành công" : "Xóa hóa đơn thành công"
-                            res.json({ success: true, message: message });
-                        } else {
-                            if (failedTables.length > 0) {
-                                console.log("số bàn không khôi phục được:" + failedTables.length)
-                                var message = "\nCác bàn không khôi phục được: ";
-                                failedTables.array.forEach(_table => {
-                                    message += _table + ", "
-                                });
-                                message.replaceAt(message.length - 2, ",", ".")
-                            }
-                            if (failedFoods.length > 0) {
-                                console.log("số món không khôi phục được:" + failedFoods.length)
-                                var message = message + "\nCác món không khôi phục được: ";
-                                failedFoods.array.forEach(_food => {
-                                    message += _food + ", "
-                                });
-                                message.replaceAt(message.length - 2, ",", ".")
-                            }
-
-                            res.json({ success: false, message: "Khôi phục dữ liệu thất bại. Xóa hóa đơn thất bại" + message });
+                            res.json({ success: false, message: "Khôi phục dữ liệu thất bại. Xóa hóa đơn thất bại" });
                             io.sockets.emit("server-update-order", { order })
-                        }
+                        })
                     }
                 }
             })

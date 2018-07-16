@@ -1,6 +1,6 @@
 module.exports = {
     
-        // phục hồi bàn trống đối với các bàn đã được đặt nhưng không tìm thấy order hoặc order đó đang ở trạng thái PENDING
+        // phục hồi bàn trống đối với các bàn đã được đặt nhưng không tìm thấy order hoặc order đó đang ở trạng thái CREATING
         cleanDatabase: function(){
             const Table = require('../models/tables')
             const Order = require('../models/order')
@@ -17,7 +17,7 @@ module.exports = {
                                     if(err){
                                         console.log("clean table database:find order failed:id"+_table.order_id + ":error:"+err)
                                     }else{
-                                        var isNeedRestore = !order || order.flag_status == C.PENDING_FLAG
+                                        var isNeedRestore = !order || order.flag_status == C.CREATING_FLAG
         
                                         if(isNeedRestore){
                                             _table.order_id = ""

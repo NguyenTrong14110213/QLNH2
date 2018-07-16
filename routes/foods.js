@@ -180,32 +180,99 @@ module.exports =(router,io)=>{
         if (!req.body.id) {
           res.json({ success: false, message: 'Chưa cung cấp mã món' }); 
         } else {
-          Food.findOne({ id: req.body.id }, (err, food) => {
+            Food.findOne({ id: req.body.id }, (err, food) => {
             if (err) {
-              res.json({ success: false, message: err }); // Return error message
+                res.json({ success: false, message: err }); // Return error message
             } else {
-              if (!food) {
-                res.json({ success: false, message: 'Không tìm thấy món.' }); // Return error message
-              } else {
-                food.name = req.body.name; // Save latest blog title
-                food.category_id= req.body.category_id;
-                food.description= req.body.description;
-                food.discount= req.body.discount;          
-                food.inventory= req.body.inventory;                        
-                food.price_unit= req.body.price_unit;
-                food.unit= req.body.unit;
+                if (!food) {
+                    res.json({ success: false, message: 'Không tìm thấy món.' }); // Return error message
+                } else {
+                    var foodID = food.id
 
-                food.save((err) => {
-                          if (err) {
+                    var oldPrice = parseInt(food.price_unit)
+                    var oldDiscount = parseInt(food.discount)
+                    var newPrice = parseInt(req.body.price_unit)
+                    var newDiscount = parseInt(req.body.discount)
+
+                    food.name = req.body.name; // Save latest blog title
+                    food.category_id= req.body.category_id;
+                    food.description= req.body.description;
+                    food.discount= req.body.discount;          
+                    food.inventory= req.body.inventory;                        
+                    food.price_unit= req.body.price_unit;
+                    food.unit= req.body.unit;
+
+                    food.save((err) => {
+                        if (err) {
                             if (err.errors) {
-                              res.json({ success: false, message: 'Thông tin cần chính xác.' });
+                                res.json({ success: false, message: 'Thông tin cần chính xác.' });
                             } else {
-                              res.json({ success: false, message: err }); // Return error message
+                                res.json({ success: false, message: err }); // Return error message
                             }
-                          } else {
-                            res.json({ success: true, message: 'Thông tin món ăn dã được cập nhật!' }); // Return success message
-                            io.sockets.emit("server-update-food",  {food: food});
-                          }
+                        } else {
+                            if(oldPrice != newPrice || oldDiscount != newDiscount){
+                                var promise = new Promise((resolve,reject)=>{
+                                    Order.find({$or:[{flag_status:C.CREATING_FLAG}, {flag_status:C.PENDING_FLAG}]}, (err, orders)=>{
+                                        if(err){
+                                            reject(err)
+                                        }else{
+                                            orders.map((order)=>{
+                                                var constainThisFood = false
+                                                var finalCost = order.final_cost
+    
+                                                var detail_orders = order.detail_orders
+                                                var size = detail_orders.length
+                                                for(var i = 0; i < size; i ++){
+                                                    var detail = detail_orders[i]
+                                                    if(detail.food_id == foodID){
+                                                        constainThisFood = true
+
+                                                        var _oldPrice = parseInt(detail.price_unit)
+                                                        var _oldDiscount = parseInt(detail.discount)
+                                                        var count = parseInt(detail.count)
+                                                        finalCost = finalCost + ((newPrice - newDiscount) - (_oldPrice - _oldDiscount)) * count
+                                                        
+                                                        detail.food_name = food.name
+                                                        detail.price_unit = food.price_unit
+                                                        detail.discount = food.discount
+                                                        order.detail_orders.set(i, detail)
+                                                    }
+                                                }
+                                                if(constainThisFood){
+                                                    order.final_cost = finalCost
+                                                    order.save((err)=>{
+                                                        if(err){
+                                                            console.log("update food ==> update order failed:error:"+err)
+                                                        }else{
+                                                            // console.log("update food ==> update order succes")
+                                                            io.sockets.emit("server-update-order", { order })
+                                                        }
+                                                        resolve()
+                                                    })
+                                                }else{
+                                                    resolve()
+                                                }
+                                            })
+                                        }
+                                    })
+                                })
+                                
+                                Promise.all(promise)
+                                .then(()=>{
+                                    console.log("update food and update order")
+                                    res.json({ success: true, message: 'Đã lưu thông tin món' })
+                                    io.sockets.emit("server-update-food",  {food: food})
+                                }, (err)=>{
+                                    console.log("update food but count error when update order")
+                                    res.json({ success: true, message: 'Đã lưu thông tin món' })
+                                    io.sockets.emit("server-update-food",  {food: food})
+                                })
+                            }
+                            else{
+                                res.json({ success: true, message: 'Thông tin món ăn dã được cập nhật!' }); // Return success message
+                                io.sockets.emit("server-update-food",  {food: food});
+                            }
+                        }
                     });
                 }
               }

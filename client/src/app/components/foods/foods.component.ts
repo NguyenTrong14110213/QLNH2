@@ -13,8 +13,8 @@ import { AuthService } from '../../services/auth.service';
 })
 export class FoodsComponent implements OnInit {
 
-  form: FormGroup;
-  form1:FormGroup;
+  form;
+  form1;
   currentUrl;
   food;
   categoryFoods;

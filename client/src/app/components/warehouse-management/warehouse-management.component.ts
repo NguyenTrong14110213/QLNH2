@@ -18,10 +18,10 @@ export class WarehouseManagementComponent implements OnInit {
   messageClass2;
   message2;
   message3;
-  form: FormGroup;
-  form2: FormGroup;
-  form3: FormGroup;
-  form4: FormGroup;
+  form;
+  form2;
+  form3;
+  form4;
   selectedImage = false;
   categoryFoods;
   foods;
